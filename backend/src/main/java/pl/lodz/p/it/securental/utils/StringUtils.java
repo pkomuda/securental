@@ -6,19 +6,19 @@ public class StringUtils {
         return str.toLowerCase().contains(searchStr.toLowerCase());
     }
 
-    public static String intArrayToString(int[] array) {
-        StringBuilder str = new StringBuilder();
-        for (int i : array) {
-            str.append(i);
+    public static String integerArrayToString(int[] integers) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i : integers) {
+            stringBuilder.append(i);
         }
-        return str.toString();
+        return stringBuilder.toString();
     }
 
-    public static String selectCharacters(String oldText, int[] indices) {
-        StringBuilder newText = new StringBuilder();
+    public static String selectCharacters(String text, int[] indices) {
+        StringBuilder stringBuilder = new StringBuilder();
         for (int i : indices) {
-            newText.append(oldText.charAt(i));
+            stringBuilder.append(text.charAt(i));
         }
-        return newText.toString();
+        return stringBuilder.toString();
     }
 }

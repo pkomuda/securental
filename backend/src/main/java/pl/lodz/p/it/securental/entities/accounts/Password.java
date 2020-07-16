@@ -13,10 +13,11 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 public @Data class Password extends BaseEntity {
 
     @Convert(converter = EncryptionAttributeConverter.class)
+    @EqualsAndHashCode.Include
     private String combination;
 
     private String hash;
