@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import pl.lodz.p.it.securental.entities.BaseEntity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -22,6 +23,10 @@ public @Data class Account extends BaseEntity {
     @Column(nullable = false, length = 32, unique = true, updatable = false)
     @EqualsAndHashCode.Include
     private String username;
+
+    @NotNull
+    @Column(nullable = false)
+    private String password;
 
     @Email
     @NotNull
@@ -43,6 +48,6 @@ public @Data class Account extends BaseEntity {
     @Column(nullable = false)
     private boolean active;
 
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "account", cascade = CascadeType.PERSIST)
     private List<Password> passwords = new ArrayList<>();
 }
