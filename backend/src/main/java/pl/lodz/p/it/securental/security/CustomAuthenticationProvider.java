@@ -1,9 +1,9 @@
 package pl.lodz.p.it.securental.security;
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,12 +15,13 @@ import pl.lodz.p.it.securental.repositories.accounts.AccountRepository;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import static pl.lodz.p.it.securental.exceptions.ApplicationBaseException.KEY_DEFAULT;
 import static pl.lodz.p.it.securental.exceptions.accounts.AccountNotFoundException.KEY_ACCOUNT_NOT_FOUND;
 
 @Component
 @AllArgsConstructor
-public class CustomAuthenticationProvider extends DaoAuthenticationProvider {
+public class CustomAuthenticationProvider implements AuthenticationProvider {
+
+    public static final String KEY_INCORRECT_CREDENTIALS = "error.credentials";
 
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
@@ -42,9 +43,9 @@ public class CustomAuthenticationProvider extends DaoAuthenticationProvider {
         Password password = new Password();
         password.setCombination(combination);
         if (passwordEncoder.matches(characters, account.getPasswords().get(account.getPasswords().indexOf(password)).getHash())) {
-            return new UsernamePasswordAuthenticationToken(username, characters, new ArrayList<>()); //2 argument?
+            return new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>()); //2 argument?
         } else {
-            throw new BadCredentialsException(KEY_DEFAULT);
+            throw new BadCredentialsException(KEY_INCORRECT_CREDENTIALS);
         }
     }
 
