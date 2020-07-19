@@ -1,10 +1,11 @@
-package pl.lodz.p.it.securental.controllers.accounts;
+package pl.lodz.p.it.securental.controllers.accounts.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import pl.lodz.p.it.securental.controllers.accounts.AccountController;
 import pl.lodz.p.it.securental.dto.accounts.AccountDto;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.managers.accounts.AccountManager;

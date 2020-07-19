@@ -3,7 +3,6 @@ package pl.lodz.p.it.securental.security;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,8 +28,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication auth) throws AuthenticationException {
         String username = auth.getName();
-        String combination = ((CustomWebAuthenticationDetails) auth.getDetails()).getCombination();
-        String characters = ((CustomWebAuthenticationDetails) auth.getDetails()).getCharacters();
+        String combination = ((CustomAuthenticationToken) auth).getCombination();
+        String characters = ((CustomAuthenticationToken) auth).getCharacters();
 
         Optional<Account> accountOptional = accountRepository.findByUsername(username);
         if (accountOptional.isEmpty()) {
@@ -43,7 +42,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         Password password = new Password();
         password.setCombination(combination);
         if (passwordEncoder.matches(characters, account.getPasswords().get(account.getPasswords().indexOf(password)).getHash())) {
-            return new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>()); //2 argument?
+            return new CustomAuthenticationToken(username, new ArrayList<>());
         } else {
             throw new BadCredentialsException(KEY_INCORRECT_CREDENTIALS);
         }
@@ -51,6 +50,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return authentication.equals(UsernamePasswordAuthenticationToken.class);
+        return authentication.equals(CustomAuthenticationToken.class);
     }
 }

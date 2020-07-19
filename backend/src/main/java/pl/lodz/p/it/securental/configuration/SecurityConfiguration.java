@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import pl.lodz.p.it.securental.security.CustomAuthenticationProvider;
-import pl.lodz.p.it.securental.security.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
@@ -18,8 +17,12 @@ import pl.lodz.p.it.securental.security.CustomUserDetailsService;
 @AllArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final CustomUserDetailsService userDetailsService;
     private final CustomAuthenticationProvider authenticationProvider;
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) {
+        auth.authenticationProvider(authenticationProvider);
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -34,11 +37,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return authenticationManager();
-    }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService);
-        auth.authenticationProvider(authenticationProvider);
     }
 }
