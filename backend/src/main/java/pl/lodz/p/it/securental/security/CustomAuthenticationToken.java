@@ -18,7 +18,8 @@ public class CustomAuthenticationToken extends AbstractAuthenticationToken {
         this.principal = principal;
     }
 
-    public CustomAuthenticationToken(String principal, String combination, String characters, Collection<? extends GrantedAuthority> authorities) {
+    public CustomAuthenticationToken(String principal, String combination, String characters,
+                                     Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.principal = principal;
         this.combination = combination;

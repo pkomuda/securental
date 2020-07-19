@@ -7,25 +7,27 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.securental.entities.accounts.Account;
 import pl.lodz.p.it.securental.entities.accounts.Password;
+import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.repositories.accounts.AccountRepository;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
-import static pl.lodz.p.it.securental.exceptions.accounts.AccountNotFoundException.KEY_ACCOUNT_NOT_FOUND;
+import static pl.lodz.p.it.securental.exceptions.accounts.IncorrectCredentialsException.KEY_INCORRECT_CREDENTIALS;
 
 @Component
 @AllArgsConstructor
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
-    public static final String KEY_INCORRECT_CREDENTIALS = "error.credentials";
-
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
+    @Transactional(rollbackFor = ApplicationBaseException.class, propagation = Propagation.REQUIRES_NEW)
     public Authentication authenticate(Authentication auth) throws AuthenticationException {
         String username = auth.getName();
         String combination = ((CustomAuthenticationToken) auth).getCombination();
@@ -33,7 +35,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         Optional<Account> accountOptional = accountRepository.findByUsername(username);
         if (accountOptional.isEmpty()) {
-            throw new BadCredentialsException(KEY_ACCOUNT_NOT_FOUND);
+            throw new BadCredentialsException(KEY_INCORRECT_CREDENTIALS);
         }
 
         //TODO TOTP
@@ -41,7 +43,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         Account account = accountOptional.get();
         Password password = new Password();
         password.setCombination(combination);
-        if (passwordEncoder.matches(characters, account.getPasswords().get(account.getPasswords().indexOf(password)).getHash())) {
+        if (passwordEncoder.matches(characters,
+                account.getPasswords().get(account.getPasswords().indexOf(password)).getHash())) {
             return new CustomAuthenticationToken(username, new ArrayList<>());
         } else {
             throw new BadCredentialsException(KEY_INCORRECT_CREDENTIALS);
