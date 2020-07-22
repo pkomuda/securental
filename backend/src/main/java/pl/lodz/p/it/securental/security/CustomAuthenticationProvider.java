@@ -45,7 +45,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         password.setCombination(combination);
         if (passwordEncoder.matches(characters,
                 account.getPasswords().get(account.getPasswords().indexOf(password)).getHash())) {
-            return new CustomAuthenticationToken(username, new ArrayList<>());
+            CustomAuthenticationToken customAuthenticationToken = new CustomAuthenticationToken(username, new ArrayList<>());
+//            customAuthenticationToken.setAuthenticated(true);
+            return customAuthenticationToken;
         } else {
             throw new BadCredentialsException(KEY_INCORRECT_CREDENTIALS);
         }
