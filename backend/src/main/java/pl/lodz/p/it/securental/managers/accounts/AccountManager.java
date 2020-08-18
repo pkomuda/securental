@@ -34,7 +34,7 @@ public class AccountManager {
     private final PasswordEncoder passwordEncoder;
     private final Environment env;
 
-    private List<Password> generatePasswords(Account account) {
+    private List<Password> generatePasswords(Account account, String fullPassword) {
         List<Password> passwords = new ArrayList<>();
         int length = Integer.parseInt(Objects.requireNonNull(env.getProperty("PASSWORD_LENGTH")));
         int characters = Integer.parseInt(Objects.requireNonNull(env.getProperty("PASSWORD_CHARACTERS")));
@@ -43,7 +43,7 @@ public class AccountManager {
             int[] combination = iterator.next();
             Password password = new Password();
             password.setCombination(integerArrayToString(combination));
-            password.setHash(passwordEncoder.encode(selectCharacters(account.getPassword().substring(0, length), combination)));
+            password.setHash(passwordEncoder.encode(selectCharacters(fullPassword.substring(0, length), combination)));
             password.setAccount(account);
             passwords.add(password);
         }
@@ -53,8 +53,7 @@ public class AccountManager {
     public void addAccount(AccountDto accountDto) throws ApplicationBaseException {
         if (accountService.getAccount(accountDto.getUsername()).isEmpty()) {
             Account account = accountMapper.toAccount(accountDto);
-            account.setPasswords(generatePasswords(account));
-            account.setPassword(passwordEncoder.encode(account.getPassword()));
+            account.setPasswords(generatePasswords(account, accountDto.getPassword()));
             accountService.addAccount(account);
         } else {
             throw new AccountAlreadyExistsException();

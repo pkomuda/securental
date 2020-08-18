@@ -1,4 +1,4 @@
-package pl.lodz.p.it.securental.security.old;
+package pl.lodz.p.it.securental.security;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.filter.OncePerRequestFilter;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
-import pl.lodz.p.it.securental.security.CustomUserDetailsService;
+import pl.lodz.p.it.securental.utils.JwtUtils;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -24,25 +24,28 @@ import java.io.IOException;
 @AllArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    private CustomUserDetailsService userDetailsService;
-    private final JwtService jwtUtils;
+    private final CustomUserDetailsService userDetailsService;
+    private final JwtUtils jwtUtils;
 
     @Override
     @Transactional(rollbackFor = ApplicationBaseException.class, propagation = Propagation.REQUIRES_NEW)
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+            throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
-        final String combinationHeader = request.getHeader("Combination");
 
-        String username = null;
         String jwt = null;
+        String username = null;
+        String combination = null;
 
         if (authHeader != null) {
             jwt = authHeader;
             username = jwtUtils.extractUsername(jwt);
+            combination = jwtUtils.extractString(jwt, "combination");
         }
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsernameAndCombination(username, combinationHeader);
+        if (username != null && combination != null
+                && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = userDetailsService.loadUserByUsernameAndCombination(username, combination);
             if (jwtUtils.validateToken(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities()

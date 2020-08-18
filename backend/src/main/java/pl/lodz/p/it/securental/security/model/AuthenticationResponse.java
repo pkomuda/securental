@@ -1,4 +1,4 @@
-package pl.lodz.p.it.securental.security.old;
+package pl.lodz.p.it.securental.security.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

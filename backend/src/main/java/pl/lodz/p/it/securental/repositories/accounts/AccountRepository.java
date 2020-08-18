@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.lodz.p.it.securental.entities.accounts.Account;
-import pl.lodz.p.it.securental.entities.accounts.Password;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 
 import java.util.Optional;
@@ -15,5 +14,4 @@ import java.util.Optional;
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Optional<Account> findByUsername(String username);
-    Optional<Account> findByUsernameAndPasswords(String username, Password password);
 }

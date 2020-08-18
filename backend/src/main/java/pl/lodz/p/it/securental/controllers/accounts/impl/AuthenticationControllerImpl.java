@@ -8,37 +8,40 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import pl.lodz.p.it.securental.controllers.accounts.AuthenticationController;
+import pl.lodz.p.it.securental.security.model.AuthenticationRequest;
 import pl.lodz.p.it.securental.security.CustomAuthenticationToken;
 import pl.lodz.p.it.securental.security.CustomUserDetailsService;
-import pl.lodz.p.it.securental.security.old.AuthenticationResponse;
-import pl.lodz.p.it.securental.security.old.JwtService;
+import pl.lodz.p.it.securental.security.model.AuthenticationResponse;
+import pl.lodz.p.it.securental.utils.JwtUtils;
 
 @CrossOrigin
 @RestController
 @AllArgsConstructor
-public class AuthenticationControllerImpl {
+public class AuthenticationControllerImpl implements AuthenticationController {
 
     private final AuthenticationManager authManager;
     private final CustomUserDetailsService userDetailsService;
-    private final JwtService jwtService;
+    private final JwtUtils jwtUtils;
 
     @PostMapping("/login")
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public ResponseEntity<?> login(@RequestParam String username, @RequestParam String combination, @RequestParam String password) {
+    public ResponseEntity<?> login(@RequestBody AuthenticationRequest authRequest) {
         try {
-            authManager.authenticate(new CustomAuthenticationToken(username, combination, password));
+            authManager.authenticate(new CustomAuthenticationToken(
+                    authRequest.getUsername(), authRequest.getCombination(), authRequest.getCharacters())
+            );
         } catch (BadCredentialsException e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body("Incorrect credentials.");
         }
 
-        UserDetails userDetails = userDetailsService.loadUserByUsernameAndCombination(username, combination);
-        String jwt = jwtService.generateToken(userDetails);
+        UserDetails userDetails = userDetailsService.loadUserByUsernameAndCombination(
+                authRequest.getUsername(), authRequest.getCombination()
+        );
+        String jwt = jwtUtils.generateToken(userDetails);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

@@ -13,10 +13,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import pl.lodz.p.it.securental.security.CustomAuthenticationFilter;
 import pl.lodz.p.it.securental.security.CustomAuthenticationProvider;
 import pl.lodz.p.it.securental.security.CustomUserDetailsService;
-import pl.lodz.p.it.securental.security.old.JwtRequestFilter;
+import pl.lodz.p.it.securental.security.JwtRequestFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -52,11 +51,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.requiresChannel()
                 .requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null)
                 .requiresSecure();
-    }
-
-    public CustomAuthenticationFilter authenticationFilter() throws Exception {
-        CustomAuthenticationFilter filter = new CustomAuthenticationFilter();
-        filter.setAuthenticationManager(authenticationManagerBean());
-        return filter;
     }
 }

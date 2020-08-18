@@ -9,7 +9,7 @@ import java.util.Collection;
 @Getter
 public class CustomUserDetails extends User {
 
-    private String combination;
+    private final String combination;
 
     public CustomUserDetails(String username, String combination, String password, boolean enabled,
                 boolean accountNonExpired, boolean credentialsNonExpired,

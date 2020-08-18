@@ -24,10 +24,6 @@ public @Data class Account extends BaseEntity {
     @EqualsAndHashCode.Include
     private String username;
 
-    @NotNull
-    @Column(nullable = false)
-    private String password;
-
     @Email
     @NotNull
     @Size(min = 1, max = 32)
@@ -48,8 +44,8 @@ public @Data class Account extends BaseEntity {
     @Column(nullable = false)
     private boolean active;
 
-//    @NotNull
-//    @Column(nullable = false)
+    @NotNull
+    @Column(nullable = false)
     private boolean confirmed;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.PERSIST)
