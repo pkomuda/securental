@@ -1,11 +1,10 @@
 package pl.lodz.p.it.securental.controllers.accounts;
 
-import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
-import pl.lodz.p.it.securental.security.AuthenticationRequest;
-import pl.lodz.p.it.securental.security.AuthenticationResponse;
+import org.springframework.http.ResponseEntity;
+import pl.lodz.p.it.securental.security.old.AuthenticationRequest;
 
 public interface AuthenticationController {
 
-    AuthenticationResponse login(AuthenticationRequest authRequest) throws ApplicationBaseException;
-    void logout() throws ApplicationBaseException;
+    ResponseEntity<?> login(AuthenticationRequest authRequest);
+    void logout();
 }

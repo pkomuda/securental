@@ -1,60 +1,82 @@
 package pl.lodz.p.it.securental.security;
 
-import lombok.AllArgsConstructor;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import pl.lodz.p.it.securental.entities.accounts.Account;
-import pl.lodz.p.it.securental.entities.accounts.Password;
-import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
-import pl.lodz.p.it.securental.repositories.accounts.AccountRepository;
-
-import java.util.ArrayList;
-import java.util.Optional;
-
-import static pl.lodz.p.it.securental.exceptions.accounts.IncorrectCredentialsException.KEY_INCORRECT_CREDENTIALS;
+import org.springframework.util.Assert;
 
 @Component
-@AllArgsConstructor
-public class CustomAuthenticationProvider implements AuthenticationProvider {
+public class CustomAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
 
-    private final AccountRepository accountRepository;
+    private static final String USER_NOT_FOUND_PASSWORD = "userNotFoundPassword";
+
     private final PasswordEncoder passwordEncoder;
+    private final CustomUserDetailsService userDetailsService;
+
+    private String userNotFoundEncodedPassword;
+
+    public CustomAuthenticationProvider(PasswordEncoder passwordEncoder, CustomUserDetailsService userDetailsService) {
+        this.passwordEncoder = passwordEncoder;
+        this.userDetailsService = userDetailsService;
+    }
 
     @Override
-    @Transactional(rollbackFor = ApplicationBaseException.class, propagation = Propagation.REQUIRES_NEW)
-    public Authentication authenticate(Authentication auth) throws AuthenticationException {
-        String username = auth.getName();
-        String combination = ((CustomAuthenticationToken) auth).getCombination();
-        String characters = ((CustomAuthenticationToken) auth).getCharacters();
+    protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication)
+            throws AuthenticationException {
 
-        Optional<Account> accountOptional = accountRepository.findByUsername(username);
-        if (accountOptional.isEmpty()) {
-            throw new BadCredentialsException(KEY_INCORRECT_CREDENTIALS);
+        if (authentication.getCredentials() == null) {
+            logger.debug("Authentication failed: no credentials provided");
+            throw new BadCredentialsException(
+                    messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
         }
 
-        //TODO TOTP
+        String presentedPassword = authentication.getCredentials()
+                .toString();
 
-        Account account = accountOptional.get();
-        Password password = new Password();
-        password.setCombination(combination);
-        if (passwordEncoder.matches(characters,
-                account.getPasswords().get(account.getPasswords().indexOf(password)).getHash())) {
-            CustomAuthenticationToken customAuthenticationToken = new CustomAuthenticationToken(username, new ArrayList<>());
-//            customAuthenticationToken.setAuthenticated(true);
-            return customAuthenticationToken;
-        } else {
-            throw new BadCredentialsException(KEY_INCORRECT_CREDENTIALS);
+        if (!passwordEncoder.matches(presentedPassword, userDetails.getPassword())) {
+            logger.debug("Authentication failed: password does not match stored value");
+            throw new BadCredentialsException(
+                    messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
         }
     }
 
     @Override
-    public boolean supports(Class<?> authentication) {
-        return authentication.equals(CustomAuthenticationToken.class);
+    protected void doAfterPropertiesSet() throws Exception {
+        Assert.notNull(this.userDetailsService, "A UserDetailsService must be set");
+        this.userNotFoundEncodedPassword = this.passwordEncoder.encode(USER_NOT_FOUND_PASSWORD);
     }
+
+    @Override
+    protected UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken authentication)
+            throws AuthenticationException {
+        CustomAuthenticationToken auth = (CustomAuthenticationToken) authentication;
+        UserDetails loadedUser;
+
+        try {
+            loadedUser = this.userDetailsService.loadUserByUsernameAndCombination(auth.getPrincipal()
+                    .toString(), auth.getCombination());
+        } catch (UsernameNotFoundException notFound) {
+            if (authentication.getCredentials() != null) {
+                String presentedPassword = authentication.getCredentials()
+                        .toString();
+                passwordEncoder.matches(presentedPassword, userNotFoundEncodedPassword);
+            }
+            throw notFound;
+        } catch (Exception repositoryProblem) {
+            throw new InternalAuthenticationServiceException(repositoryProblem.getMessage(), repositoryProblem);
+        }
+
+        if (loadedUser == null) {
+            throw new InternalAuthenticationServiceException("UserDetailsService returned null, "
+                    + "which is an interface contract violation");
+        }
+        return loadedUser;
+    }
+
 }

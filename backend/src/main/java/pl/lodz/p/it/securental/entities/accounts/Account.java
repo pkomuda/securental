@@ -48,6 +48,10 @@ public @Data class Account extends BaseEntity {
     @Column(nullable = false)
     private boolean active;
 
+//    @NotNull
+//    @Column(nullable = false)
+    private boolean confirmed;
+
     @OneToMany(mappedBy = "account", cascade = CascadeType.PERSIST)
     private List<Password> passwords = new ArrayList<>();
 }

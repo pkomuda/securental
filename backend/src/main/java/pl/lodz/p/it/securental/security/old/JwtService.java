@@ -1,4 +1,4 @@
-package pl.lodz.p.it.securental.utils;
+package pl.lodz.p.it.securental.security.old;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -6,20 +6,20 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-@Component
-public class JwtUtils {
+@Service
+public class JwtService {
 
     private final String secret;
 
     @Autowired
-    public JwtUtils(Environment env) {
+    public JwtService(Environment env) {
         this.secret = env.getProperty("JWT_KEY");
     }
 

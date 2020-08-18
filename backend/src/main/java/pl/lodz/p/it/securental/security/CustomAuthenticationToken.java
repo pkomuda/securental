@@ -1,38 +1,26 @@
 package pl.lodz.p.it.securental.security;
 
 import lombok.Getter;
-import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
 @Getter
-public class CustomAuthenticationToken extends AbstractAuthenticationToken {
+public class CustomAuthenticationToken extends UsernamePasswordAuthenticationToken {
 
-    private final String principal;
     private String combination;
-    private String characters;
 
-    public CustomAuthenticationToken(String principal, Collection<? extends GrantedAuthority> authorities) {
-        super(authorities);
-        this.principal = principal;
-    }
-
-    public CustomAuthenticationToken(String principal, String combination, String characters,
-                                     Collection<? extends GrantedAuthority> authorities) {
-        super(authorities);
-        this.principal = principal;
+    public CustomAuthenticationToken(Object principal, String combination, Object credentials) {
+        super(principal, credentials);
         this.combination = combination;
-        this.characters = characters;
+        super.setAuthenticated(false);
     }
 
-    @Override
-    public Object getPrincipal() {
-        return this.principal;
-    }
-
-    @Override
-    public Object getCredentials() {
-        return this.characters;
+    public CustomAuthenticationToken(Object principal, String combination, Object credentials,
+                                     Collection<? extends GrantedAuthority> authorities) {
+        super(principal, credentials, authorities);
+        this.combination = combination;
+        super.setAuthenticated(true); // must use super, as we override
     }
 }

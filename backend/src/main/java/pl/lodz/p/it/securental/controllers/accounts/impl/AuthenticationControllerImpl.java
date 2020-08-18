@@ -1,47 +1,51 @@
 package pl.lodz.p.it.securental.controllers.accounts.impl;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import pl.lodz.p.it.securental.controllers.accounts.AuthenticationController;
-import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
-import pl.lodz.p.it.securental.exceptions.accounts.IncorrectCredentialsException;
-import pl.lodz.p.it.securental.security.AuthenticationRequest;
-import pl.lodz.p.it.securental.security.AuthenticationResponse;
 import pl.lodz.p.it.securental.security.CustomAuthenticationToken;
-import pl.lodz.p.it.securental.utils.JwtUtils;
+import pl.lodz.p.it.securental.security.CustomUserDetailsService;
+import pl.lodz.p.it.securental.security.old.AuthenticationResponse;
+import pl.lodz.p.it.securental.security.old.JwtService;
 
-import java.util.ArrayList;
-
+@CrossOrigin
 @RestController
 @AllArgsConstructor
-@Transactional(rollbackFor = ApplicationBaseException.class, propagation = Propagation.NEVER)
-public class AuthenticationControllerImpl implements AuthenticationController {
+public class AuthenticationControllerImpl {
 
     private final AuthenticationManager authManager;
-    private final JwtUtils jwtUtils;
+    private final CustomUserDetailsService userDetailsService;
+    private final JwtService jwtService;
 
-    @Override
     @PostMapping("/login")
-    public AuthenticationResponse login(@RequestBody AuthenticationRequest authRequest) throws ApplicationBaseException {
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public ResponseEntity<?> login(@RequestParam String username, @RequestParam String combination, @RequestParam String password) {
         try {
-            authManager.authenticate(new CustomAuthenticationToken(authRequest.getUsername(), authRequest.getCombination(), authRequest.getCharacters(), new ArrayList<>()));
+            authManager.authenticate(new CustomAuthenticationToken(username, combination, password));
         } catch (BadCredentialsException e) {
-            throw new IncorrectCredentialsException(e);
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Incorrect credentials.");
         }
 
-        String jwt = jwtUtils.generateToken(new User(authRequest.getUsername(), authRequest.getCharacters(), new ArrayList<>()));
-        return new AuthenticationResponse(jwt);
+        UserDetails userDetails = userDetailsService.loadUserByUsernameAndCombination(username, combination);
+        String jwt = jwtService.generateToken(userDetails);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new AuthenticationResponse(jwt));
     }
 
-    @Override
-    public void logout() throws ApplicationBaseException {
+    public void logout() {
         throw new UnsupportedOperationException();
     }
 }
