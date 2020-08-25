@@ -5,11 +5,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import pl.lodz.p.it.securental.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.entities.accounts.Account;
-import pl.lodz.p.it.securental.entities.accounts.Password;
-import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
+import pl.lodz.p.it.securental.entities.accounts.MaskedPassword;
 import pl.lodz.p.it.securental.repositories.accounts.AccountRepository;
 
 import java.util.Collections;
@@ -19,21 +17,21 @@ import static pl.lodz.p.it.securental.exceptions.accounts.AccountNotFoundExcepti
 
 @Service
 @AllArgsConstructor
+@RequiresNewTransaction
 public class CustomUserDetailsService {
 
     private final AccountRepository accountRepository;
 
-    @Transactional(rollbackFor = ApplicationBaseException.class, propagation = Propagation.REQUIRES_NEW)
     public UserDetails loadUserByUsernameAndCombination(String username, String combination) throws UsernameNotFoundException {
-        Password temp = new Password();
+        MaskedPassword temp = new MaskedPassword();
         temp.setCombination(combination);
         Optional<Account> accountOptional = accountRepository.findByUsername(username);
         if (accountOptional.isEmpty()) {
-            throw new UsernameNotFoundException(KEY_ACCOUNT_NOT_FOUND);
+             throw new UsernameNotFoundException(KEY_ACCOUNT_NOT_FOUND);
         } else {
             Account account = accountOptional.get();
-            if (account.getPasswords().contains(temp)) {
-                Password password = account.getPasswords().get(account.getPasswords().indexOf(temp));
+            if (account.getMaskedPasswords().contains(temp)) {
+                MaskedPassword password = account.getMaskedPasswords().get(account.getMaskedPasswords().indexOf(temp));
                 //TODO authorities
                 return new CustomUserDetails(
                         username,
@@ -41,7 +39,8 @@ public class CustomUserDetailsService {
                         password.getHash(),
                         account.isConfirmed(),
                         true,
-                        true, account.isActive(),
+                        true,
+                        account.isActive(),
                         Collections.singletonList(new SimpleGrantedAuthority("USER")));
             } else {
                 return null;

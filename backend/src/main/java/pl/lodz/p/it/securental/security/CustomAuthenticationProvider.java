@@ -68,8 +68,6 @@ public class CustomAuthenticationProvider extends AbstractUserDetailsAuthenticat
                 passwordEncoder.matches(presentedPassword, userNotFoundEncodedPassword);
             }
             throw notFound;
-        } catch (Exception repositoryProblem) {
-            throw new InternalAuthenticationServiceException(repositoryProblem.getMessage(), repositoryProblem);
         }
 
         if (loadedUser == null) {

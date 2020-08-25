@@ -49,5 +49,5 @@ public @Data class Account extends BaseEntity {
     private boolean confirmed;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.PERSIST)
-    private List<Password> passwords = new ArrayList<>();
+    private List<MaskedPassword> maskedPasswords = new ArrayList<>();
 }

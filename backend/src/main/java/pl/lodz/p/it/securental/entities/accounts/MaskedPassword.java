@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
-public @Data class Password extends BaseEntity {
+public @Data class MaskedPassword extends BaseEntity {
 
     @Convert(converter = EncryptionAttributeConverter.class)
     @EqualsAndHashCode.Include
