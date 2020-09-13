@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import pl.lodz.p.it.securental.entities.BaseEntity;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -48,6 +47,6 @@ public @Data class Account extends BaseEntity {
     @Column(nullable = false)
     private boolean confirmed;
 
-    @OneToMany(mappedBy = "account", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "account")
     private List<MaskedPassword> maskedPasswords = new ArrayList<>();
 }

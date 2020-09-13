@@ -10,4 +10,5 @@ public @Data class AccountDto {
     private String firstName;
     private String lastName;
     private boolean active;
+    private boolean confirmed;
 }

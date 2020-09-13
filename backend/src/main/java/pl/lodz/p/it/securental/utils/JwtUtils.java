@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import static pl.lodz.p.it.securental.utils.StringUtils.getString;
+
 @Component
 public class JwtUtils {
 
@@ -21,7 +23,7 @@ public class JwtUtils {
 
     @Autowired
     public JwtUtils(Environment env) {
-        this.secret = env.getProperty("JWT_KEY");
+        this.secret = getString(env, "JWT_KEY");
     }
 
     public String extractUsername(String token) {

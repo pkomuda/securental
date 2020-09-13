@@ -6,13 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import pl.lodz.p.it.securental.annotations.NeverTransaction;
+import pl.lodz.p.it.securental.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.controllers.accounts.AuthenticationController;
 import pl.lodz.p.it.securental.security.CustomAuthenticationToken;
 import pl.lodz.p.it.securental.security.CustomUserDetailsService;
@@ -23,7 +21,6 @@ import pl.lodz.p.it.securental.utils.JwtUtils;
 @CrossOrigin
 @RestController
 @AllArgsConstructor
-@NeverTransaction
 public class AuthenticationControllerImpl implements AuthenticationController {
 
     private final AuthenticationManager authManager;
@@ -31,7 +28,7 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     private final JwtUtils jwtUtils;
 
     @PostMapping("/login")
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @RequiresNewTransaction
     public ResponseEntity<?> login(@RequestBody AuthenticationRequest authRequest) {
         UserDetails userDetails;
         try {
