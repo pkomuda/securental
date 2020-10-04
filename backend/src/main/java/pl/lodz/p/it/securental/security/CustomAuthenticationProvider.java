@@ -1,7 +1,6 @@
 package pl.lodz.p.it.securental.security;
 
 import com.warrenstrange.googleauth.GoogleAuthenticator;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;

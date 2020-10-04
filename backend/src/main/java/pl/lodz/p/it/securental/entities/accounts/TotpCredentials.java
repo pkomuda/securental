@@ -8,6 +8,7 @@ import pl.lodz.p.it.securental.entities.BaseEntity;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,5 +24,8 @@ public @Data class TotpCredentials extends BaseEntity {
     private Integer validationCode;
 
     @ElementCollection
-    private List<Integer> scratchCodes;
+    private List<Integer> scratchCodes = new ArrayList<>();
+
+//    @OneToOne(mappedBy = "totpCredentials")
+//    private Account account;
 }

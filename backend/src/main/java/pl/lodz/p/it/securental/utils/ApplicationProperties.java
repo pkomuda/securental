@@ -3,8 +3,10 @@ package pl.lodz.p.it.securental.utils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component(ApplicationProperties.APPLICATION_PROPERTIES_BEAN)
 public class ApplicationProperties {
+
+    public static final String APPLICATION_PROPERTIES_BEAN = "applicationProperties";
 
     public static String APPLICATION_NAME;
     public static String FRONTEND_ORIGIN;

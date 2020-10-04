@@ -1,4 +1,4 @@
-package pl.lodz.p.it.securental.security.model;
+package pl.lodz.p.it.securental.security;
 
 import lombok.Data;
 

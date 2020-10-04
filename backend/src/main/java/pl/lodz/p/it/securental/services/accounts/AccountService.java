@@ -1,10 +1,13 @@
 package pl.lodz.p.it.securental.services.accounts;
 
+import com.warrenstrange.googleauth.GoogleAuthenticator;
+import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
+import com.warrenstrange.googleauth.GoogleAuthenticatorQRGenerator;
 import lombok.AllArgsConstructor;
-import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.adapters.accounts.AccountAdapter;
+import pl.lodz.p.it.securental.adapters.accounts.TotpCredentialsAdapter;
 import pl.lodz.p.it.securental.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.dto.accounts.AccountDto;
 import pl.lodz.p.it.securental.dto.mappers.accounts.AccountMapper;
@@ -31,9 +34,9 @@ import static pl.lodz.p.it.securental.utils.StringUtils.selectCharacters;
 public class AccountService {
 
     private final AccountAdapter accountAdapter;
-    private final AccountMapper accountMapper;
     private final PasswordEncoder passwordEncoder;
-    private final Environment env;
+    private final GoogleAuthenticator googleAuthenticator;
+    private final TotpCredentialsAdapter totpCredentialsAdapter;
 
     private List<MaskedPassword> generateMaskedPasswords(String fullPassword) {
         List<MaskedPassword> maskedPasswords = new ArrayList<>();
@@ -58,22 +61,35 @@ public class AccountService {
 
     public void addAccount(AccountDto accountDto) throws ApplicationBaseException {
         if (accountAdapter.getAccount(accountDto.getUsername()).isEmpty()) {
-            Account account = accountMapper.toAccount(accountDto);
-            List<MaskedPassword> maskedPasswords = generateMaskedPasswords(accountDto.getPassword());
-            account.setMaskedPasswords(maskedPasswords);
+            Account account = AccountMapper.toAccount(accountDto);
+            account.setMaskedPasswords(generateMaskedPasswords(accountDto.getPassword()));
             accountAdapter.addAccount(account);
         } else {
             throw new AccountAlreadyExistsException();
         }
     }
 
-    public void register(AccountDto accountDto) throws ApplicationBaseException {
+    public String register(AccountDto accountDto) throws ApplicationBaseException {
+        GoogleAuthenticatorKey key = googleAuthenticator.createCredentials(accountDto.getUsername());
+        if (accountAdapter.getAccount(accountDto.getUsername()).isEmpty()) {
+            Account account = AccountMapper.toAccount(accountDto);
+            account.setMaskedPasswords(generateMaskedPasswords(accountDto.getPassword()));
+            if (totpCredentialsAdapter.getTotpCredentials(accountDto.getUsername()).isPresent()) {
+                account.setTotpCredentials(totpCredentialsAdapter.getTotpCredentials(accountDto.getUsername()).get());
+            } else {
+                throw new AccountNotFoundException();
+            }
+            accountAdapter.addAccount(account);
+        } else {
+            throw new AccountAlreadyExistsException();
+        }
 
+        return GoogleAuthenticatorQRGenerator.getOtpAuthTotpURL(APPLICATION_NAME, accountDto.getUsername(), key);
     }
 
     public AccountDto getAccount(String username) throws ApplicationBaseException {
         if (accountAdapter.getAccount(username).isPresent()) {
-            return accountMapper.toAccountDto(accountAdapter.getAccount(username).get());
+            return AccountMapper.toAccountDto(accountAdapter.getAccount(username).get());
         } else {
             throw new AccountNotFoundException();
         }

@@ -1,7 +1,6 @@
 package pl.lodz.p.it.securental.entities.accounts;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 import pl.lodz.p.it.securental.entities.BaseEntity;
 import pl.lodz.p.it.securental.utils.JsonAttributeConverter;
 
@@ -13,14 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 public @Data class Account extends BaseEntity {
-
-    @NotNull
-    @Size(min = 1, max = 32)
-    @Column(nullable = false, length = 32, unique = true, updatable = false)
-    @EqualsAndHashCode.Include
-    private String username;
 
     @Email
     @NotNull
@@ -49,4 +45,7 @@ public @Data class Account extends BaseEntity {
     @Lob
     @Convert(converter = JsonAttributeConverter.class)
     private List<MaskedPassword> maskedPasswords = new ArrayList<>();
+
+    @OneToOne
+    private TotpCredentials totpCredentials;
 }

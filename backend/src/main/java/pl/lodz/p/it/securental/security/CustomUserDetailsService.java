@@ -25,7 +25,7 @@ public class CustomUserDetailsService {
     private final PasswordEncoder passwordEncoder;
 
     public UserDetails loadUserByUsernameAndCombination(String username, String combination) throws UsernameNotFoundException {
-        Optional<Account> accountOptional = accountRepository.findByUsername(username);
+        Optional<Account> accountOptional = accountRepository.findByTotpCredentialsUsername(username);
         if (accountOptional.isEmpty()) {
              throw new UsernameNotFoundException(KEY_ACCOUNT_NOT_FOUND);
         } else {
@@ -45,6 +45,25 @@ public class CustomUserDetailsService {
                 }
             }
             return null;
+        }
+    }
+
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<Account> accountOptional = accountRepository.findByTotpCredentialsUsername(username);
+        if (accountOptional.isEmpty()) {
+            throw new UsernameNotFoundException(KEY_ACCOUNT_NOT_FOUND);
+        } else {
+            Account account = accountOptional.get();
+            //TODO authorities
+            return new CustomUserDetails(
+                    username,
+                    null,
+                    "",
+                    account.isConfirmed(),
+                    true,
+                    true,
+                    account.isActive(),
+                    Collections.singletonList(new SimpleGrantedAuthority("USER")));
         }
     }
 }

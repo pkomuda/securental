@@ -6,8 +6,8 @@ import lombok.SneakyThrows;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.annotations.MandatoryTransaction;
-import pl.lodz.p.it.securental.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.entities.accounts.TotpCredentials;
+import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.accounts.AccountNotFoundException;
 import pl.lodz.p.it.securental.exceptions.database.DatabaseConnectionException;
 import pl.lodz.p.it.securental.repositories.accounts.TotpCredentialsRepository;
@@ -18,7 +18,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-@RequiresNewTransaction
+@MandatoryTransaction
 public class TotpCredentialsAdapter implements ICredentialRepository {
 
     private final TotpCredentialsRepository totpCredentialsRepository;
@@ -44,6 +44,14 @@ public class TotpCredentialsAdapter implements ICredentialRepository {
     public void saveUserCredentials(String username, String secret, int validationCode, List<Integer> scratchCodes) {
         try {
             totpCredentialsRepository.saveAndFlush(new TotpCredentials(username, secret, validationCode, scratchCodes));
+        } catch (PersistenceException | DataAccessException e) {
+            throw new DatabaseConnectionException(e);
+        }
+    }
+
+    public Optional<TotpCredentials> getTotpCredentials(String username) throws ApplicationBaseException {
+        try {
+            return totpCredentialsRepository.findByUsername(username);
         } catch (PersistenceException | DataAccessException e) {
             throw new DatabaseConnectionException(e);
         }
