@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.entities.accounts.Account;
@@ -21,30 +22,29 @@ import static pl.lodz.p.it.securental.exceptions.accounts.AccountNotFoundExcepti
 public class CustomUserDetailsService {
 
     private final AccountRepository accountRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UserDetails loadUserByUsernameAndCombination(String username, String combination) throws UsernameNotFoundException {
-        MaskedPassword temp = new MaskedPassword();
-        temp.setCombination(combination);
         Optional<Account> accountOptional = accountRepository.findByUsername(username);
         if (accountOptional.isEmpty()) {
              throw new UsernameNotFoundException(KEY_ACCOUNT_NOT_FOUND);
         } else {
             Account account = accountOptional.get();
-            if (account.getMaskedPasswords().contains(temp)) {
-                MaskedPassword password = account.getMaskedPasswords().get(account.getMaskedPasswords().indexOf(temp));
-                //TODO authorities
-                return new CustomUserDetails(
-                        username,
-                        combination,
-                        password.getHash(),
-                        account.isConfirmed(),
-                        true,
-                        true,
-                        account.isActive(),
-                        Collections.singletonList(new SimpleGrantedAuthority("USER")));
-            } else {
-                return null;
+            for (MaskedPassword maskedPassword : account.getMaskedPasswords()) {
+                if (passwordEncoder.matches(combination, maskedPassword.getCombination())) {
+                    //TODO authorities
+                    return new CustomUserDetails(
+                            username,
+                            combination,
+                            maskedPassword.getHash(),
+                            account.isConfirmed(),
+                            true,
+                            true,
+                            account.isActive(),
+                            Collections.singletonList(new SimpleGrantedAuthority("USER")));
+                }
             }
+            return null;
         }
     }
 }

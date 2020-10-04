@@ -3,10 +3,9 @@ package pl.lodz.p.it.securental.entities.accounts;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import pl.lodz.p.it.securental.entities.BaseEntity;
+import pl.lodz.p.it.securental.utils.JsonAttributeConverter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -47,6 +46,7 @@ public @Data class Account extends BaseEntity {
     @Column(nullable = false)
     private boolean confirmed;
 
-    @OneToMany(mappedBy = "account")
+    @Lob
+    @Convert(converter = JsonAttributeConverter.class)
     private List<MaskedPassword> maskedPasswords = new ArrayList<>();
 }

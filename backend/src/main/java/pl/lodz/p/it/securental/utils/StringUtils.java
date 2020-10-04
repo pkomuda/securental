@@ -1,9 +1,5 @@
 package pl.lodz.p.it.securental.utils;
 
-import org.springframework.core.env.Environment;
-
-import java.util.Objects;
-
 public class StringUtils {
 
     public static boolean containsIgnoreCase(String str, String searchStr) {
@@ -24,13 +20,5 @@ public class StringUtils {
             stringBuilder.append(text.charAt(i));
         }
         return stringBuilder.toString();
-    }
-
-    public static String getString(Environment environment, String property) {
-        return Objects.requireNonNull(environment.getProperty(property));
-    }
-
-    public static int getInteger(Environment environment, String property) {
-        return Integer.parseInt(Objects.requireNonNull(environment.getProperty(property)));
     }
 }

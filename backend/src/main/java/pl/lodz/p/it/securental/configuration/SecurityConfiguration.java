@@ -1,5 +1,6 @@
 package pl.lodz.p.it.securental.configuration;
 
+import com.warrenstrange.googleauth.GoogleAuthenticator;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -26,17 +27,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final CustomUserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final JwtRequestFilter jwtRequestFilter;
+    private final GoogleAuthenticator googleAuthenticator;
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(new CustomAuthenticationProvider(passwordEncoder, userDetailsService));
+        auth.authenticationProvider(new CustomAuthenticationProvider(passwordEncoder, userDetailsService, googleAuthenticator));
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
-                .authorizeRequests().antMatchers("/login", "/account").permitAll()
-                .anyRequest().authenticated()
+                .authorizeRequests().anyRequest().permitAll()
+//                .authorizeRequests().antMatchers("/login", "/account").permitAll()
+//                .anyRequest().authenticated()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 

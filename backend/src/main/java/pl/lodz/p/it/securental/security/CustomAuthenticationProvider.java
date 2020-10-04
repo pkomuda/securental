@@ -1,5 +1,8 @@
 package pl.lodz.p.it.securental.security;
 
+import com.warrenstrange.googleauth.GoogleAuthenticator;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,26 +15,29 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 @Component
+@RequiredArgsConstructor
 public class CustomAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
 
     private static final String USER_NOT_FOUND_PASSWORD = "userNotFoundPassword";
 
     private final PasswordEncoder passwordEncoder;
     private final CustomUserDetailsService userDetailsService;
+    private final GoogleAuthenticator googleAuthenticator;
 
     private String userNotFoundEncodedPassword;
-
-    public CustomAuthenticationProvider(PasswordEncoder passwordEncoder, CustomUserDetailsService userDetailsService) {
-        this.passwordEncoder = passwordEncoder;
-        this.userDetailsService = userDetailsService;
-    }
 
     @Override
     protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication)
             throws AuthenticationException {
+        CustomAuthenticationToken auth = (CustomAuthenticationToken) authentication;
 
         if (authentication.getCredentials() == null) {
             logger.debug("Authentication failed: no credentials provided");
+            throw new BadCredentialsException(
+                    messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
+        }
+
+        if (!googleAuthenticator.authorizeUser(auth.getPrincipal().toString(), auth.getTotpCode())) {
             throw new BadCredentialsException(
                     messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
         }
@@ -47,7 +53,7 @@ public class CustomAuthenticationProvider extends AbstractUserDetailsAuthenticat
     }
 
     @Override
-    protected void doAfterPropertiesSet() throws Exception {
+    protected void doAfterPropertiesSet() {
         Assert.notNull(this.userDetailsService, "A UserDetailsService must be set");
         this.userNotFoundEncodedPassword = this.passwordEncoder.encode(USER_NOT_FOUND_PASSWORD);
     }
