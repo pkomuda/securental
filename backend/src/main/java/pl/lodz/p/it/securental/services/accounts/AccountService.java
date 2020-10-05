@@ -12,6 +12,7 @@ import pl.lodz.p.it.securental.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.dto.accounts.AccountDto;
 import pl.lodz.p.it.securental.dto.mappers.accounts.AccountMapper;
 import pl.lodz.p.it.securental.entities.accounts.Account;
+import pl.lodz.p.it.securental.entities.accounts.Credentials;
 import pl.lodz.p.it.securental.entities.accounts.MaskedPassword;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.accounts.AccountAlreadyExistsException;
@@ -62,7 +63,7 @@ public class AccountService {
     public void addAccount(AccountDto accountDto) throws ApplicationBaseException {
         if (accountAdapter.getAccount(accountDto.getUsername()).isEmpty()) {
             Account account = AccountMapper.toAccount(accountDto);
-            account.setMaskedPasswords(generateMaskedPasswords(accountDto.getPassword()));
+            account.setCredentials(new Credentials(generateMaskedPasswords(accountDto.getPassword())));
             accountAdapter.addAccount(account);
         } else {
             throw new AccountAlreadyExistsException();
@@ -73,7 +74,7 @@ public class AccountService {
         GoogleAuthenticatorKey key = googleAuthenticator.createCredentials(accountDto.getUsername());
         if (accountAdapter.getAccount(accountDto.getUsername()).isEmpty()) {
             Account account = AccountMapper.toAccount(accountDto);
-            account.setMaskedPasswords(generateMaskedPasswords(accountDto.getPassword()));
+            account.setCredentials(new Credentials(generateMaskedPasswords(accountDto.getPassword())));
             if (totpCredentialsAdapter.getTotpCredentials(accountDto.getUsername()).isPresent()) {
                 account.setTotpCredentials(totpCredentialsAdapter.getTotpCredentials(accountDto.getUsername()).get());
             } else {
@@ -89,7 +90,9 @@ public class AccountService {
 
     public AccountDto getAccount(String username) throws ApplicationBaseException {
         if (accountAdapter.getAccount(username).isPresent()) {
-            return AccountMapper.toAccountDto(accountAdapter.getAccount(username).get());
+            Account account = accountAdapter.getAccount(username).get();
+
+            return AccountMapper.toAccountDto(account);
         } else {
             throw new AccountNotFoundException();
         }

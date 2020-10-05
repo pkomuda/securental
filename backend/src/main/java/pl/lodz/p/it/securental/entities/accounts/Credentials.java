@@ -5,24 +5,21 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import pl.lodz.p.it.securental.entities.BaseEntity;
+import pl.lodz.p.it.securental.utils.JsonAttributeConverter;
 
-import javax.persistence.ElementCollection;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public @Data class TotpCredentials extends BaseEntity {
+@EqualsAndHashCode(callSuper = true)
+public @Data class Credentials extends BaseEntity {
 
-    private String username;
-
-    private String secret;
-
-    private Integer validationCode;
-
-    @ElementCollection
-    private List<Integer> scratchCodes = new ArrayList<>();
+    @Lob
+    @Convert(converter = JsonAttributeConverter.class)
+    private List<MaskedPassword> maskedPasswords = new ArrayList<>();
 }

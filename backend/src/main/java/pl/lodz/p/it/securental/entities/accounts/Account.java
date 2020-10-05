@@ -2,14 +2,11 @@ package pl.lodz.p.it.securental.entities.accounts;
 
 import lombok.*;
 import pl.lodz.p.it.securental.entities.BaseEntity;
-import pl.lodz.p.it.securental.utils.JsonAttributeConverter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Builder
@@ -42,9 +39,8 @@ public @Data class Account extends BaseEntity {
     @Column(nullable = false)
     private boolean confirmed;
 
-    @Lob
-    @Convert(converter = JsonAttributeConverter.class)
-    private List<MaskedPassword> maskedPasswords = new ArrayList<>();
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private Credentials credentials;
 
     @OneToOne
     private TotpCredentials totpCredentials;

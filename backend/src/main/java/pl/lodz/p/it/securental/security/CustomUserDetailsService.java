@@ -30,7 +30,7 @@ public class CustomUserDetailsService {
              throw new UsernameNotFoundException(KEY_ACCOUNT_NOT_FOUND);
         } else {
             Account account = accountOptional.get();
-            for (MaskedPassword maskedPassword : account.getMaskedPasswords()) {
+            for (MaskedPassword maskedPassword : account.getCredentials().getMaskedPasswords()) {
                 if (passwordEncoder.matches(combination, maskedPassword.getCombination())) {
                     //TODO authorities
                     return new CustomUserDetails(
