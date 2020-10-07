@@ -53,7 +53,7 @@ public class AccountService {
                 int[] combination = iterator.next();
                 MaskedPassword maskedPassword = new MaskedPassword();
                 maskedPassword.setCombination(passwordEncoder.encode(integerArrayToString(combination)));
-                maskedPassword.setHash(passwordEncoder.encode(selectCharacters(fullPassword.substring(0, FULL_PASSWORD_LENGTH), combination)));
+                maskedPassword.setHash(passwordEncoder.encode(selectCharacters(fullPassword, combination)));
                 maskedPasswords.add(maskedPassword);
             }
         }

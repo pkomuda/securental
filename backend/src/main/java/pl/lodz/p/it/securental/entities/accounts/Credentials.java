@@ -5,11 +5,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import pl.lodz.p.it.securental.entities.BaseEntity;
-import pl.lodz.p.it.securental.utils.JsonAttributeConverter;
+import pl.lodz.p.it.securental.utils.BlobAttributeConverter;
 
 import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.Lob;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +18,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public @Data class Credentials extends BaseEntity {
 
-    @Lob
-    @Convert(converter = JsonAttributeConverter.class)
+    @Convert(converter = BlobAttributeConverter.class)
     private List<MaskedPassword> maskedPasswords = new ArrayList<>();
 }

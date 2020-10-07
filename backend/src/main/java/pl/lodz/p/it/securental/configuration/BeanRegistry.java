@@ -5,23 +5,23 @@ import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.lodz.p.it.securental.adapters.accounts.TotpCredentialsAdapter;
 
 import static pl.lodz.p.it.securental.utils.ApplicationProperties.APPLICATION_PROPERTIES_BEAN;
-import static pl.lodz.p.it.securental.utils.ApplicationProperties.PASSWORD_ENCODER_STRENGTH;
+import static pl.lodz.p.it.securental.utils.ApplicationProperties.PASSWORD_HASHING_ALGORITHM;
 
 @Configuration
 @AllArgsConstructor
-public class SecurityAdditionalBeanRegistry {
+public class BeanRegistry {
 
     private final TotpCredentialsAdapter totpCredentialsAdapter;
 
     @Bean
     @DependsOn(APPLICATION_PROPERTIES_BEAN)
     public PasswordEncoder passwordEncoderBean() {
-        return new BCryptPasswordEncoder(PASSWORD_ENCODER_STRENGTH);
+        return new MessageDigestPasswordEncoder(PASSWORD_HASHING_ALGORITHM);
     }
 
     @Bean
