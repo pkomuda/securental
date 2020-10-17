@@ -12,22 +12,23 @@ import pl.lodz.p.it.securental.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.dto.accounts.AccountDto;
 import pl.lodz.p.it.securental.dto.mappers.accounts.AccountMapper;
 import pl.lodz.p.it.securental.entities.accounts.Account;
+import pl.lodz.p.it.securental.entities.accounts.AuthenticationToken;
 import pl.lodz.p.it.securental.entities.accounts.Credentials;
 import pl.lodz.p.it.securental.entities.accounts.MaskedPassword;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.accounts.AccountAlreadyExistsException;
 import pl.lodz.p.it.securental.exceptions.accounts.AccountNotFoundException;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static org.apache.commons.math3.util.CombinatoricsUtils.combinationsIterator;
 import static pl.lodz.p.it.securental.utils.ApplicationProperties.*;
-import static pl.lodz.p.it.securental.utils.StringUtils.integerArrayToString;
-import static pl.lodz.p.it.securental.utils.StringUtils.selectCharacters;
+import static pl.lodz.p.it.securental.utils.StringUtils.*;
 
 @Service
 @AllArgsConstructor
@@ -41,11 +42,10 @@ public class AccountService {
 
     private List<MaskedPassword> generateMaskedPasswords(String fullPassword) {
         List<MaskedPassword> maskedPasswords = new ArrayList<>();
-        List<Integer> maskedPasswordLengthRange = IntStream.rangeClosed(
+        int[] maskedPasswordLengthRange = IntStream.rangeClosed(
                 MASKED_PASSWORD_MIN_LENGTH,
                 MASKED_PASSWORD_MAX_LENGTH)
-                .boxed()
-                .collect(Collectors.toList());
+                .toArray();
 
         for (int maskedPasswordLength : maskedPasswordLengthRange) {
             Iterator<int[]> iterator = combinationsIterator(FULL_PASSWORD_LENGTH, maskedPasswordLength);
@@ -64,6 +64,7 @@ public class AccountService {
         if (accountAdapter.getAccount(accountDto.getUsername()).isEmpty()) {
             Account account = AccountMapper.toAccount(accountDto);
             account.setCredentials(new Credentials(generateMaskedPasswords(accountDto.getPassword())));
+            account.setAuthenticationToken(new AuthenticationToken(new ArrayList<>(), LocalDateTime.now()));
             accountAdapter.addAccount(account);
         } else {
             throw new AccountAlreadyExistsException();
@@ -75,6 +76,7 @@ public class AccountService {
         if (accountAdapter.getAccount(accountDto.getUsername()).isEmpty()) {
             Account account = AccountMapper.toAccount(accountDto);
             account.setCredentials(new Credentials(generateMaskedPasswords(accountDto.getPassword())));
+            account.setAuthenticationToken(new AuthenticationToken(new ArrayList<>(), LocalDateTime.now()));
             if (totpCredentialsAdapter.getTotpCredentials(accountDto.getUsername()).isPresent()) {
                 account.setTotpCredentials(totpCredentialsAdapter.getTotpCredentials(accountDto.getUsername()).get());
             } else {
@@ -89,12 +91,27 @@ public class AccountService {
     }
 
     public AccountDto getAccount(String username) throws ApplicationBaseException {
-        if (accountAdapter.getAccount(username).isPresent()) {
-            Account account = accountAdapter.getAccount(username).get();
-
-            return AccountMapper.toAccountDto(account);
+        Optional<Account> accountOptional = accountAdapter.getAccount(username);
+        if (accountOptional.isPresent()) {
+            return AccountMapper.toAccountDto(accountOptional.get());
         } else {
             throw new AccountNotFoundException();
         }
+    }
+
+    public List<Integer> initializeLogin(String username) throws ApplicationBaseException {
+        List<Integer> randomCombination = randomCombination(
+                FULL_PASSWORD_LENGTH,
+                MASKED_PASSWORD_MIN_LENGTH,
+                MASKED_PASSWORD_MAX_LENGTH);
+        Optional<Account> accountOptional = accountAdapter.getAccount(username);
+        if (accountOptional.isPresent()) {
+            Account account = accountOptional.get();
+            AuthenticationToken authenticationToken = account.getAuthenticationToken();
+            authenticationToken.setCombination(randomCombination);
+            authenticationToken.setExpiration(LocalDateTime.now().plusMinutes(AUTHENTICATION_TOKEN_EXPIRATION));
+            accountAdapter.addAccount(account);
+        }
+        return randomCombination;
     }
 }

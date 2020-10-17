@@ -44,4 +44,7 @@ public @Data class Account extends BaseEntity {
 
     @OneToOne
     private TotpCredentials totpCredentials;
+
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private AuthenticationToken authenticationToken;
 }

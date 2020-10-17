@@ -11,9 +11,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import static pl.lodz.p.it.securental.exceptions.ApplicationBaseException.KEY_DEFAULT;
 import static pl.lodz.p.it.securental.utils.ApplicationProperties.JWT_KEY;
 
-public class JwtUtils {
+public final class JwtUtils {
+
+    private JwtUtils() {
+        throw new UnsupportedOperationException(KEY_DEFAULT);
+    }
 
     public static String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);

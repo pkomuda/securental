@@ -1,6 +1,22 @@
 package pl.lodz.p.it.securental.utils;
 
-public class StringUtils {
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static pl.lodz.p.it.securental.exceptions.ApplicationBaseException.KEY_DEFAULT;
+
+public final class StringUtils {
+
+    private StringUtils() {
+        throw new UnsupportedOperationException(KEY_DEFAULT);
+    }
+
+    private static int random(int min, int max) {
+        return ThreadLocalRandom.current().nextInt(min, max + 1);
+    }
 
     public static boolean containsIgnoreCase(String str, String searchStr) {
         return str.toLowerCase().contains(searchStr.toLowerCase());
@@ -20,5 +36,22 @@ public class StringUtils {
             stringBuilder.append(text.charAt(i));
         }
         return stringBuilder.toString();
+    }
+
+    public static String randomBase64() {
+        return Base64.getEncoder().encodeToString(UUID.randomUUID().toString().getBytes(StandardCharsets.UTF_8));
+    }
+
+    public static List<Integer> randomCombination(int full, int min, int max) {
+        int amount = random(min, max);
+        List<Integer> combination = new ArrayList<>();
+        List<Integer> indices = IntStream.range(0, full).boxed().collect(Collectors.toList());
+        for (int i = 0; i < amount; i++) {
+            int currentIndex = random(0, indices.size() - 1);
+            combination.add(indices.get(currentIndex));
+            indices.remove(currentIndex);
+        }
+        Collections.sort(combination);
+        return combination;
     }
 }
