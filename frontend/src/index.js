@@ -8,8 +8,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 axios.defaults.baseURL = process.env.REACT_APP_API;
 
 ReactDOM.render(
-    <React.StrictMode>
-        <App/>
-    </React.StrictMode>,
+    <App/>,
     document.getElementById("root")
 );
