@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { Button, Form, FormControl, FormGroup, FormLabel } from "react-bootstrap";
+import { Button, Form, FormControl, FormGroup } from "react-bootstrap";
 
 export default class Login extends Component {
 
@@ -23,8 +23,7 @@ export default class Login extends Component {
             .then(response => {
                 let tempAuthRequest = {...this.state.authRequest};
                 tempAuthRequest["combination"] = response.data;
-                this.setState({authRequest: tempAuthRequest});
-                this.setState({stage: 2});
+                this.setState({authRequest: tempAuthRequest, stage: 2});
             }).catch(error => {
                 alert(error.response.data);
         });
@@ -37,8 +36,7 @@ export default class Login extends Component {
         }
         let tempAuthRequest = {...this.state.authRequest};
         tempAuthRequest["characters"] = chars;
-        this.setState({authRequest: tempAuthRequest});
-        this.setState({stage: 3});
+        this.setState({authRequest: tempAuthRequest, stage: 3});
     };
 
     handleThirdStage = () => {
@@ -53,13 +51,15 @@ export default class Login extends Component {
     renderFirstStage = () => {
         if (this.state.stage === 1) {
             return (
-                <Form style={{textAlign: "center"}}>
-                    <FormGroup>
-                        <FormLabel>Username</FormLabel>
-                        <FormControl id="username" value={this.state.authRequest["username"]} onChange={(event) => this.handleChangeProperty(event, "username")} style={{width: "20%", display: "inline-block"}}/>
-                    </FormGroup>
-                    <Button id="submit1" variant="dark" onClick={this.handleFirstStage}>Next</Button>
-                </Form>
+                <div>
+                    <h2 style={{textAlign: "center"}}>Username</h2>
+                    <Form style={{textAlign: "center"}}>
+                        <FormGroup>
+                            <FormControl id="username" value={this.state.authRequest["username"]} onChange={(event) => this.handleChangeProperty(event, "username")} style={{width: "20%", display: "inline-block"}}/>
+                        </FormGroup>
+                        <Button id="submit1" variant="dark" onClick={this.handleFirstStage}>Next</Button>
+                    </Form>
+                </div>
             );
         }
     };
@@ -88,12 +88,15 @@ export default class Login extends Component {
                 }
             }
             return (
-                <Form style={{textAlign: "center"}}>
-                    {boxes}
-                    <br/>
-                    <br/>
-                    <Button id="submit2" variant="dark" onClick={this.handleSecondStage}>Next</Button>
-                </Form>
+                <div>
+                    <h2 style={{textAlign: "center"}}>Password characters</h2>
+                    <Form style={{textAlign: "center"}}>
+                        {boxes}
+                        <br/>
+                        <br/>
+                        <Button id="submit2" variant="dark" onClick={this.handleSecondStage}>Next</Button>
+                    </Form>
+                </div>
             );
         }
     }
@@ -101,13 +104,15 @@ export default class Login extends Component {
     renderThirdStage = () => {
         if (this.state.stage === 3) {
             return (
-                <Form style={{textAlign: "center"}}>
-                    <FormGroup>
-                        <FormLabel>Code</FormLabel>
-                        <FormControl id="code" style={{width: "20%", display: "inline-block"}}/>
-                    </FormGroup>
-                    <Button id="submit3" variant="dark" onClick={this.handleThirdStage}>Submit</Button>
-                </Form>
+                <div>
+                    <h2 style={{textAlign: "center"}}>Code</h2>
+                    <Form style={{textAlign: "center"}}>
+                        <FormGroup>
+                            <FormControl id="code" style={{width: "20%", display: "inline-block"}}/>
+                        </FormGroup>
+                        <Button id="submit3" variant="dark" onClick={this.handleThirdStage}>Submit</Button>
+                    </Form>
+                </div>
             );
         }
     };
