@@ -1,4 +1,21 @@
 {
-  "key1": "pl1",
-  "key2": "pl2"
+  "account.details.header": "Szczegóły konta",
+  "account.username": "Nazwa użytkownika",
+  "account.email": "Adres email",
+  "account.password": "Hasło",
+  "account.first.name": "Imię",
+  "account.last.name": "Nazwisko",
+
+  "login.header": "Logowanie",
+  "login.password.characters": "Znaki hasła",
+  "login.otp.code": "Jednorazowy kod",
+  "login.sign.in": "Zaloguj się",
+
+  "register.header": "Rejestracja",
+
+  "navigation.back": "Wstecz",
+  "navigation.next": "Dalej",
+  "navigation.submit": "Zatwierdź",
+  "navigation.ok": "OK",
+  "navigation.edit": "Edytuj"
 }

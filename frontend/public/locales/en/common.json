@@ -1,4 +1,21 @@
 {
-  "key1": "en1",
-  "key2": "en2"
+  "account.details.header": "Account details",
+  "account.username": "Username",
+  "account.email": "Email address",
+  "account.password": "Password",
+  "account.first.name": "First name",
+  "account.last.name": "Last name",
+
+  "login.header": "Sign in",
+  "login.password.characters": "Password characters",
+  "login.otp.code": "One time code",
+  "login.sign.in": "Sign in",
+
+  "register.header": "Registration",
+
+  "navigation.back": "Back",
+  "navigation.next": "Next",
+  "navigation.submit": "Submit",
+  "navigation.ok": "OK",
+  "navigation.edit": "Edit"
 }

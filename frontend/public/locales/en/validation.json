@@ -1,0 +1,6 @@
+{
+  "field": "Field",
+  "invalid": "is invalid",
+
+  "account.username.invalid": "Username is invalid"
+}

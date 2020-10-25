@@ -12,6 +12,9 @@ export default i18n
             loadPath: "/locales/{{lng}}/{{ns}}.json"
         },
         defaultNS: "common",
-        detection: {order: ["navigator"]},
-        fallbackLng: "en"
+        detection: {
+            order: ["navigator"]
+        },
+        fallbackLng: "en",
+        keySeparator: false
     });

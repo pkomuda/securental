@@ -1,46 +1,50 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { Button, Form, FormControl, FormGroup } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 
-export default class Login extends Component {
+export const Login = props => {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            authRequest: {"username": "", "combination": [], "characters": [], "totpCode": ""},
-            stage: 1
-        };
-    }
+    const {t} = useTranslation();
+    const [stage, setStage] = useState(1);
+    const [authRequest, setAuthRequest] = useState({
+        "username": "",
+        "combination": [],
+        "characters": [],
+        "totpCode": ""
+    });
 
-    handleChangeProperty = (event, property) => {
-        let tempAuthRequest = {...this.state.authRequest};
+    const handleChangeProperty = (event, property) => {
+        let tempAuthRequest = {...authRequest};
         tempAuthRequest[property] = event.target.value;
-        this.setState({authRequest: tempAuthRequest});
+        setAuthRequest(tempAuthRequest);
     };
 
-    handleFirstStage = () => {
-        axios.get("/initializeLogin/" + this.state.username)
+    const handleFirstStage = () => {
+        axios.get("/initializeLogin/" + authRequest.username)
             .then(response => {
-                let tempAuthRequest = {...this.state.authRequest};
-                tempAuthRequest["combination"] = response.data;
-                this.setState({authRequest: tempAuthRequest, stage: 2});
+                let tempAuthRequest = {...authRequest};
+                tempAuthRequest.combination = response.data;
+                setAuthRequest(tempAuthRequest);
+                setStage(2);
             }).catch(error => {
                 alert(error.response.data);
         });
     };
 
-    handleSecondStage = () => {
+    const handleSecondStage = () => {
         let chars = [];
-        for (let i = 0; i < this.state.authRequest.combination.length - 1; i++) {
+        for (let i = 0; i < authRequest.combination.length - 1; i++) {
             chars[i] = i + " ";
         }
-        let tempAuthRequest = {...this.state.authRequest};
-        tempAuthRequest["characters"] = chars;
-        this.setState({authRequest: tempAuthRequest, stage: 3});
+        let tempAuthRequest = {...authRequest};
+        tempAuthRequest.characters = chars;
+        setAuthRequest(tempAuthRequest);
+        setStage(3);
     };
 
-    handleThirdStage = () => {
-        axios.post("/login", this.state.authRequest)
+    const handleThirdStage = () => {
+        axios.post("/login", authRequest)
             .then(response => {
                 alert(response.data);
             }).catch(error => {
@@ -48,31 +52,33 @@ export default class Login extends Component {
         });
     };
 
-    renderFirstStage = () => {
-        if (this.state.stage === 1) {
+    const renderFirstStage = () => {
+        if (stage === 1) {
             return (
                 <div>
-                    <h2 style={{textAlign: "center"}}>Username</h2>
-                    <Form style={{textAlign: "center"}}>
+                    <h4 className="center">{t("account.username")}</h4>
+                    <Form className="center">
                         <FormGroup>
-                            <FormControl id="username" value={this.state.authRequest["username"]} onChange={(event) => this.handleChangeProperty(event, "username")} style={{width: "20%", display: "inline-block"}}/>
+                            <FormControl id="username" value={authRequest.username} onChange={event => handleChangeProperty(event, "username")} style={{width: "20%", display: "inline-block"}}/>
                         </FormGroup>
-                        <Button id="submit1" variant="dark" onClick={this.handleFirstStage}>Next</Button>
+                        <Button id="submit1"
+                                variant="dark"
+                                onClick={handleFirstStage}>{t("navigation.next")}</Button>
                     </Form>
                 </div>
             );
         }
     };
 
-    renderSecondStage = () => {
-        if (this.state.stage === 2) {
+    const renderSecondStage = () => {
+        if (stage === 2) {
             let boxes = [];
-            for (let i = 0; i < this.state.authRequest.combination[this.state.authRequest.combination.length - 1] + 1; i++) {
-                if (this.state.authRequest.combination.includes(i)) {
+            for (let i = 0; i < authRequest.combination[authRequest.combination.length - 1] + 1; i++) {
+                if (authRequest.combination.includes(i)) {
                     boxes.push(
                         <div key={i} style={{display: "inline-block", position: "relative", marginBottom: "1em"}}>
-                            <FormControl style={{width: "3em", marginRight: "1em"}} id={"textbox" + i} value={this.state.authRequest.characters[i]}
-                                         onChange={(event) => this.handleChangeProperty(event, "characters")}
+                            <FormControl style={{width: "3em", marginRight: "1em"}} id={"textbox" + i} value={authRequest.characters[i]}
+                                         onChange={event => handleChangeProperty(event, "characters")}
                                          disabled={false}/>
                             <p style={{position: "absolute", marginLeft: "30%"}}>{i + 1}</p>
                         </div>
@@ -80,7 +86,7 @@ export default class Login extends Component {
                 } else {
                     boxes.push(
                         <div key={i} style={{display: "inline-block", position: "relative", marginBottom: "1em"}}>
-                            <FormControl style={{width: "3em", marginRight: "1em"}} id={"textbox" + i} onChange={(event) => this.handleChangeProperty(event, "characters")}
+                            <FormControl style={{width: "3em", marginRight: "1em"}} id={"textbox" + i} onChange={event => handleChangeProperty(event, "characters")}
                                          disabled={true}/>
                             <p style={{position: "absolute", marginLeft: "30%"}}>{i + 1}</p>
                         </div>
@@ -89,43 +95,48 @@ export default class Login extends Component {
             }
             return (
                 <div>
-                    <h2 style={{textAlign: "center"}}>Password characters</h2>
-                    <Form style={{textAlign: "center"}}>
+                    <h4 className="center">{t("account.password.characters")}</h4>
+                    <Form className="center">
                         {boxes}
                         <br/>
                         <br/>
-                        <Button id="submit2" variant="dark" onClick={this.handleSecondStage}>Next</Button>
+                        <Button id="submit2"
+                                variant="dark"
+                                onClick={handleSecondStage}>{t("navigation.next")}</Button>
                     </Form>
                 </div>
             );
         }
     }
 
-    renderThirdStage = () => {
-        if (this.state.stage === 3) {
+    const renderThirdStage = () => {
+        if (stage === 3) {
             return (
                 <div>
-                    <h2 style={{textAlign: "center"}}>Code</h2>
-                    <Form style={{textAlign: "center"}}>
+                    <h2 className="center">{t("login.otp.code")}</h2>
+                    <Form className="center">
                         <FormGroup>
                             <FormControl id="code" style={{width: "20%", display: "inline-block"}}/>
                         </FormGroup>
-                        <Button id="submit3" variant="dark" onClick={this.handleThirdStage}>Submit</Button>
+                        <Button id="submit3"
+                                variant="dark"
+                                onClick={handleThirdStage}>{t("login.sign.in")}</Button>
                     </Form>
                 </div>
             );
         }
     };
 
-    render() {
-        return (
-            <div>
-                <h1 style={{textAlign: "center"}}>Login</h1>
-                {this.renderFirstStage()}
-                {this.renderSecondStage()}
-                {this.renderThirdStage()}
-                <Button style={{marginTop: "5px"}} id="back" variant="dark" onClick={this.props.history.goBack}>Back</Button>
-            </div>
-        )
-    }
-}
+    return (
+        <div>
+            <h1 className="center">{t("login.header")}</h1>
+            {renderFirstStage()}
+            {renderSecondStage()}
+            {renderThirdStage()}
+            <Button id="back"
+                    variant="dark"
+                    onClick={props.history.goBack}
+                    style={{marginTop: "5px"}}>{t("navigation.back")}</Button>
+        </div>
+    );
+};
