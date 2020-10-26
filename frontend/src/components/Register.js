@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import { Button, Form, FormControl, FormGroup, FormLabel } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { object, string } from "yup";
+import { FormGroup } from "./FormGroup";
 import { emailRegex } from "../utils/Validation";
 
 export const Register = props => {
 
     const {t} = useTranslation();
     const schema = object().shape({
-        username: string().required().min(1).max(32),
+        username: string().required("account.username.invalid").min(1).max(32),
         email: string().required().matches(emailRegex),
         firstName: string().required().min(1).max(32),
         lastName: string().required().min(1).max(32),
@@ -23,25 +24,8 @@ export const Register = props => {
     const [errors, setErrors] = useState([]);
     const [stage, setStage] = useState(1);
 
-    const handleChange = event => {
-        const key = event.target.id;
-        const value = event.target.value;
-        const tempAccount = {...account};
-        tempAccount[key] = value;
-        setAccount(tempAccount);
-        try {
-            schema.validateSyncAt(key, tempAccount);
-            document.getElementById(key).classList.remove("is-invalid")
-        } catch (err) {
-            if (errors.some(e => e.path === err.path)) {
-                const tempErrors = errors.filter(e => e.path !== err.path);
-                setErrors([...tempErrors, {path: err.path, message: err.message}]);
-            } else {
-                setErrors([...errors, {path: err.path, message: err.message}]);
-            }
-            document.getElementById(key).classList.add("is-invalid")
-        }
-    };
+    const handleChangeAccount = newAccount => setAccount(newAccount);
+    const handleChangeErrors = newErrors => setErrors(newErrors);
 
     const handleFirstStage = () => {
         console.log(JSON.stringify(account));
@@ -58,34 +42,37 @@ export const Register = props => {
             return (
                 <div>
                     <Form className="center">
-                        <FormGroup>
-                            <FormLabel>{t("account.username")}</FormLabel>
-                            <FormControl id="username"
-                                         value={account.username}
-                                         onChange={handleChange}/>
-                            <FormControl.Feedback type="invalid">{errors.some(e => e.path === "username") && errors.find(e => e.path === "username").message}</FormControl.Feedback>
-                        </FormGroup>
+                        <FormGroup id="username"
+                                   label="account.username"
+                                   schema={schema}
+                                   values={account}
+                                   errors={errors}
+                                   setValues={handleChangeAccount}
+                                   setErrors={handleChangeErrors}/>
 
-                        <FormGroup>
-                            <FormLabel>{t("account.email")}</FormLabel>
-                            <FormControl id="email"
-                                         value={account.email}
-                                         onChange={handleChange}/>
-                        </FormGroup>
+                        <FormGroup id="email"
+                                   label="account.email"
+                                   schema={schema}
+                                   values={account}
+                                   errors={errors}
+                                   setValues={handleChangeAccount}
+                                   setErrors={handleChangeErrors}/>
 
-                        <FormGroup>
-                            <FormLabel>{t("account.first.name")}</FormLabel>
-                            <FormControl id="firstName"
-                                         value={account.firstName}
-                                         onChange={handleChange}/>
-                        </FormGroup>
+                        <FormGroup id="firstName"
+                                   label="account.first.name"
+                                   schema={schema}
+                                   values={account}
+                                   errors={errors}
+                                   setValues={handleChangeAccount}
+                                   setErrors={handleChangeErrors}/>
 
-                        <FormGroup>
-                            <FormLabel>{t("account.last.name")}</FormLabel>
-                            <FormControl id="lastName"
-                                         value={account.lastName}
-                                         onChange={handleChange}/>
-                        </FormGroup>
+                        <FormGroup id="lastName"
+                                   label="account.last.name"
+                                   schema={schema}
+                                   values={account}
+                                   errors={errors}
+                                   setValues={handleChangeAccount}
+                                   setErrors={handleChangeErrors}/>
 
                         <Button id="submit1"
                                 variant="dark"
@@ -104,14 +91,14 @@ export const Register = props => {
         if (stage === 2) {
             return (
                 <div>
-                    <Form className="center"
-                          onSubmit={handleSecondStage}>
-                        <FormGroup>
-                            <FormLabel>{t("account.password")}</FormLabel>
-                            <FormControl id="password"
-                                         value={account.password}
-                                         onChange={handleChange}/>
-                        </FormGroup>
+                    <Form className="center">
+                        <FormGroup id="password"
+                                   label="account.password"
+                                   schema={schema}
+                                   values={account}
+                                   errors={errors}
+                                   setValues={handleChangeAccount}
+                                   setErrors={handleChangeErrors}/>
 
                         <Button id="submit2"
                                 variant="dark"
