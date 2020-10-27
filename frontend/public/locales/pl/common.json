@@ -3,8 +3,8 @@
   "account.username": "Nazwa użytkownika",
   "account.email": "Adres email",
   "account.password": "Hasło",
-  "account.first.name": "Imię",
-  "account.last.name": "Nazwisko",
+  "account.firstName": "Imię",
+  "account.lastName": "Nazwisko",
 
   "login.header": "Logowanie",
   "login.password.characters": "Znaki hasła",

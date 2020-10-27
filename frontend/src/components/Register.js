@@ -3,16 +3,17 @@ import { Button, Form } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { object, string } from "yup";
 import { FormGroup } from "./FormGroup";
-import { emailRegex } from "../utils/Validation";
+import { emailRegex, validate } from "../utils/Validation";
 
 export const Register = props => {
 
     const {t} = useTranslation();
     const schema = object().shape({
-        username: string().required("account.username.invalid").min(1).max(32),
-        email: string().required().matches(emailRegex),
-        firstName: string().required().min(1).max(32),
-        lastName: string().required().min(1).max(32),
+        username: string().required("account.username.required").min(1, "account.username.min").max(32, "account.username.max"),
+        email: string().required("account.email.required").matches(emailRegex, "account.email.invalid"),
+        firstName: string().required("account.firstName.required").min(1, "account.firstName.min").max(32, "account.firstName.max"),
+        lastName: string().required("account.lastName.required").min(1, "account.lastName.min").max(32, "account.lastName.max"),
+        password: string().required("account.password.required").min(8, "account.password.min").max(32, "account.password.max")
     });
     const [account, setAccount] = useState({
         username: "",
@@ -23,18 +24,27 @@ export const Register = props => {
     });
     const [errors, setErrors] = useState([]);
     const [stage, setStage] = useState(1);
-
-    const handleChangeAccount = newAccount => setAccount(newAccount);
-    const handleChangeErrors = newErrors => setErrors(newErrors);
+    FormGroup.defaultProps = {
+        schema: schema,
+        values: account,
+        errors: errors,
+        setValues: newAccount => setAccount(newAccount),
+        setErrors: newErrors => setErrors(newErrors)
+    };
 
     const handleFirstStage = () => {
-        console.log(JSON.stringify(account));
-        console.log(JSON.stringify(errors));
-        // setStage(2);
+        const tempAccount = {...account};
+        delete tempAccount.password;
+        if (validate(tempAccount, errors, setErrors, schema)) {
+            setStage(2);
+        }
     };
 
     const handleSecondStage = () => {
-        alert(JSON.stringify(account));
+        const tempAccount = {password: account.password};
+        if (validate(tempAccount, errors, setErrors, schema)) {
+            alert(JSON.stringify(account));
+        }
     };
 
     const renderFirstStage = () => {
@@ -43,44 +53,20 @@ export const Register = props => {
                 <div>
                     <Form className="center">
                         <FormGroup id="username"
-                                   label="account.username"
-                                   schema={schema}
-                                   values={account}
-                                   errors={errors}
-                                   setValues={handleChangeAccount}
-                                   setErrors={handleChangeErrors}/>
-
+                                   label="account.username"/>
                         <FormGroup id="email"
-                                   label="account.email"
-                                   schema={schema}
-                                   values={account}
-                                   errors={errors}
-                                   setValues={handleChangeAccount}
-                                   setErrors={handleChangeErrors}/>
-
+                                   label="account.email"/>
                         <FormGroup id="firstName"
-                                   label="account.first.name"
-                                   schema={schema}
-                                   values={account}
-                                   errors={errors}
-                                   setValues={handleChangeAccount}
-                                   setErrors={handleChangeErrors}/>
-
+                                   label="account.firstName"/>
                         <FormGroup id="lastName"
-                                   label="account.last.name"
-                                   schema={schema}
-                                   values={account}
-                                   errors={errors}
-                                   setValues={handleChangeAccount}
-                                   setErrors={handleChangeErrors}/>
-
+                                   label="account.lastName"/>
                         <Button id="submit1"
                                 variant="dark"
                                 onClick={handleFirstStage}>{t("navigation.next")}</Button>
                     </Form>
                     <Button id="back1"
                             variant="dark"
-                            onClick={props.history.goBack}
+                            onClick={() => props.history.goBack}
                             style={{marginTop: "5px"}}>{t("navigation.back")}</Button>
                 </div>
             );
@@ -93,13 +79,7 @@ export const Register = props => {
                 <div>
                     <Form className="center">
                         <FormGroup id="password"
-                                   label="account.password"
-                                   schema={schema}
-                                   values={account}
-                                   errors={errors}
-                                   setValues={handleChangeAccount}
-                                   setErrors={handleChangeErrors}/>
-
+                                   label="account.password"/>
                         <Button id="submit2"
                                 variant="dark"
                                 onClick={handleSecondStage}>{t("navigation.next")}</Button>

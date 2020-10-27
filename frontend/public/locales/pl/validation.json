@@ -1,0 +1,20 @@
+{
+  "account.username.required": "Nazwa użytkownika jest wymagana",
+  "account.username.min": "Nazwa użytkownika jest zbyt krótka",
+  "account.username.max": "Nazwa użytkownika jest zbyt długa",
+
+  "account.email.required": "Adres email jest wymagany",
+  "account.email.invalid": "Adres email jest nieprawidłowy",
+
+  "account.firstName.required": "Imię jest wymagane",
+  "account.firstName.min": "Imię jest zbyt krótkie",
+  "account.firstName.max": "Imię jest zbyt długie",
+
+  "account.lastName.required": "Nazwisko jest wymagane",
+  "account.lastName.min": "Nazwisko jest zbyt krótkie",
+  "account.lastName.max": "Nazwisko jest zbyt krótkie",
+
+  "account.password.required": "Hasło jest wymagane",
+  "account.password.min": "Hasło jest zbyt krótkie",
+  "account.password.max": "Hasło jest zbyt długie"
+}

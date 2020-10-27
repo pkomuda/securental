@@ -3,8 +3,8 @@
   "account.username": "Username",
   "account.email": "Email address",
   "account.password": "Password",
-  "account.first.name": "First name",
-  "account.last.name": "Last name",
+  "account.firstName": "First name",
+  "account.lastName": "Last name",
 
   "login.header": "Sign in",
   "login.password.characters": "Password characters",

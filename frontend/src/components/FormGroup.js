@@ -14,7 +14,7 @@ export const FormGroup = props => {
         props.setValues(newValues);
         try {
             props.schema.validateSyncAt(key, newValues);
-            document.getElementById(key).classList.remove("is-invalid")
+            document.getElementById(key).classList.remove("is-invalid");
         } catch (err) {
             if (props.errors.some(e => e.path === err.path)) {
                 const newErrors = props.errors.filter(e => e.path !== err.path);
@@ -22,7 +22,7 @@ export const FormGroup = props => {
             } else {
                 props.setErrors([...props.errors, {path: err.path, message: err.message}]);
             }
-            document.getElementById(key).classList.add("is-invalid")
+            document.getElementById(key).classList.add("is-invalid");
         }
     };
 

@@ -1,6 +1,20 @@
 {
-  "field": "Field",
-  "invalid": "is invalid",
+  "account.username.required": "Username is required",
+  "account.username.min": "Username is too short",
+  "account.username.max": "Username is too long",
 
-  "account.username.invalid": "Username is invalid"
+  "account.email.required": "Email is required",
+  "account.email.invalid": "Email is invalid",
+
+  "account.firstName.required": "First name is required",
+  "account.firstName.min": "First name is too short",
+  "account.firstName.max": "First name is too long",
+
+  "account.lastName.required": "Last name is required",
+  "account.lastName.min": "Last name is too short",
+  "account.lastName.max": "Last name is too long",
+
+  "account.password.required": "Password is required",
+  "account.password.min": "Password is too short",
+  "account.password.max": "Password is too long"
 }
