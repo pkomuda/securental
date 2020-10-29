@@ -9,30 +9,31 @@ export const FormGroup = props => {
     const handleChange = event => {
         const key = event.target.id;
         const value = event.target.value;
+        const newErrors = {...props.errors};
         const newValues = {...props.values};
         newValues[key] = value;
         props.setValues(newValues);
         try {
             props.schema.validateSyncAt(key, newValues);
-            document.getElementById(key).classList.remove("is-invalid");
-        } catch (err) {
-            if (props.errors.some(e => e.path === err.path)) {
-                const newErrors = props.errors.filter(e => e.path !== err.path);
-                props.setErrors([...newErrors, {path: err.path, message: err.message}]);
-            } else {
-                props.setErrors([...props.errors, {path: err.path, message: err.message}]);
+            if (props.errors.hasOwnProperty(key)) {
+                delete newErrors[key];
+                props.setErrors(newErrors);
             }
-            document.getElementById(key).classList.add("is-invalid");
+        } catch (err) {
+            newErrors[key] = err.message;
+            props.setErrors(newErrors);
         }
     };
 
     return (
         <Group>
-            <FormLabel style={{textAlign: "left"}}>{t("common:" + props.label)}{props.required && " *"}</FormLabel>
+            <FormLabel style={{textAlign: "left"}}>{t("common:" + props.label)} {props.required && "*"}</FormLabel>
             <FormControl id={props.id}
                          value={props.values[props.id]}
-                         onChange={handleChange}/>
-            <FormControl.Feedback type="invalid">{props.errors.some(e => e.path === props.id) && t(props.errors.find(e => e.path === props.id).message)}</FormControl.Feedback>
+                         onChange={handleChange}
+                         isInvalid={props.errors.hasOwnProperty(props.id)}
+                         type={props.password && "password"}/>
+            <FormControl.Feedback type="invalid">{props.errors.hasOwnProperty(props.id) && t(props.errors[props.id])}</FormControl.Feedback>
         </Group>
     );
 };

@@ -22,7 +22,7 @@ export const Register = props => {
         lastName: "",
         password: ""
     });
-    const [errors, setErrors] = useState([]);
+    const [errors, setErrors] = useState({});
     const [stage, setStage] = useState(1);
     FormGroup.defaultProps = {
         schema: schema,
@@ -87,7 +87,8 @@ export const Register = props => {
                     <Form>
                         <FormGroup id="password"
                                    label="account.password"
-                                   required/>
+                                   required
+                                   password/>
                     </Form>
                     <ButtonToolbar className="justify-content-center">
                         <Button id="submit2"
