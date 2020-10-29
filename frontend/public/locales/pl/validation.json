@@ -12,7 +12,7 @@
 
   "account.lastName.required": "Nazwisko jest wymagane",
   "account.lastName.min": "Nazwisko jest zbyt krótkie",
-  "account.lastName.max": "Nazwisko jest zbyt krótkie",
+  "account.lastName.max": "Nazwisko jest zbyt długie",
 
   "account.password.required": "Hasło jest wymagane",
   "account.password.min": "Hasło jest zbyt krótkie",

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button, ButtonToolbar, Col, Form, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { object, string } from "yup";
 import { FormGroup } from "./FormGroup";
@@ -50,25 +50,32 @@ export const Register = props => {
     const renderFirstStage = () => {
         if (stage === 1) {
             return (
-                <div>
-                    <Form className="center">
+                <Col sm={5} style={{outline: "1px solid black"}}>
+                    <Form>
                         <FormGroup id="username"
-                                   label="account.username"/>
+                                   label="account.username"
+                                   required/>
                         <FormGroup id="email"
-                                   label="account.email"/>
+                                   label="account.email"
+                                   required/>
                         <FormGroup id="firstName"
-                                   label="account.firstName"/>
+                                   label="account.firstName"
+                                   required/>
                         <FormGroup id="lastName"
-                                   label="account.lastName"/>
+                                   label="account.lastName"
+                                   required/>
+                    </Form>
+                    <ButtonToolbar className="justify-content-center">
+                        <Button id="back1"
+                                variant="dark"
+                                className="button"
+                                onClick={() => props.history.goBack}>{t("navigation.back")}</Button>
                         <Button id="submit1"
                                 variant="dark"
+                                className="button"
                                 onClick={handleFirstStage}>{t("navigation.next")}</Button>
-                    </Form>
-                    <Button id="back1"
-                            variant="dark"
-                            onClick={() => props.history.goBack}
-                            style={{marginTop: "5px"}}>{t("navigation.back")}</Button>
-                </div>
+                    </ButtonToolbar>
+                </Col>
             );
         }
     };
@@ -76,28 +83,34 @@ export const Register = props => {
     const renderSecondStage = () => {
         if (stage === 2) {
             return (
-                <div>
-                    <Form className="center">
+                <Col sm={5}>
+                    <Form>
                         <FormGroup id="password"
-                                   label="account.password"/>
+                                   label="account.password"
+                                   required/>
+                    </Form>
+                    <ButtonToolbar className="justify-content-center">
                         <Button id="submit2"
                                 variant="dark"
+                                className="button"
                                 onClick={handleSecondStage}>{t("navigation.next")}</Button>
-                    </Form>
-                    <Button id="back2"
-                            variant="dark"
-                            onClick={() => setStage(1)}
-                            style={{marginTop: "5px"}}>{t("navigation.back")}</Button>
-                </div>
+                        <Button id="back2"
+                                variant="dark"
+                                className="button"
+                                onClick={() => setStage(1)}>{t("navigation.back")}</Button>
+                    </ButtonToolbar>
+                </Col>
             );
         }
     };
 
     return (
-        <div>
-            <h1 className="center">{t("register.header")}</h1>
-            {renderFirstStage()}
-            {renderSecondStage()}
-        </div>
+        <React.Fragment>
+            <h1 className="text-center">{t("register.header")}</h1>
+            <Row className="justify-content-center">
+                {renderFirstStage()}
+                {renderSecondStage()}
+            </Row>
+        </React.Fragment>
     );
 };
