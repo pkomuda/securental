@@ -12,6 +12,11 @@
   "login.sign.in": "Zaloguj się",
 
   "register.header": "Rejestracja",
+  "register.password.header": "To są ostatnie znaki twojego hasła",
+  "register.password.text1": "Następujące znaki zostały dodane do twojego hasła: ",
+  "register.password.text2": "<br/>Zapamiętaj je, aby móc zalogować się do swojego konta.",
+  "register.success.header": "Zarejestrowano pomyślnie!",
+  "register.success.text": "Email z linkiem potwierdzającym został wysłany na podany adres.",
 
   "navigation.back": "Wróć",
   "navigation.next": "Dalej",

@@ -39,6 +39,7 @@ public class AccountService {
     private final PasswordEncoder passwordEncoder;
     private final GoogleAuthenticator googleAuthenticator;
     private final TotpCredentialsAdapter totpCredentialsAdapter;
+    private final EmailService emailService;
 
     private List<MaskedPassword> generateMaskedPasswords(String fullPassword) {
         List<MaskedPassword> maskedPasswords = new ArrayList<>();
@@ -71,14 +72,27 @@ public class AccountService {
         }
     }
 
-    public String register(AccountDto accountDto) throws ApplicationBaseException {
+    public String register(AccountDto accountDto, String language) throws ApplicationBaseException {
         GoogleAuthenticatorKey key = googleAuthenticator.createCredentials(accountDto.getUsername());
         if (accountAdapter.getAccount(accountDto.getUsername()).isEmpty()) {
             Account account = AccountMapper.toAccount(accountDto);
+            account.setActive(true);
+            account.setConfirmed(false);
+            account.setConfirmationToken(randomBase64());
             account.setCredentials(new Credentials(generateMaskedPasswords(accountDto.getPassword())));
             account.setAuthenticationToken(new AuthenticationToken(new ArrayList<>(), LocalDateTime.now()));
             if (totpCredentialsAdapter.getTotpCredentials(accountDto.getUsername()).isPresent()) {
                 account.setTotpCredentials(totpCredentialsAdapter.getTotpCredentials(accountDto.getUsername()).get());
+                String subject;
+                String text;
+                if (language.equals("pl")) {
+                    subject = "Potwierdź swoje konto";
+                    text = "<a href=\"https://securental.herokuapp.com/confirm/" + account.getConfirmationToken() + "\">Kliknij tutaj</a>, aby potwierdzić swoje konto.";
+                } else {
+                    subject = "Confirm your account";
+                    text = "<a href=\"https://securental.herokuapp.com/confirm/" + account.getConfirmationToken() + "\">Click here</a> to confirm your account.";
+                }
+                emailService.sendMessage(account.getEmail(), subject, text);
             } else {
                 throw new AccountNotFoundException();
             }
@@ -86,7 +100,6 @@ public class AccountService {
         } else {
             throw new AccountAlreadyExistsException();
         }
-
         return GoogleAuthenticatorQRGenerator.getOtpAuthTotpURL(APPLICATION_NAME, accountDto.getUsername(), key);
     }
 

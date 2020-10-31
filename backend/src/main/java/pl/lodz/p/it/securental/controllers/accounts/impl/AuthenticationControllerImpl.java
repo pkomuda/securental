@@ -17,6 +17,7 @@ import pl.lodz.p.it.securental.services.accounts.AccountService;
 import java.util.List;
 
 import static pl.lodz.p.it.securental.utils.JwtUtils.generateToken;
+import static pl.lodz.p.it.securental.utils.StringUtils.integerArrayToString;
 
 @CrossOrigin
 @RestController
@@ -28,6 +29,7 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     private final CustomUserDetailsService userDetailsService;
     private final AccountService accountService;
 
+    @Override
     @GetMapping("/initializeLogin/{username}")
     public List<Integer> initializeLogin(@PathVariable String username) throws ApplicationBaseException {
         return accountService.initializeLogin(username);
@@ -40,13 +42,13 @@ public class AuthenticationControllerImpl implements AuthenticationController {
         try {
             authManager.authenticate(new CustomAuthenticationToken(
                     authRequest.getUsername(),
-                    authRequest.getCombination(),
+                    integerArrayToString(authRequest.getCombination()),
                     authRequest.getTotpCode(),
                     authRequest.getCharacters())
             );
             userDetails = userDetailsService.loadUserByUsernameAndCombination(
                     authRequest.getUsername(),
-                    authRequest.getCombination()
+                    integerArrayToString(authRequest.getCombination())
             );
         } catch (AuthenticationException e) {
             throw new IncorrectCredentialsException(e);

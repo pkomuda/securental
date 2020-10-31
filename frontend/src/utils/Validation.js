@@ -12,5 +12,5 @@ export const validate = (values, errors, setErrors, schema) => {
         }
     }
     setErrors(newErrors);
-    return newErrors.length === 0;
+    return Object.keys(newErrors).length === 0;
 };

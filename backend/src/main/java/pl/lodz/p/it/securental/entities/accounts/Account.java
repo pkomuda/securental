@@ -39,6 +39,8 @@ public @Data class Account extends BaseEntity {
     @Column(nullable = false)
     private boolean confirmed;
 
+    private String confirmationToken;
+
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Credentials credentials;
 

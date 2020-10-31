@@ -8,6 +8,7 @@ import { Login } from "./components/Login";
 import { Register } from "./components/Register";
 import { NotFound } from "./components/NotFound";
 import "./components/styles/Common.css";
+import "@sweetalert2/theme-bootstrap-4";
 
 export const App = () => (
     <Router>

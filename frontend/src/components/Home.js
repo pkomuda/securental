@@ -14,7 +14,6 @@ export const Home = () => {
 
     return (
         <div>
-            <span>{t("key1")}</span>
             <form>
                 <input value={otpUrl} onChange={handleChange}/>
             </form>

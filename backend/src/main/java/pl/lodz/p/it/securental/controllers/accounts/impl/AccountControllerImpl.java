@@ -24,8 +24,9 @@ public class AccountControllerImpl implements AccountController {
 
     @Override
     @PostMapping("/register")
-    public String register(@RequestBody AccountDto accountDto) throws ApplicationBaseException {
-        return accountService.register(accountDto);
+    public String register(@RequestBody AccountDto accountDto,
+                           @RequestHeader("Accept-Language") String language) throws ApplicationBaseException {
+        return accountService.register(accountDto, language);
     }
 
     @Override

@@ -7,20 +7,19 @@ export const FormGroup = props => {
     const {t} = useTranslation("validation");
 
     const handleChange = event => {
-        const key = event.target.id;
         const value = event.target.value;
         const newErrors = {...props.errors};
         const newValues = {...props.values};
-        newValues[key] = value;
+        newValues[props.id] = value;
         props.setValues(newValues);
         try {
-            props.schema.validateSyncAt(key, newValues);
-            if (props.errors.hasOwnProperty(key)) {
-                delete newErrors[key];
+            props.schema.validateSyncAt(props.id, newValues);
+            if (props.errors.hasOwnProperty(props.id)) {
+                delete newErrors[props.id];
                 props.setErrors(newErrors);
             }
         } catch (err) {
-            newErrors[key] = err.message;
+            newErrors[props.id] = err.message;
             props.setErrors(newErrors);
         }
     };

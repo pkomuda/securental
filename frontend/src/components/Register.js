@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import axios from "axios";
+import Swal from "sweetalert2";
 import { Button, ButtonToolbar, Col, Form, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { object, string } from "yup";
@@ -35,17 +37,51 @@ export const Register = props => {
     const handleFirstStage = () => {
         const tempAccount = {...account};
         delete tempAccount.password;
-        if (validate(tempAccount, errors, setErrors, schema)) {
+        const valid = validate(tempAccount, errors, setErrors, schema);
+        console.log(valid);
+        if (valid) {
             setStage(2);
         }
     };
 
     const handleSecondStage = () => {
-        const tempAccount = {password: account.password};
-        if (validate(tempAccount, errors, setErrors, schema)) {
-            alert(JSON.stringify(account));
+        if (validate({password: account.password}, errors, setErrors, schema)) {
+            const tempAccount = {...account};
+            const lastPasswordCharacters = generateLastPasswordCharacters(process.env.REACT_APP_LAST_PASSWORD_CHARACTERS);
+            tempAccount.password += lastPasswordCharacters;
+            axios.post("/register", tempAccount, {headers: {"Accept-Language": window.navigator.language}})
+                .then(() => {
+                    const alerts = [];
+                    alerts.push({
+                        title: t("register.password.header"),
+                        html: t("register.password.text1")
+                            + lastPasswordCharacters
+                            + t("register.password.text2"),
+                        icon: "info"
+                    });
+                    alerts.push({
+                        title: t("register.success.header"),
+                        text: t("register.success.text"),
+                        icon: "success"
+                    });
+                    Swal.queue(alerts);
+                    props.history.push("/");
+                }).catch(() => {
+                    Swal.fire(t("errors:common.header"),
+                        t("errors:common.text"),
+                        "error");
+            });
         }
     };
+
+    const generateLastPasswordCharacters = length => {
+        let characters = "";
+        const allCharacters = "0123456789";
+        for (let i = 0; i < length; i++) {
+            characters += allCharacters.charAt(Math.floor(Math.random() * allCharacters.length));
+        }
+        return characters;
+    }
 
     const renderFirstStage = () => {
         if (stage === 1) {

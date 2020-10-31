@@ -5,7 +5,7 @@ import lombok.Data;
 public @Data class AuthenticationRequest {
 
     private String username;
-    private String combination;
+    private int[] combination;
     private Integer totpCode;
     private String characters;
 }
