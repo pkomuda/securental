@@ -8,6 +8,7 @@ public class AccountMapper {
     public static Account toAccount(AccountDto accountDto) {
         return Account.builder()
                 .email(accountDto.getEmail())
+                .fullPassword(accountDto.getPassword())
                 .firstName(accountDto.getFirstName())
                 .lastName(accountDto.getLastName())
                 .active(accountDto.isActive())
@@ -17,7 +18,7 @@ public class AccountMapper {
 
     public static AccountDto toAccountDto(Account account) {
         return AccountDto.builder()
-                .username(account.getTotpCredentials().getUsername())
+                .username(account.getOtpCredentials().getUsername())
                 .email(account.getEmail())
                 .firstName(account.getFirstName())
                 .lastName(account.getLastName())

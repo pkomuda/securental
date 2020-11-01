@@ -25,7 +25,7 @@ public class CustomUserDetailsService {
     private final PasswordEncoder passwordEncoder;
 
     public UserDetails loadUserByUsernameAndCombination(String username, String combination) throws UsernameNotFoundException {
-        Optional<Account> accountOptional = accountRepository.findByTotpCredentialsUsername(username);
+        Optional<Account> accountOptional = accountRepository.findByOtpCredentialsUsername(username);
         if (accountOptional.isEmpty()) {
              throw new UsernameNotFoundException(KEY_ACCOUNT_NOT_FOUND);
         } else {
@@ -49,7 +49,7 @@ public class CustomUserDetailsService {
     }
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Account> accountOptional = accountRepository.findByTotpCredentialsUsername(username);
+        Optional<Account> accountOptional = accountRepository.findByOtpCredentialsUsername(username);
         if (accountOptional.isEmpty()) {
             throw new UsernameNotFoundException(KEY_ACCOUNT_NOT_FOUND);
         } else {

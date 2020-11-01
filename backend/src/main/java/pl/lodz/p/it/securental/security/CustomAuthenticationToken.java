@@ -7,12 +7,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 public class CustomAuthenticationToken extends UsernamePasswordAuthenticationToken {
 
     private final String combination;
-    private final Integer totpCode;
+    private final Integer otpCode;
 
-    public CustomAuthenticationToken(Object principal, String combination, Integer totpCode, Object credentials) {
+    public CustomAuthenticationToken(Object principal, String combination, Integer otpCode, Object credentials) {
         super(principal, credentials);
         this.combination = combination;
-        this.totpCode = totpCode;
+        this.otpCode = otpCode;
         super.setAuthenticated(false);
     }
 }

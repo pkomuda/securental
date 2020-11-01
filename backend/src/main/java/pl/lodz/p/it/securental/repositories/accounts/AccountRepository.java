@@ -11,5 +11,6 @@ import java.util.Optional;
 @MandatoryTransaction
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
-    Optional<Account> findByTotpCredentialsUsername(String username);
+    Optional<Account> findByOtpCredentialsUsername(String username);
+    Optional<Account> findByConfirmationToken(String token);
 }

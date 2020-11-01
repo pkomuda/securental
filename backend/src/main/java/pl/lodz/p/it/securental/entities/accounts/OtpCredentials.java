@@ -15,7 +15,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public @Data class TotpCredentials extends BaseEntity {
+public @Data class OtpCredentials extends BaseEntity {
 
     private String username;
 

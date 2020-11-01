@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import pl.lodz.p.it.securental.adapters.accounts.TotpCredentialsAdapter;
+import pl.lodz.p.it.securental.adapters.accounts.OtpCredentialsAdapter;
 
 import static pl.lodz.p.it.securental.utils.ApplicationProperties.APPLICATION_PROPERTIES_BEAN;
 import static pl.lodz.p.it.securental.utils.ApplicationProperties.PASSWORD_HASHING_ALGORITHM;
@@ -16,7 +16,7 @@ import static pl.lodz.p.it.securental.utils.ApplicationProperties.PASSWORD_HASHI
 @AllArgsConstructor
 public class BeanRegistry {
 
-    private final TotpCredentialsAdapter totpCredentialsAdapter;
+    private final OtpCredentialsAdapter otpCredentialsAdapter;
 
     @Bean
     @DependsOn(APPLICATION_PROPERTIES_BEAN)
@@ -27,7 +27,7 @@ public class BeanRegistry {
     @Bean
     public GoogleAuthenticator googleAuthenticatorBean() {
         GoogleAuthenticator googleAuthenticator = new GoogleAuthenticator();
-        googleAuthenticator.setCredentialRepository(totpCredentialsAdapter);
+        googleAuthenticator.setCredentialRepository(otpCredentialsAdapter);
         return googleAuthenticator;
     }
 }

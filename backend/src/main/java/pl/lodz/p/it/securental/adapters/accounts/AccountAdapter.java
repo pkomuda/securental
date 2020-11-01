@@ -29,7 +29,15 @@ public class AccountAdapter {
 
     public Optional<Account> getAccount(String username) throws ApplicationBaseException {
         try {
-            return accountRepository.findByTotpCredentialsUsername(username);
+            return accountRepository.findByOtpCredentialsUsername(username);
+        } catch (PersistenceException | DataAccessException e) {
+            throw new DatabaseConnectionException(e);
+        }
+    }
+
+    public Optional<Account> getAccountByConfirmationToken(String token) throws ApplicationBaseException {
+        try {
+            return accountRepository.findByConfirmationToken(token);
         } catch (PersistenceException | DataAccessException e) {
             throw new DatabaseConnectionException(e);
         }

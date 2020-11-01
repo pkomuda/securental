@@ -3,13 +3,13 @@ package pl.lodz.p.it.securental.repositories.accounts;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import pl.lodz.p.it.securental.annotations.MandatoryTransaction;
-import pl.lodz.p.it.securental.entities.accounts.TotpCredentials;
+import pl.lodz.p.it.securental.entities.accounts.OtpCredentials;
 
 import java.util.Optional;
 
 @Repository
 @MandatoryTransaction
-public interface TotpCredentialsRepository extends JpaRepository<TotpCredentials, Long> {
+public interface OtpCredentialsRepository extends JpaRepository<OtpCredentials, Long> {
 
-    Optional<TotpCredentials> findByUsername(String username);
+    Optional<OtpCredentials> findByUsername(String username);
 }

@@ -43,7 +43,7 @@ public class AuthenticationControllerImpl implements AuthenticationController {
             authManager.authenticate(new CustomAuthenticationToken(
                     authRequest.getUsername(),
                     integerArrayToString(authRequest.getCombination()),
-                    authRequest.getTotpCode(),
+                    authRequest.getOtpCode(),
                     authRequest.getCharacters())
             );
             userDetails = userDetailsService.loadUserByUsernameAndCombination(

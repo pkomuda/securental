@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.adapters.accounts.AccountAdapter;
-import pl.lodz.p.it.securental.adapters.accounts.TotpCredentialsAdapter;
+import pl.lodz.p.it.securental.adapters.accounts.OtpCredentialsAdapter;
 import pl.lodz.p.it.securental.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.dto.accounts.AccountDto;
 import pl.lodz.p.it.securental.dto.mappers.accounts.AccountMapper;
@@ -38,7 +38,7 @@ public class AccountService {
     private final AccountAdapter accountAdapter;
     private final PasswordEncoder passwordEncoder;
     private final GoogleAuthenticator googleAuthenticator;
-    private final TotpCredentialsAdapter totpCredentialsAdapter;
+    private final OtpCredentialsAdapter otpCredentialsAdapter;
     private final EmailService emailService;
 
     private List<MaskedPassword> generateMaskedPasswords(String fullPassword) {
@@ -81,17 +81,11 @@ public class AccountService {
             account.setConfirmationToken(randomBase64());
             account.setCredentials(new Credentials(generateMaskedPasswords(accountDto.getPassword())));
             account.setAuthenticationToken(new AuthenticationToken(new ArrayList<>(), LocalDateTime.now()));
-            if (totpCredentialsAdapter.getTotpCredentials(accountDto.getUsername()).isPresent()) {
-                account.setTotpCredentials(totpCredentialsAdapter.getTotpCredentials(accountDto.getUsername()).get());
-                String subject;
-                String text;
-                if (language.equals("pl")) {
-                    subject = "Potwierdź swoje konto";
-                    text = "<a href=\"https://securental.herokuapp.com/confirm/" + account.getConfirmationToken() + "\">Kliknij tutaj</a>, aby potwierdzić swoje konto.";
-                } else {
-                    subject = "Confirm your account";
-                    text = "<a href=\"https://securental.herokuapp.com/confirm/" + account.getConfirmationToken() + "\">Click here</a> to confirm your account.";
-                }
+            if (otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).isPresent()) {
+                account.setOtpCredentials(otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).get());
+                String subject = getTranslatedText("confirm.subject", language);
+                String text = "<a href=\"" + FRONTEND_ORIGIN + "/confirm/" + account.getConfirmationToken() + "\">"
+                        + getTranslatedText("confirm.link", language) + "</a>" + getTranslatedText("confirm.text", language);
                 emailService.sendMessage(account.getEmail(), subject, text);
             } else {
                 throw new AccountNotFoundException();
@@ -101,6 +95,16 @@ public class AccountService {
             throw new AccountAlreadyExistsException();
         }
         return GoogleAuthenticatorQRGenerator.getOtpAuthTotpURL(APPLICATION_NAME, accountDto.getUsername(), key);
+    }
+
+    public void confirmAccount(String token) throws ApplicationBaseException {
+        Optional<Account> accountOptional = accountAdapter.getAccountByConfirmationToken(token);
+        if (accountOptional.isPresent()) {
+            Account account = accountOptional.get();
+            account.setConfirmed(true);
+        } else {
+            throw new AccountNotFoundException();
+        }
     }
 
     public AccountDto getAccount(String username) throws ApplicationBaseException {

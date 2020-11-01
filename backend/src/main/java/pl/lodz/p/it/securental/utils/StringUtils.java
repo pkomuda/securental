@@ -22,6 +22,16 @@ public final class StringUtils {
         return str.toLowerCase().contains(searchStr.toLowerCase());
     }
 
+    public static String getTranslatedText(String key, String language) {
+        Locale locale;
+        if (language.equals("pl")) {
+            locale = new Locale(language);
+        } else {
+            locale = new Locale("en");
+        }
+        return ResourceBundle.getBundle("messages", locale).getString(key);
+    }
+
     public static String integerArrayToString(int[] integers) {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i : integers) {

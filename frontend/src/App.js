@@ -6,6 +6,7 @@ import { Spinner } from "./components/Spinner";
 import { Home } from "./components/Home";
 import { Login } from "./components/Login";
 import { Register } from "./components/Register";
+import { Confirm } from "./components/Confirm";
 import { NotFound } from "./components/NotFound";
 import "./components/styles/Common.css";
 import "@sweetalert2/theme-bootstrap-4";
@@ -19,6 +20,7 @@ export const App = () => (
                     <Route exact path="/" component={Home}/>
                     <Route exact path="/login" component={Login}/>
                     <Route exact path="/register" component={Register}/>
+                    <Route exact path="/confirm/:token" component={Confirm}/>
                     <Route component={NotFound}/>
                 </Switch>
             </Suspense>

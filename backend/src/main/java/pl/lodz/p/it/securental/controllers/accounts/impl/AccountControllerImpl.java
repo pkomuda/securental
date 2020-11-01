@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.securental.annotations.NeverTransaction;
 import pl.lodz.p.it.securental.controllers.accounts.AccountController;
 import pl.lodz.p.it.securental.dto.accounts.AccountDto;
+import pl.lodz.p.it.securental.dto.accounts.ConfirmAccountDto;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.services.accounts.AccountService;
 
@@ -27,6 +28,12 @@ public class AccountControllerImpl implements AccountController {
     public String register(@RequestBody AccountDto accountDto,
                            @RequestHeader("Accept-Language") String language) throws ApplicationBaseException {
         return accountService.register(accountDto, language);
+    }
+
+    @Override
+    @PutMapping("/confirm")
+    public void confirmAccount(@RequestBody ConfirmAccountDto confirmAccountDto) throws ApplicationBaseException {
+        accountService.confirmAccount(confirmAccountDto.getToken());
     }
 
     @Override

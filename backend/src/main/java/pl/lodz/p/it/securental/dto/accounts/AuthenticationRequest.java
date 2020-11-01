@@ -6,6 +6,6 @@ public @Data class AuthenticationRequest {
 
     private String username;
     private int[] combination;
-    private Integer totpCode;
+    private Integer otpCode;
     private String characters;
 }

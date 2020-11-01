@@ -1,4 +1,4 @@
-name: Test and deploy backend to Heroku
+name: backend
 
 on:
   push:

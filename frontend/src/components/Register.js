@@ -127,14 +127,14 @@ export const Register = props => {
                                    password/>
                     </Form>
                     <ButtonToolbar className="justify-content-center">
-                        <Button id="submit2"
-                                variant="dark"
-                                className="button"
-                                onClick={handleSecondStage}>{t("navigation.next")}</Button>
                         <Button id="back2"
                                 variant="dark"
                                 className="button"
                                 onClick={() => setStage(1)}>{t("navigation.back")}</Button>
+                        <Button id="submit2"
+                                variant="dark"
+                                className="button"
+                                onClick={handleSecondStage}>{t("navigation.next")}</Button>
                     </ButtonToolbar>
                 </Col>
             );

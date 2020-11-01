@@ -4,9 +4,11 @@ import lombok.*;
 import pl.lodz.p.it.securental.entities.BaseEntity;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+
+import static pl.lodz.p.it.securental.utils.ApplicationProperties.EMAIL_REGEXP;
 
 @Entity
 @Builder
@@ -15,11 +17,15 @@ import javax.validation.constraints.Size;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 public @Data class Account extends BaseEntity {
 
-    @Email
+    @Pattern(regexp = EMAIL_REGEXP)
     @NotNull
     @Size(min = 1, max = 32)
     @Column(nullable = false, length = 32, unique = true, updatable = false)
     private String email;
+
+    @NotNull
+    @Column(nullable = false)
+    private String fullPassword;
 
     @NotNull
     @Size(min = 1, max = 32)
@@ -45,7 +51,7 @@ public @Data class Account extends BaseEntity {
     private Credentials credentials;
 
     @OneToOne
-    private TotpCredentials totpCredentials;
+    private OtpCredentials otpCredentials;
 
     @OneToOne(cascade = CascadeType.PERSIST)
     private AuthenticationToken authenticationToken;
