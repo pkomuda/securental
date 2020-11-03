@@ -48,6 +48,10 @@ public final class StringUtils {
         return stringBuilder.toString();
     }
 
+    public static String base64(byte[] bytes) {
+        return Base64.getEncoder().encodeToString(bytes);
+    }
+
     public static String randomBase64() {
         return Base64.getEncoder().encodeToString(UUID.randomUUID().toString().getBytes(StandardCharsets.UTF_8));
     }

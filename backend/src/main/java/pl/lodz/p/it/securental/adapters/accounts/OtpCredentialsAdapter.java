@@ -18,7 +18,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-@MandatoryTransaction
+//@MandatoryTransaction
 public class OtpCredentialsAdapter implements ICredentialRepository {
 
     private final OtpCredentialsRepository otpCredentialsRepository;

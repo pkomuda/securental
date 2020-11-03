@@ -10,7 +10,6 @@
     "i18next-browser-languagedetector": "^6.0.1",
     "i18next-http-backend": "^1.0.21",
     "jsonwebtoken": "^8.5.1",
-    "qrcode": "^1.4.4",
     "react": "^16.14.0",
     "react-bootstrap": "^1.4.0",
     "react-bootstrap-table-next": "^4.0.3",
@@ -20,6 +19,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.4",
     "sweetalert2": "^10.8.1",
+    "sweetalert2-react-content": "^3.2.1",
     "universal-cookie": "^4.0.4",
     "yup": "^0.29.3"
   },

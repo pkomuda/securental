@@ -13,13 +13,13 @@ export const Login = props => {
         otpCode: string().required("account.username.required").min(1, "account.username.min").max(32, "account.username.max")
     });
     const [authRequest, setAuthRequest] = useState({
-        "username": "",
-        "combination": [1,2,3,4],
-        "characters": [],
-        "otpCode": ""
+        username: "",
+        combination: [],
+        characters: [],
+        otpCode: ""
     });
     const [errors, setErrors] = useState({});
-    const [stage, setStage] = useState(2);
+    const [stage, setStage] = useState(1);
     FormGroup.defaultProps = {
         schema: schema,
         values: authRequest,
@@ -28,19 +28,38 @@ export const Login = props => {
         setErrors: newErrors => setErrors(newErrors)
     };
 
-    const handleChangeProperty = (event, property) => {
-        let tempAuthRequest = {...authRequest};
-        tempAuthRequest[property] = event.target.value;
+    const handleChangeCharacters = event => {
+        const currentIndex = parseInt(event.target.id.slice(-1));
+        const tempAuthRequest = {...authRequest};
+        const tempCharacters = tempAuthRequest.characters;
+        tempCharacters[currentIndex] = event.target.value;
+        tempAuthRequest.characters = tempCharacters;
         setAuthRequest(tempAuthRequest);
-        const nextIndex = parseInt(event.target.id.slice(-1)) + 1;
-        document.getElementById(event.target.id.slice(0, -1) + nextIndex).focus();
+        if (currentIndex !== tempAuthRequest.combination.length - 1) {
+            document.getElementById(event.target.id.slice(0, -1) + (currentIndex + 1)).focus();
+        }
+    };
+
+    const handleClearCharacters = () => {
+        const tempAuthRequest = {...authRequest};
+        const tempCharacters = [];
+        for (let i = 0; i < tempAuthRequest.combination; i++) {
+            tempCharacters.push("");
+        }
+        tempAuthRequest.characters = tempCharacters;
+        setAuthRequest(tempAuthRequest);
     };
 
     const handleFirstStage = () => {
         axios.get("/initializeLogin/" + authRequest.username)
             .then(response => {
-                let tempAuthRequest = {...authRequest};
+                const tempAuthRequest = {...authRequest};
                 tempAuthRequest.combination = response.data;
+                const tempCharacters = [];
+                for (let i = 0; i < tempAuthRequest.combination; i++) {
+                    tempCharacters.push("");
+                }
+                tempAuthRequest.characters = tempCharacters;
                 setAuthRequest(tempAuthRequest);
                 setStage(2);
             }).catch(error => {
@@ -49,22 +68,26 @@ export const Login = props => {
     };
 
     const handleSecondStage = () => {
-        let chars = [];
-        for (let i = 0; i < authRequest.combination.length - 1; i++) {
-            chars[i] = i + " ";
+        let valid = true;
+        for (let character of authRequest.characters) {
+            if (character === "") {
+                valid = false;
+            }
         }
-        let tempAuthRequest = {...authRequest};
-        tempAuthRequest.characters = chars;
-        setAuthRequest(tempAuthRequest);
-        setStage(3);
+        if (valid) {
+            setStage(3);
+        }
     };
 
     const handleThirdStage = () => {
-        axios.post("/login", authRequest)
-            .then(response => {
-                alert(response.data);
+        const tempAuthRequest = {...authRequest};
+        tempAuthRequest.otpCode = parseInt(tempAuthRequest.otpCode);
+        tempAuthRequest.characters = tempAuthRequest.characters.join("");
+        axios.post("/login", tempAuthRequest)
+            .then(() => {
+                props.history.push("/");
             }).catch(error => {
-            alert(error.response.data);
+                alert(error.response.data);
         });
     };
 
@@ -96,12 +119,12 @@ export const Login = props => {
         if (stage === 2) {
             let boxes = [];
             let currentIndex = 0;
-            for (let i = 0; i < authRequest.combination[authRequest.combination.length - 1] + 1; i++) {
+            for (let i = 0; i <= authRequest.combination[authRequest.combination.length - 1]; i++) {
                 if (authRequest.combination.includes(i)) {
                     boxes.push(
                         <div key={i} style={{display: "inline-block", position: "relative", marginBottom: "1em"}}>
-                            <FormControl style={{width: "3em", marginRight: "1em"}} id={"enabled" + currentIndex} value={authRequest.characters[i]}
-                                         onChange={event => handleChangeProperty(event, "characters")} maxLength="1"/>
+                            <FormControl style={{width: "3em", marginRight: "1em"}} id={"enabled" + currentIndex} value={authRequest.characters[currentIndex]}
+                                         onChange={handleChangeCharacters} maxLength="1"/>
                             <span style={{position: "absolute", marginLeft: "30%"}}>{i + 1}</span>
                         </div>
                     );
@@ -126,6 +149,10 @@ export const Login = props => {
                                 variant="dark"
                                 className="button"
                                 onClick={() => setStage(1)}>{t("navigation.back")}</Button>
+                        <Button id="clear"
+                                variant="dark"
+                                className="button"
+                                onClick={handleClearCharacters}>Clear</Button>
                         <Button id="submit2"
                                 variant="dark"
                                 className="button"
@@ -141,7 +168,7 @@ export const Login = props => {
             return (
                 <Col sm={5}>
                     <Form>
-                        <FormGroup id="code"
+                        <FormGroup id="otpCode"
                                    label="login.otp.code"
                                    required/>
                     </Form>

@@ -1,6 +1,5 @@
 import React, { Suspense } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { Container } from "react-bootstrap";
 import { NavigationBar } from "./components/NavigationBar";
 import { Spinner } from "./components/Spinner";
 import { Home } from "./components/Home";
@@ -14,7 +13,6 @@ import "@sweetalert2/theme-bootstrap-4";
 export const App = () => (
     <Router>
         <NavigationBar/>
-        <Container>
             <Suspense fallback={<Spinner/>}>
                 <Switch>
                     <Route exact path="/" component={Home}/>
@@ -24,6 +22,5 @@ export const App = () => (
                     <Route component={NotFound}/>
                 </Switch>
             </Suspense>
-        </Container>
     </Router>
 );

@@ -6,16 +6,18 @@ import { useTranslation } from "react-i18next";
 import { object, string } from "yup";
 import { FormGroup } from "./FormGroup";
 import { emailRegex, validate } from "../utils/Validation";
+import withReactContent from "sweetalert2-react-content";
 
 export const Register = props => {
 
     const {t} = useTranslation();
+    const MySwal = withReactContent(Swal);
     const schema = object().shape({
         username: string().required("account.username.required").min(1, "account.username.min").max(32, "account.username.max"),
         email: string().required("account.email.required").matches(emailRegex, "account.email.invalid"),
         firstName: string().required("account.firstName.required").min(1, "account.firstName.min").max(32, "account.firstName.max"),
         lastName: string().required("account.lastName.required").min(1, "account.lastName.min").max(32, "account.lastName.max"),
-        password: string().required("account.password.required").min(8, "account.password.min").max(32, "account.password.max")
+        password: string().required("account.password.required").length(8, "account.password.min").max(8, "account.password.max")
     });
     const [account, setAccount] = useState({
         username: "",
@@ -38,9 +40,8 @@ export const Register = props => {
         const tempAccount = {...account};
         delete tempAccount.password;
         const valid = validate(tempAccount, errors, setErrors, schema);
-        console.log(valid);
         if (valid) {
-            setStage(2);
+            setStage(1);
         }
     };
 
@@ -50,21 +51,28 @@ export const Register = props => {
             const lastPasswordCharacters = generateLastPasswordCharacters(process.env.REACT_APP_LAST_PASSWORD_CHARACTERS);
             tempAccount.password += lastPasswordCharacters;
             axios.post("/register", tempAccount, {headers: {"Accept-Language": window.navigator.language}})
-                .then(() => {
+                .then(response => {
                     const alerts = [];
                     alerts.push({
                         title: t("register.password.header"),
-                        html: t("register.password.text1")
-                            + lastPasswordCharacters
-                            + t("register.password.text2"),
+                        html:
+                            <div>
+                                <p>{t("register.password.text1") + lastPasswordCharacters}</p>
+                                <p>{t("register.password.text2")}</p>
+                            </div>,
                         icon: "info"
                     });
                     alerts.push({
                         title: t("register.success.header"),
-                        text: t("register.success.text"),
+                        html:
+                            <div>
+                                <p>{t("register.success.text1")}</p>
+                                <p>{t("register.success.text2")}</p>
+                                <img src={"data:image/png;base64," + response.data} alt="qrCode"/>
+                            </div>,
                         icon: "success"
                     });
-                    Swal.queue(alerts);
+                    MySwal.queue(alerts);
                     props.history.push("/");
                 }).catch(() => {
                     Swal.fire(t("errors:common.header"),
@@ -86,7 +94,7 @@ export const Register = props => {
     const renderFirstStage = () => {
         if (stage === 1) {
             return (
-                <Col sm={5} style={{outline: "1px solid black"}}>
+                <Col sm={5} className="form-container">
                     <Form>
                         <FormGroup id="username"
                                    label="account.username"
@@ -119,7 +127,7 @@ export const Register = props => {
     const renderSecondStage = () => {
         if (stage === 2) {
             return (
-                <Col sm={5}>
+                <Col sm={5} className="form-container">
                     <Form>
                         <FormGroup id="password"
                                    label="account.password"

@@ -2,3 +2,10 @@
     margin-left: 1em;
     margin-right: 1em;
 }
+
+.form-container {
+    background-color: whitesmoke;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    padding: 2em;
+}

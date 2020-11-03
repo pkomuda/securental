@@ -1,5 +1,10 @@
 package pl.lodz.p.it.securental.services.accounts;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 import com.warrenstrange.googleauth.GoogleAuthenticatorQRGenerator;
@@ -11,14 +16,14 @@ import pl.lodz.p.it.securental.adapters.accounts.OtpCredentialsAdapter;
 import pl.lodz.p.it.securental.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.dto.accounts.AccountDto;
 import pl.lodz.p.it.securental.dto.mappers.accounts.AccountMapper;
-import pl.lodz.p.it.securental.entities.accounts.Account;
-import pl.lodz.p.it.securental.entities.accounts.AuthenticationToken;
-import pl.lodz.p.it.securental.entities.accounts.Credentials;
-import pl.lodz.p.it.securental.entities.accounts.MaskedPassword;
+import pl.lodz.p.it.securental.entities.accounts.*;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.accounts.AccountAlreadyExistsException;
 import pl.lodz.p.it.securental.exceptions.accounts.AccountNotFoundException;
+import pl.lodz.p.it.securental.exceptions.accounts.QrCodeGenerationException;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -94,7 +99,17 @@ public class AccountService {
         } else {
             throw new AccountAlreadyExistsException();
         }
-        return GoogleAuthenticatorQRGenerator.getOtpAuthTotpURL(APPLICATION_NAME, accountDto.getUsername(), key);
+
+        byte[] qrCode;
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            BitMatrix bitMatrix = qrCodeWriter.encode(GoogleAuthenticatorQRGenerator.getOtpAuthTotpURL(APPLICATION_NAME, accountDto.getUsername(), key), BarcodeFormat.QR_CODE, 200, 200);
+            MatrixToImageWriter.writeToStream(bitMatrix, "PNG", outputStream);
+            qrCode = outputStream.toByteArray();
+        } catch (WriterException | IOException e) {
+            throw new QrCodeGenerationException(e);
+        }
+        return base64(qrCode);
     }
 
     public void confirmAccount(String token) throws ApplicationBaseException {
@@ -127,7 +142,7 @@ public class AccountService {
             AuthenticationToken authenticationToken = account.getAuthenticationToken();
             authenticationToken.setCombination(randomCombination);
             authenticationToken.setExpiration(LocalDateTime.now().plusMinutes(AUTHENTICATION_TOKEN_EXPIRATION));
-            accountAdapter.addAccount(account);
+//            accountAdapter.addAccount(account);
         }
         return randomCombination;
     }
