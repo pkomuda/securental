@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public @Data class OtpCredentials extends BaseEntity {
 
     private String username;

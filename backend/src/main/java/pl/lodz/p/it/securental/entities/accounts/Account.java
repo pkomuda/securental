@@ -8,6 +8,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static pl.lodz.p.it.securental.utils.ApplicationProperties.EMAIL_REGEXP;
 
 @Entity
@@ -58,4 +61,7 @@ public @Data class Account extends BaseEntity {
 
 //    @OneToOne
 //    private AuthenticationData authenticationData;
+
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "account")
+    private List<AccessLevel> accessLevels = new ArrayList<>();
 }

@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 import java.time.LocalDateTime;
 
 @Entity
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 public @Data class AuthenticationData extends BaseEntity {
 
     private LocalDateTime lastSuccessfulAuthentication;
