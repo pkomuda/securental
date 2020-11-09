@@ -7,13 +7,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.annotations.RequiresNewTransaction;
+import pl.lodz.p.it.securental.entities.accounts.AccessLevel;
 import pl.lodz.p.it.securental.entities.accounts.Account;
 import pl.lodz.p.it.securental.entities.accounts.MaskedPassword;
 import pl.lodz.p.it.securental.repositories.accounts.AccountRepository;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static pl.lodz.p.it.securental.exceptions.accounts.AccountNotFoundException.KEY_ACCOUNT_NOT_FOUND;
 import static pl.lodz.p.it.securental.utils.StringUtils.integerArrayToString;
@@ -35,8 +36,6 @@ public class CustomUserDetailsService {
             for (MaskedPassword maskedPassword : account.getCredentials().getMaskedPasswords()) {
                 if (passwordEncoder.matches(combination, maskedPassword.getCombination())) {
                     if (integerArrayToString(account.getAuthenticationToken().getCombination().stream().mapToInt(i -> i).toArray()).equals(combination)) {
-                        System.out.println("gaz");
-                        //TODO authorities
                         return new CustomUserDetails(
                                 username,
                                 combination,
@@ -45,7 +44,7 @@ public class CustomUserDetailsService {
                                 true,
                                 true,
                                 account.isActive(),
-                                Collections.singletonList(new SimpleGrantedAuthority("USER")));
+                                getUserFrontendRoles(account));
                 }
                 }
             }
@@ -59,7 +58,6 @@ public class CustomUserDetailsService {
             throw new UsernameNotFoundException(KEY_ACCOUNT_NOT_FOUND);
         } else {
             Account account = accountOptional.get();
-            //TODO authorities
             return new CustomUserDetails(
                     username,
                     null,
@@ -68,7 +66,58 @@ public class CustomUserDetailsService {
                     true,
                     true,
                     account.isActive(),
-                    Collections.singletonList(new SimpleGrantedAuthority("USER")));
+                    getUserBackendRoles(account));
         }
     }
+
+    private String[] getRolesForGroup(String groupName) {
+        return ResourceBundle.getBundle("roles").getString(groupName).split(",");
+    }
+
+    private Set<String> getUserGroupNames(Account account) {
+        return account.getAccessLevels().stream()
+                .filter(AccessLevel::isActive)
+                .map(AccessLevel::getName)
+                .collect(Collectors.toSet());
+    }
+
+    private Set<SimpleGrantedAuthority> getUserFrontendRoles(Account account) {
+        return getUserGroupNames(account).stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toSet());
+    }
+
+    private Set<SimpleGrantedAuthority> getUserBackendRoles(Account account) {
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+        for (String group : getUserGroupNames(account)) {
+            for (String role : getRolesForGroup(group)) {
+                authorities.add(new SimpleGrantedAuthority(role));
+            }
+        }
+        return authorities;
+    }
+
+//    private Set<SimpleGrantedAuthority> getUserRoles(Account account) {
+//        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+//        List<String> groups = account.getAccessLevels().stream()
+//                .filter(AccessLevel::isActive)
+//                .map(AccessLevel::getName)
+//                .collect(Collectors.toList());
+//        for (String group : groups) {
+//            for (String role : getRolesForGroup(group)) {
+//                authorities.add(new SimpleGrantedAuthority(role));
+//            }
+//        }
+//        return authorities;
+//    }
+//
+//    public static Set<SimpleGrantedAuthority> getUserRoles(List<String> groups) {
+//        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+//        for (String group : groups) {
+//            for (String role : getRolesForGroup(group)) {
+//                authorities.add(new SimpleGrantedAuthority(role));
+//            }
+//        }
+//        return authorities;
+//    }
 }
