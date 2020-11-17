@@ -22,6 +22,10 @@ export const ListAccounts = props => {
     const [sortOrder, setSortOrder] = useState("");
     const [filter, setFilter] = useState("");
     const columns = [{
+        dataField: "username",
+        text: t("account.username"),
+        sort: true
+    }, {
         dataField: "email",
         text: t("account.email"),
         sort: true
@@ -38,10 +42,10 @@ export const ListAccounts = props => {
         text: t("navigation.details"),
         isDummyField: true,
         formatter: (cell, row) => {
-            const handleDetails = email => {
-                alert(email);
+            const handleDetails = username => {
+                props.history.push(`/accountDetails/${username}`)
             };
-            return <Button onClick={() => handleDetails(row["email"])}>{t("navigation.details")}</Button>
+            return <Button onClick={() => handleDetails(row["username"])}>{t("navigation.details")}</Button>
         }
     }];
 
@@ -70,7 +74,7 @@ export const ListAccounts = props => {
                 setTotalSize(response.data.totalElements);
             }).catch(error => {
             Swal.fire(t("errors:common.header"),
-                t("errors:" + error.response.data),
+                t(`errors:${error.response.data}`),
                 "error");
         });
     }, [filter, page, sizePerPage, sortField, sortOrder, t]);

@@ -1,7 +1,9 @@
 package pl.lodz.p.it.securental.entities.mok;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import pl.lodz.p.it.securental.entities.BaseEntity;
 
 import javax.persistence.*;
@@ -11,6 +13,8 @@ import javax.validation.constraints.Size;
 @Entity
 @EqualsAndHashCode(callSuper = true)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@NoArgsConstructor
+@AllArgsConstructor
 @DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING, name = "name")
 public @Data class AccessLevel extends BaseEntity {
 
@@ -22,9 +26,4 @@ public @Data class AccessLevel extends BaseEntity {
     @NotNull
     @Column(nullable = false)
     private boolean active;
-
-    @NotNull
-    @JoinColumn(name = "account_id", nullable = false, updatable = false)
-    @ManyToOne(optional = false)
-    private Account account;
 }

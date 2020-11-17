@@ -51,7 +51,7 @@ export const Login = props => {
     };
 
     const handleFirstStage = () => {
-        axios.get("/initializeLogin/" + authRequest.username)
+        axios.get(`/initializeLogin/${authRequest.username}`)
             .then(response => {
                 const tempAuthRequest = {...authRequest};
                 tempAuthRequest.combination = response.data;

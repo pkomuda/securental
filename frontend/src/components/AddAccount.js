@@ -24,6 +24,8 @@ export const Register = props => {
         email: "",
         firstName: "",
         lastName: "",
+        accessLevels: [],
+        active: false,
         password: ""
     });
     const [errors, setErrors] = useState({});
@@ -51,7 +53,7 @@ export const Register = props => {
             const lastPasswordCharacters = generateLastPasswordCharacters(process.env.REACT_APP_LAST_PASSWORD_CHARACTERS);
             tempAccount.password += lastPasswordCharacters;
             axios.post("/register", tempAccount, {headers: {"Accept-Language": window.navigator.language}})
-                .then(response => {
+                .then(() => {
                     const alerts = [];
                     alerts.push({
                         title: t("register.password.header"),
@@ -62,22 +64,12 @@ export const Register = props => {
                             </div>,
                         icon: "info"
                     });
-                    alerts.push({
-                        title: t("register.success.header"),
-                        html:
-                            <div>
-                                <p>{t("register.success.text1")}</p>
-                                <p>{t("register.success.text2")}</p>
-                                <img src={`data:image/png;base64,${response.data}`} alt="qrCode"/>
-                            </div>,
-                        icon: "success"
-                    });
                     MySwal.queue(alerts);
                     props.history.push("/");
                 }).catch(() => {
-                    Swal.fire(t("errors:common.header"),
-                        t("errors:common.text"),
-                        "error");
+                Swal.fire(t("errors:common.header"),
+                    t("errors:common.text"),
+                    "error");
             });
         }
     };

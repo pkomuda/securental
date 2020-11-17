@@ -10,6 +10,7 @@ import { NotFound } from "./components/NotFound";
 import "./styles/Common.css";
 import "@sweetalert2/theme-bootstrap-4";
 import { ListAccounts } from "./components/ListAccounts";
+import { AccountDetails } from "./components/AccountDetails";
 
 export const App = () => (
     <Router>
@@ -21,6 +22,7 @@ export const App = () => (
                     <Route exact path="/register" component={Register}/>
                     <Route exact path="/confirm/:token" component={Confirm}/>
                     <Route exact path="/listAccounts" component={ListAccounts}/>
+                    <Route exact path="/accountDetails/:username" component={AccountDetails}/>
                     <Route component={NotFound}/>
                 </Switch>
             </Suspense>

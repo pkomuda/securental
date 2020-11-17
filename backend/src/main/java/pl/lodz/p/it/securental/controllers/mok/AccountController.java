@@ -7,7 +7,7 @@ import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 
 public interface AccountController {
 
-    void addAccount(AccountDto accountDto) throws ApplicationBaseException;
+    void addAccount(AccountDto accountDto, String language) throws ApplicationBaseException;
     String register(AccountDto accountDto, String language) throws ApplicationBaseException;
     void confirmAccount(ConfirmAccountDto confirmAccountDto) throws ApplicationBaseException;
     AccountDto getAccount(String username) throws ApplicationBaseException;

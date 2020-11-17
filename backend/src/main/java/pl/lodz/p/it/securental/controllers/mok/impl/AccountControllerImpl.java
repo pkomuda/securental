@@ -21,8 +21,9 @@ public class AccountControllerImpl implements AccountController {
 
     @Override
     @PostMapping("/account")
-    public void addAccount(@RequestBody AccountDto accountDto) throws ApplicationBaseException {
-        accountService.addAccount(accountDto);
+    public void addAccount(@RequestBody AccountDto accountDto,
+                           @RequestHeader("Accept-Language") String language) throws ApplicationBaseException {
+        accountService.addAccount(accountDto, language);
     }
 
     @Override
@@ -43,29 +44,6 @@ public class AccountControllerImpl implements AccountController {
     public AccountDto getAccount(@PathVariable String username) throws ApplicationBaseException {
         return accountService.getAccount(username);
     }
-
-    @PostMapping("/add")
-    public void add(@RequestBody AccountDto accountDto) throws ApplicationBaseException {
-        accountService.add(accountDto);
-    }
-
-//    @GetMapping("/accounts/{filter}/{page}/{size}/{property}/{order}")
-//    public Page<AccountDto> filter(@PathVariable String filter,
-//                                   @PathVariable int page,
-//                                   @PathVariable int size,
-//                                   @PathVariable String property,
-//                                   @PathVariable String order) throws ApplicationBaseException {
-//        return accountService.filterAccounts(filter, new PagingHelper(page, size, property, order));
-//    }
-//
-//    @GetMapping("/accounts/{page}/{size}/{property}/{order}")
-//    public Page<AccountDto> all(@PathVariable int page,
-//                                @PathVariable int size,
-//                                @PathVariable String property,
-//                                @PathVariable String order) throws ApplicationBaseException {
-//
-//        return accountService.getAllAccounts(new PagingHelper(page, size, property, order));
-//    }
 
     @Override
     @GetMapping("/accounts/{page}/{size}")

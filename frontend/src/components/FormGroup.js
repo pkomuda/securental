@@ -26,7 +26,7 @@ export const FormGroup = props => {
 
     return (
         <Group>
-            <FormLabel style={{textAlign: "left"}}>{t("common:" + props.label)} {props.required && "*"}</FormLabel>
+            <FormLabel style={{textAlign: "left"}}>{t(`common:${props.label}`)} {props.required && "*"}</FormLabel>
             <FormControl id={props.id}
                          value={props.values[props.id]}
                          onChange={handleChange}
