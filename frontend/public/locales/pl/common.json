@@ -3,7 +3,8 @@
   "navigation.next": "Dalej",
   "navigation.submit": "Zatwierdź",
   "navigation.ok": "OK",
-  "navigation.edit": "Edytuj",
+  "navigation.edit": "Edytuj",,
+  "navigation.details": "Szczegóły",
 
   "account.details.header": "Szczegóły konta",
   "account.username": "Nazwa użytkownika",

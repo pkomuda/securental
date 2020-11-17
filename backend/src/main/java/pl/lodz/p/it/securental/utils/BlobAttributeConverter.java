@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
-import pl.lodz.p.it.securental.entities.accounts.MaskedPassword;
-import pl.lodz.p.it.securental.exceptions.database.DataProcessingException;
+import pl.lodz.p.it.securental.entities.mok.MaskedPassword;
+import pl.lodz.p.it.securental.exceptions.db.DataProcessingException;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

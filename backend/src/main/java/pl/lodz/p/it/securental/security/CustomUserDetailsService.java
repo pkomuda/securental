@@ -7,16 +7,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.annotations.RequiresNewTransaction;
-import pl.lodz.p.it.securental.entities.accounts.AccessLevel;
-import pl.lodz.p.it.securental.entities.accounts.Account;
-import pl.lodz.p.it.securental.entities.accounts.MaskedPassword;
-import pl.lodz.p.it.securental.repositories.accounts.AccountRepository;
+import pl.lodz.p.it.securental.entities.mok.AccessLevel;
+import pl.lodz.p.it.securental.entities.mok.Account;
+import pl.lodz.p.it.securental.entities.mok.MaskedPassword;
+import pl.lodz.p.it.securental.repositories.mok.AccountRepository;
 
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static pl.lodz.p.it.securental.exceptions.accounts.AccountNotFoundException.KEY_ACCOUNT_NOT_FOUND;
+import static pl.lodz.p.it.securental.exceptions.mok.AccountNotFoundException.KEY_ACCOUNT_NOT_FOUND;
 import static pl.lodz.p.it.securental.utils.StringUtils.integerArrayToString;
 
 @Service

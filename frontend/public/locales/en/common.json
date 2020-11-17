@@ -4,6 +4,7 @@
   "navigation.submit": "Submit",
   "navigation.ok": "OK",
   "navigation.edit": "Edit",
+  "navigation.details": "Details",
 
   "account.details.header": "Account details",
   "account.username": "Username",

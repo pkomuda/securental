@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Nav, Navbar, NavDropdown } from "react-bootstrap";
-import "./styles/NavigationBar.css";
+import "../styles/NavigationBar.css";
 
 export const NavigationBar = () => (
     <Navbar expand="lg" className="navbar-dark">

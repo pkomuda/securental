@@ -68,4 +68,8 @@ public final class StringUtils {
         Collections.sort(combination);
         return combination;
     }
+
+    public static boolean isNullOrEmpty(String str) {
+        return Objects.isNull(str) || "".equals(str);
+    }
 }

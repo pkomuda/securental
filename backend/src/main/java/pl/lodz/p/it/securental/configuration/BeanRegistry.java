@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import pl.lodz.p.it.securental.adapters.accounts.OtpCredentialsAdapter;
+import pl.lodz.p.it.securental.adapters.mok.OtpCredentialsAdapter;
 
 import static pl.lodz.p.it.securental.utils.ApplicationProperties.APPLICATION_PROPERTIES_BEAN;
 import static pl.lodz.p.it.securental.utils.ApplicationProperties.PASSWORD_HASHING_ALGORITHM;
