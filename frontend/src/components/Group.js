@@ -1,8 +1,8 @@
 import React from "react";
-import { FormControl, FormGroup as Group, FormLabel } from "react-bootstrap";
+import { FormControl, FormGroup, FormLabel } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
-export const FormGroup = props => {
+export const Group = props => {
 
     const {t} = useTranslation("validation");
 
@@ -25,7 +25,7 @@ export const FormGroup = props => {
     };
 
     return (
-        <Group>
+        <FormGroup>
             <FormLabel style={{textAlign: "left"}}>{t(`common:${props.label}`)} {props.required && "*"}</FormLabel>
             <FormControl id={props.id}
                          value={props.values[props.id]}
@@ -33,6 +33,6 @@ export const FormGroup = props => {
                          isInvalid={props.errors.hasOwnProperty(props.id)}
                          type={props.password && "password"}/>
             <FormControl.Feedback type="invalid">{props.errors.hasOwnProperty(props.id) && t(props.errors[props.id])}</FormControl.Feedback>
-        </Group>
+        </FormGroup>
     );
 };

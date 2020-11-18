@@ -12,6 +12,14 @@
   "account.password": "Hasło",
   "account.firstName": "Imię",
   "account.lastName": "Nazwisko",
+  "account.accessLevels": "Poziomy dostępu",
+  "account.activity": "Aktywność",
+  "account.active": "Aktywny",
+  "account.confirmed": "Potwierdzony",
+
+  "accessLevel.admin": "Administrator",
+  "accessLevel.employee": "Pracownik",
+  "accessLevel.client": "Klient",
 
   "login.header": "Logowanie",
   "login.password.characters": "Znaki hasła",

@@ -11,6 +11,7 @@ import "./styles/Common.css";
 import "@sweetalert2/theme-bootstrap-4";
 import { ListAccounts } from "./components/ListAccounts";
 import { AccountDetails } from "./components/AccountDetails";
+import { AddAccount } from "./components/AddAccount";
 
 export const App = () => (
     <Router>
@@ -23,6 +24,7 @@ export const App = () => (
                     <Route exact path="/confirm/:token" component={Confirm}/>
                     <Route exact path="/listAccounts" component={ListAccounts}/>
                     <Route exact path="/accountDetails/:username" component={AccountDetails}/>
+                    <Route exact path="/addAccount" component={AddAccount}/>
                     <Route component={NotFound}/>
                 </Switch>
             </Suspense>

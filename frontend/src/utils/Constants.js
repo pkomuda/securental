@@ -1,4 +1,4 @@
-export const sizes = [{
+export const paginationSizes = [{
     text: "10", value: 10
 }, {
     text: "25", value: 25

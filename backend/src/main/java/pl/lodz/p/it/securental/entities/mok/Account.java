@@ -62,6 +62,6 @@ public @Data class Account extends BaseEntity {
 //    @OneToOne
 //    private AuthenticationData authenticationData;
 
-    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "account")
+    @OneToMany(cascade = CascadeType.PERSIST)
     private List<AccessLevel> accessLevels = new ArrayList<>();
 }

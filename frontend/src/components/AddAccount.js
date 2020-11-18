@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { Button, ButtonToolbar, Col, Form, Row } from "react-bootstrap";
+import { Button, ButtonGroup, ButtonToolbar, Col, Form, FormCheck, FormGroup, FormLabel, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { object, string } from "yup";
-import { FormGroup } from "./FormGroup";
+import { Group } from "./Group";
 import { emailRegex, validate } from "../utils/Validation";
 import withReactContent from "sweetalert2-react-content";
 
-export const Register = props => {
+export const AddAccount = props => {
 
     const {t} = useTranslation();
     const MySwal = withReactContent(Swal);
@@ -24,13 +24,17 @@ export const Register = props => {
         email: "",
         firstName: "",
         lastName: "",
-        accessLevels: [],
         active: false,
         password: ""
     });
+    const [accessLevels, setAccessLevels] = useState({
+        ADMIN: false,
+        EMPLOYEE: false,
+        CLIENT: false
+    });
     const [errors, setErrors] = useState({});
     const [stage, setStage] = useState(1);
-    FormGroup.defaultProps = {
+    Group.defaultProps = {
         schema: schema,
         values: account,
         errors: errors,
@@ -83,23 +87,43 @@ export const Register = props => {
         return characters;
     }
 
+    const handleChangeAccessLevel = event => {
+        setAccessLevels({...accessLevels, [event.target.id]: !accessLevels[event.target.id]});
+    };
+
+    const handleChangeActive = event => {
+        setAccount({...account, [event.target.id]: !account[event.target.id]});
+    };
+
     const renderFirstStage = () => {
         if (stage === 1) {
             return (
                 <Col sm={5} className="form-container">
                     <Form>
-                        <FormGroup id="username"
-                                   label="account.username"
-                                   required/>
-                        <FormGroup id="email"
-                                   label="account.email"
-                                   required/>
-                        <FormGroup id="firstName"
-                                   label="account.firstName"
-                                   required/>
-                        <FormGroup id="lastName"
-                                   label="account.lastName"
-                                   required/>
+                        <Group id="username"
+                               label="account.username"
+                               required/>
+                        <Group id="email"
+                               label="account.email"
+                               required/>
+                        <Group id="firstName"
+                               label="account.firstName"
+                               required/>
+                        <Group id="lastName"
+                               label="account.lastName"
+                               required/>
+                        <FormGroup>
+                            <FormLabel style={{textAlign: "left"}}>{t("account.accessLevels")} *</FormLabel>
+                            <div>
+                                <FormCheck id="CLIENT" label={t("accessLevel.client")} onChange={handleChangeAccessLevel} inline/>
+                                <FormCheck id="EMPLOYEE" label={t("accessLevel.employee")} onChange={handleChangeAccessLevel} inline/>
+                                <FormCheck id="ADMIN" label={t("accessLevel.admin")} onChange={handleChangeAccessLevel} inline/>
+                            </div>
+                        </FormGroup>
+                        <FormGroup>
+                            <FormLabel style={{textAlign: "left"}}>{t("account.activity")}</FormLabel>
+                            <FormCheck id="active" label={t("account.active")} onChange={handleChangeActive}/>
+                        </FormGroup>
                     </Form>
                     <ButtonToolbar className="justify-content-center">
                         <Button id="back1"
@@ -110,6 +134,10 @@ export const Register = props => {
                                 variant="dark"
                                 className="button"
                                 onClick={handleFirstStage}>{t("navigation.next")}</Button>
+                        <Button id="check"
+                                variant="dark"
+                                className="button"
+                                onClick={() => console.log(account)}>{t("navigation.submit")}</Button>
                     </ButtonToolbar>
                 </Col>
             );
@@ -121,10 +149,10 @@ export const Register = props => {
             return (
                 <Col sm={5} className="form-container">
                     <Form>
-                        <FormGroup id="password"
-                                   label="account.password"
-                                   required
-                                   password/>
+                        <Group id="password"
+                               label="account.password"
+                               required
+                               password/>
                     </Form>
                     <ButtonToolbar className="justify-content-center">
                         <Button id="back2"

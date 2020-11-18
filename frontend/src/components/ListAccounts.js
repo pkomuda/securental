@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import "react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css";
 import "../styles/Table.css";
-import { sizes } from "../utils/Constants";
+import { paginationSizes } from "../utils/Constants";
 
 export const ListAccounts = props => {
 
@@ -104,7 +104,7 @@ export const ListAccounts = props => {
                                 keyField="email"
                                 data={accounts}
                                 columns={columns}
-                                pagination={paginationFactory({page, sizePerPage, totalSize, sizePerPageList: sizes})}
+                                pagination={paginationFactory({page, sizePerPage, totalSize, sizePerPageList: paginationSizes})}
                                 onTableChange={handleTableChange}/>
                 <ButtonToolbar className="justify-content-center">
                     <Button id="back"

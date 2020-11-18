@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Button, ButtonToolbar, Col, Form, FormControl, Row } from "react-bootstrap";
-import { FormGroup } from "./FormGroup";
+import { Group } from "./Group";
 import { useTranslation } from "react-i18next";
 import { object, string } from "yup";
 
@@ -20,7 +20,7 @@ export const Login = props => {
     });
     const [errors, setErrors] = useState({});
     const [stage, setStage] = useState(1);
-    FormGroup.defaultProps = {
+    Group.defaultProps = {
         schema: schema,
         values: authRequest,
         errors: errors,
@@ -96,9 +96,9 @@ export const Login = props => {
             return (
                 <Col sm={5}>
                     <Form>
-                        <FormGroup id="username"
-                                   label="account.username"
-                                   required/>
+                        <Group id="username"
+                               label="account.username"
+                               required/>
                     </Form>
                     <ButtonToolbar>
                         <Button id="back1"
@@ -168,9 +168,9 @@ export const Login = props => {
             return (
                 <Col sm={5}>
                     <Form>
-                        <FormGroup id="otpCode"
-                                   label="login.otp.code"
-                                   required/>
+                        <Group id="otpCode"
+                               label="login.otp.code"
+                               required/>
                     </Form>
                     <ButtonToolbar>
                         <Button id="back3"

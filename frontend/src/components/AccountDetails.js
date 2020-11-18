@@ -12,7 +12,7 @@ export const AccountDetails = props => {
         username: "",
         email: "",
         firstName: "",
-        lastName: "",
+        lastName: ""
     });
 
     useEffect(() => {
