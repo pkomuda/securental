@@ -3,8 +3,15 @@
   "navigation.next": "Dalej",
   "navigation.submit": "Zatwierdź",
   "navigation.ok": "OK",
-  "navigation.edit": "Edytuj",,
+  "navigation.edit": "Edytuj",
   "navigation.details": "Szczegóły",
+
+  "breadcrumbs.home": "Strona główna",
+  "breadcrumbs.login": "Logowanie",
+  "breadcrumbs.register": "Rejestracja",
+  "breadcrumbs.listAccounts": "Lista kont",
+  "breadcrumbs.accountDetails": "Szczegóły konta",
+  "breadcrumbs.addAccount": "Dodaj konto",
 
   "account.details.header": "Szczegóły konta",
   "account.username": "Nazwa użytkownika",

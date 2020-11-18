@@ -1,4 +1,8 @@
-export const paginationSizes = [{
+export const ACCESS_LEVEL_ADMIN = "ADMIN";
+export const ACCESS_LEVEL_EMPLOYEE = "EMPLOYEE";
+export const ACCESS_LEVEL_CLIENT = "CLIENT";
+
+export const PAGINATION_SIZES = [{
     text: "10", value: 10
 }, {
     text: "25", value: 25

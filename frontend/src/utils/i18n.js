@@ -8,6 +8,7 @@ export default i18n
     .use(Backend)
     .use(LanguageDetector)
     .init({
+        // debug: true,
         backend: {
             loadPath: "/locales/{{lng}}/{{ns}}.json"
         },

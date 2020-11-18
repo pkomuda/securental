@@ -1,12 +1,25 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { Button, ButtonGroup, ButtonToolbar, Col, Form, FormCheck, FormGroup, FormLabel, Row } from "react-bootstrap";
+import {
+    Breadcrumb,
+    Button,
+    ButtonGroup,
+    ButtonToolbar,
+    Col, Container,
+    Form,
+    FormCheck,
+    FormGroup,
+    FormLabel,
+    Row
+} from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { object, string } from "yup";
 import { Group } from "./Group";
 import { emailRegex, validate } from "../utils/Validation";
 import withReactContent from "sweetalert2-react-content";
+import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_CLIENT, ACCESS_LEVEL_EMPLOYEE } from "../utils/Constants";
+import { LinkContainer } from "react-router-bootstrap";
 
 export const AddAccount = props => {
 
@@ -28,9 +41,9 @@ export const AddAccount = props => {
         password: ""
     });
     const [accessLevels, setAccessLevels] = useState({
-        ADMIN: false,
-        EMPLOYEE: false,
-        CLIENT: false
+        [ACCESS_LEVEL_ADMIN]: false,
+        [ACCESS_LEVEL_EMPLOYEE]: false,
+        [ACCESS_LEVEL_CLIENT]: false
     });
     const [errors, setErrors] = useState({});
     const [stage, setStage] = useState(1);
@@ -115,9 +128,9 @@ export const AddAccount = props => {
                         <FormGroup>
                             <FormLabel style={{textAlign: "left"}}>{t("account.accessLevels")} *</FormLabel>
                             <div>
-                                <FormCheck id="CLIENT" label={t("accessLevel.client")} onChange={handleChangeAccessLevel} inline/>
-                                <FormCheck id="EMPLOYEE" label={t("accessLevel.employee")} onChange={handleChangeAccessLevel} inline/>
-                                <FormCheck id="ADMIN" label={t("accessLevel.admin")} onChange={handleChangeAccessLevel} inline/>
+                                <FormCheck id={ACCESS_LEVEL_CLIENT} label={t("accessLevel.client")} onChange={handleChangeAccessLevel} inline/>
+                                <FormCheck id={ACCESS_LEVEL_EMPLOYEE} label={t("accessLevel.employee")} onChange={handleChangeAccessLevel} inline/>
+                                <FormCheck id={ACCESS_LEVEL_ADMIN} label={t("accessLevel.admin")} onChange={handleChangeAccessLevel} inline/>
                             </div>
                         </FormGroup>
                         <FormGroup>
@@ -171,11 +184,19 @@ export const AddAccount = props => {
 
     return (
         <React.Fragment>
-            <h1 className="text-center">{t("register.header")}</h1>
-            <Row className="justify-content-center">
-                {renderFirstStage()}
-                {renderSecondStage()}
-            </Row>
+            <Breadcrumb>
+                <LinkContainer to="/" exact>
+                    <Breadcrumb.Item>Home</Breadcrumb.Item>
+                </LinkContainer>
+                <Breadcrumb.Item active>Add account</Breadcrumb.Item>
+            </Breadcrumb>
+            {/*<h1 className="text-center">{t("register.header")}</h1>*/}
+            <Container>
+                <Row className="justify-content-center">
+                    {renderFirstStage()}
+                    {renderSecondStage()}
+                </Row>
+            </Container>
         </React.Fragment>
     );
 };

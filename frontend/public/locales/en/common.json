@@ -6,6 +6,13 @@
   "navigation.edit": "Edit",
   "navigation.details": "Details",
 
+  "breadcrumbs.home": "Home",
+  "breadcrumbs.login": "Login",
+  "breadcrumbs.register": "Register",
+  "breadcrumbs.listAccounts": "Account list",
+  "breadcrumbs.accountDetails": "account details",
+  "breadcrumbs.addAccount": "Add account",
+
   "account.details.header": "Account details",
   "account.username": "Username",
   "account.email": "Email address",
