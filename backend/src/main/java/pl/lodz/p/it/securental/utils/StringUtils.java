@@ -33,19 +33,25 @@ public final class StringUtils {
     }
 
     public static String integerArrayToString(int[] integers) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i : integers) {
-            stringBuilder.append(i);
-        }
-        return stringBuilder.toString();
+//        StringBuilder stringBuilder = new StringBuilder();
+//        for (int i : integers) {
+//            stringBuilder.append(i);
+//        }
+//        return stringBuilder.toString();
+        return Arrays.stream(integers)
+                .mapToObj(Integer::toString)
+                .collect(Collectors.joining(""));
     }
 
     public static String selectCharacters(String text, int[] indices) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i : indices) {
-            stringBuilder.append(text.charAt(i));
-        }
-        return stringBuilder.toString();
+//        StringBuilder stringBuilder = new StringBuilder();
+//        for (int i : indices) {
+//            stringBuilder.append(text.charAt(i));
+//        }
+//        return stringBuilder.toString();
+        return new String(Arrays.stream(indices)
+                .map(text::charAt)
+                .toArray(), 0, indices.length);
     }
 
     public static String base64(byte[] bytes) {

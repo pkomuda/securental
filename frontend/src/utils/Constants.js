@@ -2,6 +2,8 @@ export const ACCESS_LEVEL_ADMIN = "ADMIN";
 export const ACCESS_LEVEL_EMPLOYEE = "EMPLOYEE";
 export const ACCESS_LEVEL_CLIENT = "CLIENT";
 
+export const LAST_PASSWORD_CHARACTERS = "0123456789";
+
 export const PAGINATION_SIZES = [{
     text: "10", value: 10
 }, {

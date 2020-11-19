@@ -7,6 +7,7 @@ import { object, string } from "yup";
 import { Group } from "./Group";
 import { emailRegex, validate } from "../utils/Validation";
 import withReactContent from "sweetalert2-react-content";
+import { LAST_PASSWORD_CHARACTERS } from "../utils/Constants";
 
 export const Register = props => {
 
@@ -84,9 +85,8 @@ export const Register = props => {
 
     const generateLastPasswordCharacters = length => {
         let characters = "";
-        const allCharacters = "0123456789";
         for (let i = 0; i < length; i++) {
-            characters += allCharacters.charAt(Math.floor(Math.random() * allCharacters.length));
+            characters += LAST_PASSWORD_CHARACTERS.charAt(Math.floor(Math.random() * LAST_PASSWORD_CHARACTERS.length));
         }
         return characters;
     }

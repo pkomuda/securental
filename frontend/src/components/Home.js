@@ -1,7 +1,21 @@
 import React from "react";
-import { Breadcrumb } from "react-bootstrap";
+import {
+    Breadcrumb,
+    Button,
+    ButtonGroup,
+    ButtonToolbar,
+    Col, Container,
+    Form,
+    FormCheck,
+    FormControl,
+    FormGroup,
+    FormLabel,
+    Row
+} from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { useTranslation } from "react-i18next";
+import { Group } from "./Group";
+import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_CLIENT, ACCESS_LEVEL_EMPLOYEE } from "../utils/Constants";
 
 export const Home = () => {
 
@@ -26,7 +40,16 @@ export const Home = () => {
                 </LinkContainer>
                 <Breadcrumb.Item active>{activeBreadcrumb()}</Breadcrumb.Item>
             </Breadcrumb>
-            <p>{t("breadcrumbs.accountDetails")}</p>
+            <Row>
+            <Col sm={5} className="form-container">
+                <Form>
+                    <FormGroup>
+                        <FormLabel>{t("account.activity")}</FormLabel>
+                        <FormControl plaintext readOnly value={username}/>
+                    </FormGroup>
+                </Form>
+            </Col>
+            </Row>
         </React.Fragment>
     );
 };

@@ -45,7 +45,8 @@ export const AccountDetails = props => {
                                 <FormLabel>{t("account.username")}</FormLabel>
                                 <FormControl id="username"
                                              value={account.username}
-                                             disabled/>
+                                             disabled
+                                             plaintext/>
                             </FormGroup>
                             <FormGroup>
                                 <FormLabel>{t("account.email")}</FormLabel>
