@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormCheck, FormGroup, FormLabel, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { bool, object, string } from "yup";
-import { Group } from "./Group";
+import { EditFormGroup } from "./EditFormGroup";
 import { emailRegex, validate } from "../utils/Validation";
 import withReactContent from "sweetalert2-react-content";
 import {
@@ -41,7 +41,7 @@ export const AddAccount = props => {
         [ACCESS_LEVEL_CLIENT]: false
     });
     const [errors, setErrors] = useState({});
-    Group.defaultProps = {
+    EditFormGroup.defaultProps = {
         schema: schema,
         values: account,
         errors: errors,
@@ -56,7 +56,7 @@ export const AddAccount = props => {
             tempAccount.password += lastPasswordCharacters;
             tempAccount.accessLevels = Object.keys(accessLevels).filter(key => accessLevels[key]);
             console.log(tempAccount);
-            axios.post("/addAccount", tempAccount, {headers: {"Accept-Language": window.navigator.language}})
+            axios.post("/account", tempAccount, {headers: {"Accept-Language": window.navigator.language}})
                 .then(() => {
                     const alerts = [];
                     alerts.push({
@@ -118,42 +118,42 @@ export const AddAccount = props => {
                 <Row className="justify-content-center">
                     <Col sm={5} className="form-container">
                         <Form>
-                            <Group id="username"
-                                   label="account.username"
-                                   required/>
-                            <Group id="password"
-                                   label="account.password"
-                                   required
-                                   password/>
-                            <Group id="email"
-                                   label="account.email"
-                                   required/>
-                            <Group id="firstName"
-                                   label="account.firstName"
-                                   required/>
-                            <Group id="lastName"
-                                   label="account.lastName"
-                                   required/>
+                            <EditFormGroup id="username"
+                                           label="account.username"
+                                           required/>
+                            <EditFormGroup id="password"
+                                           label="account.password"
+                                           required
+                                           password/>
+                            <EditFormGroup id="email"
+                                           label="account.email"
+                                           required/>
+                            <EditFormGroup id="firstName"
+                                           label="account.firstName"
+                                           required/>
+                            <EditFormGroup id="lastName"
+                                           label="account.lastName"
+                                           required/>
                             <FormGroup>
-                                <FormLabel>{t("account.accessLevels")} *</FormLabel>
+                                <FormLabel className="font-weight-bold">{t("account.accessLevels")} *</FormLabel>
                                 <div>
-                                    <FormCheck id={ACCESS_LEVEL_CLIENT} label={t("accessLevel.client")} onChange={handleChangeAccessLevel} inline/>
-                                    <FormCheck id={ACCESS_LEVEL_EMPLOYEE} label={t("accessLevel.employee")} onChange={handleChangeAccessLevel} inline/>
-                                    <FormCheck id={ACCESS_LEVEL_ADMIN} label={t("accessLevel.admin")} onChange={handleChangeAccessLevel} inline/>
+                                    <FormCheck id={ACCESS_LEVEL_CLIENT} label={t(ACCESS_LEVEL_CLIENT)} onChange={handleChangeAccessLevel} inline/>
+                                    <FormCheck id={ACCESS_LEVEL_EMPLOYEE} label={t(ACCESS_LEVEL_EMPLOYEE)} onChange={handleChangeAccessLevel} inline/>
+                                    <FormCheck id={ACCESS_LEVEL_ADMIN} label={t(ACCESS_LEVEL_ADMIN)} onChange={handleChangeAccessLevel} inline/>
                                     <p id="accessLevelsFeedback" className="invalid" style={{display: "none"}}>{t("validation:account.accessLevels.required")}</p>
                                 </div>
                             </FormGroup>
                             <FormGroup>
-                                <FormLabel>{t("account.activity")}</FormLabel>
+                                <FormLabel className="font-weight-bold">{t("account.activity")}</FormLabel>
                                 <FormCheck id="active" label={t("account.active")} onChange={handleChangeActive}/>
                             </FormGroup>
                         </Form>
                         <ButtonToolbar className="justify-content-center">
-                            <Button id="back1"
+                            <Button id="back"
                                     variant="dark"
                                     className="button"
                                     onClick={() => props.history.goBack}>{t("navigation.back")}</Button>
-                            <Button id="submit1"
+                            <Button id="submit"
                                     variant="dark"
                                     className="button"
                                     onClick={handleSubmit}>{t("navigation.submit")}</Button>

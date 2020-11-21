@@ -2,7 +2,7 @@ import React from "react";
 import { FormControl, FormGroup, FormLabel } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 
-export const Group = props => {
+export const EditFormGroup = props => {
 
     const {t} = useTranslation("validation");
 
@@ -26,7 +26,7 @@ export const Group = props => {
 
     return (
         <FormGroup>
-            <FormLabel>{t(`common:${props.label}`)} {props.required && "*"}</FormLabel>
+            <FormLabel className="font-weight-bold">{t(`common:${props.label}`)} {props.required && "*"}</FormLabel>
             <FormControl id={props.id}
                          value={props.values[props.id]}
                          onChange={handleChange}

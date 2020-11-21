@@ -50,6 +50,7 @@ public @Data class Account extends BaseEntity {
 
     private String confirmationToken;
 
+    @ToString.Exclude
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Credentials credentials;
 

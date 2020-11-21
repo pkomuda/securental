@@ -3,13 +3,15 @@ import axios from "axios";
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { useTranslation } from "react-i18next";
-import { Breadcrumb, Button, ButtonToolbar, Container, FormControl } from "react-bootstrap";
+import { Breadcrumb, Button, Container, FormControl, InputGroup } from "react-bootstrap";
 import { LinkContainer } from 'react-router-bootstrap';
 import Swal from "sweetalert2";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import "react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css";
 import "../styles/Table.css";
 import { PAGINATION_SIZES } from "../utils/Constants";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from '@fortawesome/free-solid-svg-icons'
 
 export const ListAccounts = props => {
 
@@ -68,7 +70,11 @@ export const ListAccounts = props => {
         axios.get(url())
             .then(response => {
                 if (response.data.empty) {
-                    setPage(response.data.totalPages);
+                    if (response.data.totalPages === 0) {
+                        setPage(1);
+                    } else {
+                        setPage(response.data.totalPages);
+                    }
                 }
                 setAccounts(response.data.content);
                 setTotalSize(response.data.totalElements);
@@ -90,15 +96,22 @@ export const ListAccounts = props => {
         <React.Fragment>
             <Breadcrumb>
                 <LinkContainer to="/" exact>
-                    <Breadcrumb.Item>Home</Breadcrumb.Item>
+                    <Breadcrumb.Item>{t("breadcrumbs.home")}</Breadcrumb.Item>
                 </LinkContainer>
-                <Breadcrumb.Item active>Account list</Breadcrumb.Item>
+                <Breadcrumb.Item active>{t("breadcrumbs.listAccounts")}</Breadcrumb.Item>
             </Breadcrumb>
             <Container>
-                <FormControl id="filter"
-                             placeholder="Search"
-                             value={filter}
-                             onChange={event => setFilter(event.target.value)}/>
+                <InputGroup>
+                    <InputGroup.Prepend>
+                        <InputGroup.Text>
+                            <FontAwesomeIcon icon={faSearch}/>
+                        </InputGroup.Text>
+                    </InputGroup.Prepend>
+                    <FormControl id="filter"
+                                 placeholder={t("navigation.search")}
+                                 value={filter}
+                                 onChange={event => setFilter(event.target.value)}/>
+                </InputGroup>
                 <BootstrapTable remote
                                 bootstrap4
                                 keyField="email"
@@ -106,12 +119,6 @@ export const ListAccounts = props => {
                                 columns={columns}
                                 pagination={paginationFactory({page, sizePerPage, totalSize, sizePerPageList: PAGINATION_SIZES})}
                                 onTableChange={handleTableChange}/>
-                <ButtonToolbar className="justify-content-center">
-                    <Button id="back"
-                            variant="dark"
-                            className="button"
-                            onClick={() => props.history.goBack}>{t("navigation.back")}</Button>
-                </ButtonToolbar>
             </Container>
         </React.Fragment>
     );

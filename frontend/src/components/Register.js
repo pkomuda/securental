@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import { Button, ButtonToolbar, Col, Form, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { object, string } from "yup";
-import { Group } from "./Group";
+import { EditFormGroup } from "./EditFormGroup";
 import { emailRegex, validate } from "../utils/Validation";
 import withReactContent from "sweetalert2-react-content";
 import { LAST_PASSWORD_CHARACTERS } from "../utils/Constants";
@@ -29,7 +29,7 @@ export const Register = props => {
     });
     const [errors, setErrors] = useState({});
     const [stage, setStage] = useState(1);
-    Group.defaultProps = {
+    EditFormGroup.defaultProps = {
         schema: schema,
         values: account,
         errors: errors,
@@ -96,18 +96,18 @@ export const Register = props => {
             return (
                 <Col sm={5} className="form-container">
                     <Form>
-                        <Group id="username"
-                               label="account.username"
-                               required/>
-                        <Group id="email"
-                               label="account.email"
-                               required/>
-                        <Group id="firstName"
-                               label="account.firstName"
-                               required/>
-                        <Group id="lastName"
-                               label="account.lastName"
-                               required/>
+                        <EditFormGroup id="username"
+                                       label="account.username"
+                                       required/>
+                        <EditFormGroup id="email"
+                                       label="account.email"
+                                       required/>
+                        <EditFormGroup id="firstName"
+                                       label="account.firstName"
+                                       required/>
+                        <EditFormGroup id="lastName"
+                                       label="account.lastName"
+                                       required/>
                     </Form>
                     <ButtonToolbar className="justify-content-center">
                         <Button id="back1"
@@ -129,10 +129,10 @@ export const Register = props => {
             return (
                 <Col sm={5} className="form-container">
                     <Form>
-                        <Group id="password"
-                               label="account.password"
-                               required
-                               password/>
+                        <EditFormGroup id="password"
+                                       label="account.password"
+                                       required
+                                       password/>
                     </Form>
                     <ButtonToolbar className="justify-content-center">
                         <Button id="back2"

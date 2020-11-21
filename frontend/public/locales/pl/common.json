@@ -5,6 +5,7 @@
   "navigation.ok": "OK",
   "navigation.edit": "Edytuj",
   "navigation.details": "Szczegóły",
+  "navigation.search": "Szukaj",
 
   "breadcrumbs.home": "Strona główna",
   "breadcrumbs.login": "Logowanie",
@@ -22,11 +23,14 @@
   "account.accessLevels": "Poziomy dostępu",
   "account.activity": "Aktywność",
   "account.active": "Aktywny",
+  "account.inactive": "Nieaktywny",
+  "account.confirmation": "Potwierdzenie",
   "account.confirmed": "Potwierdzony",
+  "account.notConfirmed": "Niepotwierdzony",
 
-  "accessLevel.admin": "Administrator",
-  "accessLevel.employee": "Pracownik",
-  "accessLevel.client": "Klient",
+  "ADMIN": "Administrator",
+  "EMPLOYEE": "Pracownik",
+  "CLIENT": "Klient",
 
   "login.header": "Logowanie",
   "login.password.characters": "Znaki hasła",
