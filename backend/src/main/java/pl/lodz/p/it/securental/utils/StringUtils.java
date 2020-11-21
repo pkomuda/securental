@@ -55,11 +55,15 @@ public final class StringUtils {
     }
 
     public static String base64(byte[] bytes) {
-        return Base64.getEncoder().encodeToString(bytes);
+        return Base64.getUrlEncoder().encodeToString(bytes);
+    }
+
+    public static byte[] decode(String base64) {
+        return Base64.getUrlDecoder().decode(base64);
     }
 
     public static String randomBase64() {
-        return Base64.getEncoder().encodeToString(UUID.randomUUID().toString().getBytes(StandardCharsets.UTF_8));
+        return base64(UUID.randomUUID().toString().getBytes(StandardCharsets.UTF_8));
     }
 
     public static List<Integer> randomCombination(int full, int min, int max) {

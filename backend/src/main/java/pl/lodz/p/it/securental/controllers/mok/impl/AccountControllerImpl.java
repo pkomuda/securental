@@ -10,6 +10,7 @@ import pl.lodz.p.it.securental.dto.mok.ConfirmAccountDto;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.services.mok.AccountService;
 import pl.lodz.p.it.securental.utils.PagingHelper;
+import pl.lodz.p.it.securental.utils.SignatureUtils;
 
 @CrossOrigin
 @RestController
@@ -18,6 +19,7 @@ import pl.lodz.p.it.securental.utils.PagingHelper;
 public class AccountControllerImpl implements AccountController {
 
     private final AccountService accountService;
+    private final SignatureUtils signatureUtils;
 
     @Override
     @PostMapping("/account")
@@ -77,5 +79,15 @@ public class AccountControllerImpl implements AccountController {
                                                  @PathVariable String property,
                                                  @PathVariable String order) throws ApplicationBaseException {
         return accountService.filterAccounts(filter, new PagingHelper(page, size, property, order));
+    }
+
+    @GetMapping("/sign/{message}")
+    public String sign(@PathVariable String message) throws ApplicationBaseException {
+        return signatureUtils.sign(message);
+    }
+
+    @GetMapping("/verify/{message}/{received}")
+    public boolean verify(@PathVariable String message, @PathVariable String received) throws ApplicationBaseException {
+        return signatureUtils.verify(message, received);
     }
 }

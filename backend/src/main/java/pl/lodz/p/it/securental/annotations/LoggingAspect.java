@@ -45,7 +45,6 @@ public class LoggingAspect {
             result = jp.proceed();
         } catch (Throwable e) {
             message.append("With exception: ");
-            message.append(LoggingAspect.class.getName()).append(" ");
             message.append(e);
             log.error(message.toString());
             throw e;

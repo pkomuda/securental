@@ -17,6 +17,7 @@ public class ApplicationProperties {
     public static String FRONTEND_ORIGIN;
     public static Integer FULL_PASSWORD_LENGTH;
     public static String JWT_KEY;
+    public static char[] KEYSTORE_PASSWORD;
     public static Integer MASKED_PASSWORD_MAX_LENGTH;
     public static Integer MASKED_PASSWORD_MIN_LENGTH;
     public static String PASSWORD_HASHING_ALGORITHM;
@@ -26,6 +27,7 @@ public class ApplicationProperties {
                                  @Value("${FRONTEND_ORIGIN}") String frontendOrigin,
                                  @Value("${FULL_PASSWORD_LENGTH}") Integer fullPasswordLength,
                                  @Value("${JWT_KEY}") String jwtKey,
+                                 @Value("${KEYSTORE_PASSWORD}") String keystorePassword,
                                  @Value("${MASKED_PASSWORD_MAX_LENGTH}") Integer maskedPasswordMaxLength,
                                  @Value("${MASKED_PASSWORD_MIN_LENGTH}") Integer maskedPasswordMinLength,
                                  @Value("${PASSWORD_HASHING_ALGORITHM}") String passwordHashingAlgorithm) {
@@ -34,6 +36,7 @@ public class ApplicationProperties {
         FRONTEND_ORIGIN = frontendOrigin;
         FULL_PASSWORD_LENGTH = fullPasswordLength;
         JWT_KEY = jwtKey;
+        KEYSTORE_PASSWORD = keystorePassword.toCharArray();
         MASKED_PASSWORD_MAX_LENGTH = maskedPasswordMaxLength;
         MASKED_PASSWORD_MIN_LENGTH = maskedPasswordMinLength;
         PASSWORD_HASHING_ALGORITHM = passwordHashingAlgorithm;
