@@ -20,11 +20,14 @@ import pl.lodz.p.it.securental.dto.mappers.mok.AccountMapper;
 import pl.lodz.p.it.securental.dto.mok.AccountDto;
 import pl.lodz.p.it.securental.entities.mok.*;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
+import pl.lodz.p.it.securental.exceptions.ApplicationOptimisticLockException;
 import pl.lodz.p.it.securental.exceptions.mok.AccountAlreadyExistsException;
 import pl.lodz.p.it.securental.exceptions.mok.AccountNotFoundException;
 import pl.lodz.p.it.securental.exceptions.mok.QrCodeGenerationException;
+import pl.lodz.p.it.securental.exceptions.mok.UsernameNotMatchingException;
 import pl.lodz.p.it.securental.utils.EmailSender;
 import pl.lodz.p.it.securental.utils.PagingHelper;
+import pl.lodz.p.it.securental.utils.SignatureUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -49,6 +52,8 @@ public class AccountService {
     private final GoogleAuthenticator googleAuthenticator;
     private final OtpCredentialsAdapter otpCredentialsAdapter;
     private final EmailSender emailSender;
+    private final SignatureUtils signatureUtils;
+    private final AccountMapper accountMapper;
 
     private List<MaskedPassword> generateMaskedPasswords(String fullPassword) {
         List<MaskedPassword> maskedPasswords = new ArrayList<>();
@@ -130,7 +135,7 @@ public class AccountService {
     public AccountDto getAccount(String username) throws ApplicationBaseException {
         Optional<Account> accountOptional = accountAdapter.getAccount(username);
         if (accountOptional.isPresent()) {
-            return AccountMapper.toAccountDto(accountOptional.get());
+            return accountMapper.toAccountDtoWithSignature(accountOptional.get());
         } else {
             throw new AccountNotFoundException();
         }
@@ -147,7 +152,6 @@ public class AccountService {
             AuthenticationToken authenticationToken = account.getAuthenticationToken();
             authenticationToken.setCombination(randomCombination);
             authenticationToken.setExpiration(LocalDateTime.now().plusMinutes(AUTHENTICATION_TOKEN_EXPIRATION));
-//            accountAdapter.addAccount(account);
         }
         return randomCombination;
     }
@@ -165,6 +169,27 @@ public class AccountService {
             return AccountMapper.toAccountDtos(accountAdapter.filterAccounts(filter, pagingHelper.withSorting()));
         } catch (PropertyReferenceException e) {
             return AccountMapper.toAccountDtos(accountAdapter.filterAccounts(filter, pagingHelper.withoutSorting()));
+        }
+    }
+
+    public void editAccount(String username, AccountDto accountDto) throws ApplicationBaseException {
+        if (username.equals(accountDto.getUsername())) {
+            Optional<Account> accountOptional = accountAdapter.getAccount(username);
+            if (accountOptional.isPresent()) {
+                Account account = accountOptional.get();
+                if (signatureUtils.verify(account.toSignString(), accountDto.getSignature())) {
+                    account.setFirstName(accountDto.getFirstName());
+                    account.setLastName(accountDto.getLastName());
+                    account.setActive(accountDto.isActive());
+                    AccountMapper.updateAccessLevels(account.getAccessLevels(), accountDto.getAccessLevels());
+                } else {
+                    throw new ApplicationOptimisticLockException();
+                }
+            } else {
+                throw new AccountNotFoundException();
+            }
+        } else {
+            throw new UsernameNotMatchingException();
         }
     }
 

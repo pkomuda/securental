@@ -12,6 +12,7 @@ import "@sweetalert2/theme-bootstrap-4";
 import { ListAccounts } from "./components/ListAccounts";
 import { AccountDetails } from "./components/AccountDetails";
 import { AddAccount } from "./components/AddAccount";
+import { EditAccount } from "./components/EditAccount";
 
 export const App = () => (
     <Router>
@@ -25,6 +26,7 @@ export const App = () => (
                     <Route exact path="/listAccounts" component={ListAccounts}/>
                     <Route exact path="/accountDetails/:username" component={AccountDetails}/>
                     <Route exact path="/addAccount" component={AddAccount}/>
+                    <Route exact path="/editAccount/:username" component={EditAccount}/>
                     <Route component={NotFound}/>
                 </Switch>
             </Suspense>

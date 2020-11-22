@@ -1,7 +1,6 @@
 package pl.lodz.p.it.securental.entities;
 
 import lombok.Data;
-import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -18,7 +17,6 @@ public abstract @Data class BaseEntity implements Serializable {
     private Long id;
 
     @Version
-    @Getter(lombok.AccessLevel.NONE)
     @Setter(lombok.AccessLevel.NONE)
     private Long version;
 }

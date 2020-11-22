@@ -13,6 +13,7 @@
   "breadcrumbs.listAccounts": "Lista kont",
   "breadcrumbs.accountDetails": "Szczegóły konta",
   "breadcrumbs.addAccount": "Dodaj konto",
+  "breadcrumbs.editAccount": "Edycja konta",
 
   "account.details.header": "Szczegóły konta",
   "account.username": "Nazwa użytkownika",

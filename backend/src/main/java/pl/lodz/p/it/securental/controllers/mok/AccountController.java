@@ -15,4 +15,5 @@ public interface AccountController {
     Page<AccountDto> getSortedAccounts(int page, int size, String property, String order) throws ApplicationBaseException;
     Page<AccountDto> filterAccounts(String filter, int page, int size) throws ApplicationBaseException;
     Page<AccountDto> filterSortedAccounts(String filter, int page, int size, String property, String order) throws ApplicationBaseException;
+    void editAccount(String username, AccountDto accountDto) throws ApplicationBaseException;
 }

@@ -81,6 +81,13 @@ public class AccountControllerImpl implements AccountController {
         return accountService.filterAccounts(filter, new PagingHelper(page, size, property, order));
     }
 
+    @Override
+    @PutMapping("/account/{username}")
+    public void editAccount(@PathVariable String username,
+                            @RequestBody AccountDto accountDto) throws ApplicationBaseException {
+        accountService.editAccount(username, accountDto);
+    }
+
     @GetMapping("/sign/{message}")
     public String sign(@PathVariable String message) throws ApplicationBaseException {
         return signatureUtils.sign(message);

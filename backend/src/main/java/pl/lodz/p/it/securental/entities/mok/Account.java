@@ -65,4 +65,8 @@ public @Data class Account extends BaseEntity {
 
     @OneToMany(cascade = CascadeType.PERSIST)
     private List<AccessLevel> accessLevels = new ArrayList<>();
+
+    public String toSignString() {
+        return String.join(",", otpCredentials.getUsername(), Long.toString(getVersion()));
+    }
 }

@@ -16,4 +16,5 @@ public @Data class AccountDto {
     private boolean active;
     private boolean confirmed;
     private List<String> accessLevels;
+    private String signature;
 }

@@ -8,7 +8,6 @@ import {
     Col,
     Container,
     Form,
-    FormCheck,
     FormControl,
     FormGroup,
     FormLabel,
@@ -18,7 +17,6 @@ import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import { Spinner } from "./Spinner";
 import { FlatFormGroup } from "./FlatFormGroup";
-import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_CLIENT, ACCESS_LEVEL_EMPLOYEE } from "../utils/Constants";
 
 export const AccountDetails = props => {
 
