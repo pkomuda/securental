@@ -52,4 +52,22 @@ public class CarControllerImpl implements CarController {
                                       @PathVariable String order) throws ApplicationBaseException {
         return carService.getAllCars(new PagingHelper(page, size, property, order));
     }
+
+    @Override
+    @GetMapping("/cars/{filter}/{page}/{size}")
+    public Page<CarDto> filterCars(@PathVariable String filter,
+                                   @PathVariable int page,
+                                   @PathVariable int size) throws ApplicationBaseException {
+        return carService.filterCars(filter, new PagingHelper(page, size));
+    }
+
+    @Override
+    @GetMapping("/cars/{filter}/{page}/{size}/{property}/{order}")
+    public Page<CarDto> filterSortedCars(@PathVariable String filter,
+                                         @PathVariable int page,
+                                         @PathVariable int size,
+                                         @PathVariable String property,
+                                         @PathVariable String order) throws ApplicationBaseException {
+        return carService.filterCars(filter, new PagingHelper(page, size, property, order));
+    }
 }

@@ -15,4 +15,5 @@ public interface CarRepository extends JpaRepository<Car, Long> {
 
     Optional<Car> findByNumber(String number);
     Page<Car> findAll(Pageable pageable);
+    Page<Car> findAllByMakeContainsIgnoreCaseOrModelContainsIgnoreCase(String make, String model, Pageable pageable);
 }

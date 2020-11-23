@@ -49,7 +49,8 @@ public class AccountAdapter {
 
     public Page<Account> filterAccounts(String filter, Pageable pageable) throws ApplicationBaseException {
         try {
-            return accountRepository.findAllByEmailContainsIgnoreCaseOrFirstNameContainsIgnoreCaseOrLastNameContainsIgnoreCase(filter,
+            return accountRepository.findAllByOtpCredentialsUsernameContainsIgnoreCaseOrEmailContainsIgnoreCaseOrFirstNameContainsIgnoreCaseOrLastNameContainsIgnoreCase(filter,
+                    filter,
                     filter,
                     filter,
                     pageable);

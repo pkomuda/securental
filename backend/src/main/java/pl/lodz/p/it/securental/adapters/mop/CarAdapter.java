@@ -48,4 +48,16 @@ public class CarAdapter {
             throw new DatabaseConnectionException(e);
         }
     }
+
+    public Page<Car> filterCars(String filter, Pageable pageable) throws ApplicationBaseException {
+        try {
+            return carRepository.findAllByMakeContainsIgnoreCaseOrModelContainsIgnoreCase(filter,
+                    filter,
+                    pageable);
+        } catch (PropertyReferenceException e) {
+            throw new PropertyNotFoundException(e);
+        } catch (PersistenceException | DataAccessException e) {
+            throw new DatabaseConnectionException(e);
+        }
+    }
 }

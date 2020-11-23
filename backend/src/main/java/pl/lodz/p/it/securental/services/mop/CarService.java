@@ -74,4 +74,12 @@ public class CarService {
             return CarMapper.toCarDtos(carAdapter.getAllCars(pagingHelper.withoutSorting()));
         }
     }
+
+    public Page<CarDto> filterCars(String filter, PagingHelper pagingHelper) throws ApplicationBaseException {
+        try {
+            return CarMapper.toCarDtos(carAdapter.filterCars(filter, pagingHelper.withSorting()));
+        } catch (PropertyNotFoundException e) {
+            return CarMapper.toCarDtos(carAdapter.filterCars(filter, pagingHelper.withoutSorting()));
+        }
+    }
 }

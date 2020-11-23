@@ -16,13 +16,9 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     Optional<Account> findByOtpCredentialsUsername(String username);
     Optional<Account> findByConfirmationToken(String token);
     Page<Account> findAll(Pageable pageable);
-    Page<Account> findAllByOtpCredentialsUsernameOrEmailOrFirstNameOrLastName(String username,
-                                                                              String email,
-                                                                              String firstName,
-                                                                              String lastName,
-                                                                              Pageable pageable);
-    Page<Account> findAllByEmailContainsIgnoreCaseOrFirstNameContainsIgnoreCaseOrLastNameContainsIgnoreCase(String email,
-                                                                                                            String firstName,
-                                                                                                            String lastName,
-                                                                                                            Pageable pageable);
+    Page<Account> findAllByOtpCredentialsUsernameContainsIgnoreCaseOrEmailContainsIgnoreCaseOrFirstNameContainsIgnoreCaseOrLastNameContainsIgnoreCase(String username,
+                                                                                                                                                      String email,
+                                                                                                                                                      String firstName,
+                                                                                                                                                      String lastName,
+                                                                                                                                                      Pageable pageable);
 }

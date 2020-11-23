@@ -6,7 +6,7 @@ import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormCheck, For
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
-import { bool, object, string, number } from "yup";
+import { bool, number, object, string } from "yup";
 import { validate } from "../utils/Validation";
 import { EditFormGroup } from "./EditFormGroup";
 

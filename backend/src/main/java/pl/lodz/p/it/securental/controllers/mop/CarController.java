@@ -11,4 +11,6 @@ public interface CarController {
     void editCar(String number, CarDto carDto) throws ApplicationBaseException;
     Page<CarDto> getAllCars(int page, int size) throws ApplicationBaseException;
     Page<CarDto> getSortedCars(int page, int size, String property, String order) throws ApplicationBaseException;
+    Page<CarDto> filterCars(String filter, int page, int size) throws ApplicationBaseException;
+    Page<CarDto> filterSortedCars(String filter, int page, int size, String property, String order) throws ApplicationBaseException;
 }
