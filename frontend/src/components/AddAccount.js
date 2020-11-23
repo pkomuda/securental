@@ -1,19 +1,16 @@
-import React, { useState } from "react";
+import { faHome } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
-import Swal from "sweetalert2";
+import React, { useState } from "react";
 import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormCheck, FormGroup, FormLabel, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-import { bool, object, string } from "yup";
-import { EditFormGroup } from "./EditFormGroup";
-import { emailRegex, validate } from "../utils/Validation";
-import withReactContent from "sweetalert2-react-content";
-import {
-    ACCESS_LEVEL_ADMIN,
-    ACCESS_LEVEL_CLIENT,
-    ACCESS_LEVEL_EMPLOYEE,
-    LAST_PASSWORD_CHARACTERS
-} from "../utils/Constants";
 import { LinkContainer } from "react-router-bootstrap";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import { bool, object, string } from "yup";
+import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_CLIENT, ACCESS_LEVEL_EMPLOYEE, LAST_PASSWORD_CHARACTERS } from "../utils/Constants";
+import { EMAIL_REGEX, validate } from "../utils/Validation";
+import { EditFormGroup } from "./EditFormGroup";
 
 export const AddAccount = props => {
 
@@ -21,7 +18,7 @@ export const AddAccount = props => {
     const MySwal = withReactContent(Swal);
     const schema = object().shape({
         username: string().required("account.username.required").min(1, "account.username.min").max(32, "account.username.max"),
-        email: string().required("account.email.required").matches(emailRegex, "account.email.invalid"),
+        email: string().required("account.email.required").matches(EMAIL_REGEX, "account.email.invalid"),
         firstName: string().required("account.firstName.required").min(1, "account.firstName.min").max(32, "account.firstName.max"),
         lastName: string().required("account.lastName.required").min(1, "account.lastName.min").max(32, "account.lastName.max"),
         active: bool(),
@@ -110,7 +107,9 @@ export const AddAccount = props => {
         <React.Fragment>
             <Breadcrumb>
                 <LinkContainer to="/" exact>
-                    <Breadcrumb.Item>{t("breadcrumbs.home")}</Breadcrumb.Item>
+                    <Breadcrumb.Item>
+                        <FontAwesomeIcon icon={faHome}/>
+                    </Breadcrumb.Item>
                 </LinkContainer>
                 <Breadcrumb.Item active>{t("breadcrumbs.addAccount")}</Breadcrumb.Item>
             </Breadcrumb>

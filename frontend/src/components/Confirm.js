@@ -1,7 +1,7 @@
-import React from "react";
 import axios from "axios";
-import { useTranslation } from "react-i18next";
+import React from "react";
 import { Button, ButtonToolbar } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
 import Swal from "sweetalert2";
 
 export const Confirm = props => {

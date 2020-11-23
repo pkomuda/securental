@@ -1,34 +1,23 @@
-import React, { useEffect, useState } from "react";
+import { faHome } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
-import Swal from "sweetalert2";
-import {
-    Breadcrumb,
-    Button,
-    ButtonToolbar,
-    Col,
-    Container,
-    Form,
-    FormCheck,
-    FormControl,
-    FormGroup,
-    FormLabel,
-    Row
-} from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormCheck, FormGroup, FormLabel, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
-import { Spinner } from "./Spinner";
-import { FlatFormGroup } from "./FlatFormGroup";
-import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_CLIENT, ACCESS_LEVEL_EMPLOYEE } from "../utils/Constants";
-import { EditFormGroup } from "./EditFormGroup";
+import Swal from "sweetalert2";
 import { bool, object, string } from "yup";
-import { emailRegex } from "../utils/Validation";
+import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_CLIENT, ACCESS_LEVEL_EMPLOYEE } from "../utils/Constants";
+import { EMAIL_REGEX } from "../utils/Validation";
+import { EditFormGroup } from "./EditFormGroup";
+import { Spinner } from "./Spinner";
 
 export const EditAccount = props => {
 
     const {t} = useTranslation();
     const schema = object().shape({
         username: string().required("account.username.required").min(1, "account.username.min").max(32, "account.username.max"),
-        email: string().required("account.email.required").matches(emailRegex, "account.email.invalid"),
+        email: string().required("account.email.required").matches(EMAIL_REGEX, "account.email.invalid"),
         firstName: string().required("account.firstName.required").min(1, "account.firstName.min").max(32, "account.firstName.max"),
         lastName: string().required("account.lastName.required").min(1, "account.lastName.min").max(32, "account.lastName.max"),
         active: bool()
@@ -51,19 +40,20 @@ export const EditAccount = props => {
         setErrors: newErrors => setErrors(newErrors)
     };
 
-    const toAccessLevelsObject = accessLevelsArray => {
-        const object = {};
-        setAccessLevelValue(object, accessLevelsArray, ACCESS_LEVEL_ADMIN);
-        setAccessLevelValue(object, accessLevelsArray, ACCESS_LEVEL_EMPLOYEE);
-        setAccessLevelValue(object, accessLevelsArray, ACCESS_LEVEL_CLIENT);
-        return object;
-    };
+
 
     const setAccessLevelValue = (object, array, name) => {
         object[name] = array.includes(name);
     };
 
     useEffect(() => {
+        const toAccessLevelsObject = accessLevelsArray => {
+            const object = {};
+            setAccessLevelValue(object, accessLevelsArray, ACCESS_LEVEL_ADMIN);
+            setAccessLevelValue(object, accessLevelsArray, ACCESS_LEVEL_EMPLOYEE);
+            setAccessLevelValue(object, accessLevelsArray, ACCESS_LEVEL_CLIENT);
+            return object;
+        };
         axios.get(`/account/${props.match.params.username}`)
             .then(response => {
                 setAccount(response.data);
@@ -119,12 +109,14 @@ export const EditAccount = props => {
             <React.Fragment>
                 <Breadcrumb>
                     <LinkContainer to="/" exact>
-                        <Breadcrumb.Item>Home</Breadcrumb.Item>
+                        <Breadcrumb.Item>
+                            <FontAwesomeIcon icon={faHome}/>
+                        </Breadcrumb.Item>
                     </LinkContainer>
                     <LinkContainer to="/listAccounts" exact>
                         <Breadcrumb.Item>{t("breadcrumbs.listAccounts")}</Breadcrumb.Item>
                     </LinkContainer>
-                    <LinkContainer to={`accountDetails/${account.username}`} exact>
+                    <LinkContainer to={`/accountDetails/${account.username}`} exact>
                         <Breadcrumb.Item>{accountDetailsBreadcrumb()}</Breadcrumb.Item>
                     </LinkContainer>
                     <Breadcrumb.Item active>{activeBreadcrumb()}</Breadcrumb.Item>

@@ -1,13 +1,13 @@
-import React, { useState } from "react";
 import axios from "axios";
-import Swal from "sweetalert2";
+import React, { useState } from "react";
 import { Button, ButtonToolbar, Col, Form, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-import { object, string } from "yup";
-import { EditFormGroup } from "./EditFormGroup";
-import { emailRegex, validate } from "../utils/Validation";
+import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { object, string } from "yup";
 import { LAST_PASSWORD_CHARACTERS } from "../utils/Constants";
+import { EMAIL_REGEX, validate } from "../utils/Validation";
+import { EditFormGroup } from "./EditFormGroup";
 
 export const Register = props => {
 
@@ -15,7 +15,7 @@ export const Register = props => {
     const MySwal = withReactContent(Swal);
     const schema = object().shape({
         username: string().required("account.username.required").min(1, "account.username.min").max(32, "account.username.max"),
-        email: string().required("account.email.required").matches(emailRegex, "account.email.invalid"),
+        email: string().required("account.email.required").matches(EMAIL_REGEX, "account.email.invalid"),
         firstName: string().required("account.firstName.required").min(1, "account.firstName.min").max(32, "account.firstName.max"),
         lastName: string().required("account.lastName.required").min(1, "account.lastName.min").max(32, "account.lastName.max"),
         password: string().required("account.password.required").length(8, "account.password.min").max(8, "account.password.max")

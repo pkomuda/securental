@@ -1,22 +1,13 @@
-import React, { useEffect, useState } from "react";
+import { faHome } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
-import Swal from "sweetalert2";
-import {
-    Breadcrumb,
-    Button,
-    ButtonToolbar,
-    Col,
-    Container,
-    Form,
-    FormControl,
-    FormGroup,
-    FormLabel,
-    Row
-} from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormControl, FormGroup, FormLabel, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
-import { Spinner } from "./Spinner";
+import Swal from "sweetalert2";
 import { FlatFormGroup } from "./FlatFormGroup";
+import { Spinner } from "./Spinner";
 
 export const AccountDetails = props => {
 
@@ -62,7 +53,9 @@ export const AccountDetails = props => {
             <React.Fragment>
                 <Breadcrumb>
                     <LinkContainer to="/" exact>
-                        <Breadcrumb.Item>Home</Breadcrumb.Item>
+                        <Breadcrumb.Item>
+                            <FontAwesomeIcon icon={faHome}/>
+                        </Breadcrumb.Item>
                     </LinkContainer>
                     <LinkContainer to="/listAccounts" exact>
                         <Breadcrumb.Item>{t("breadcrumbs.listAccounts")}</Breadcrumb.Item>
