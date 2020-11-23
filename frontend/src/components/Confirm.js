@@ -25,11 +25,9 @@ export const Confirm = props => {
             <h1 className="text-center">{t("confirm.header")}</h1>
             <ButtonToolbar className="justify-content-center">
                 <Button id="back"
-                        variant="dark"
                         className="button"
                         onClick={() => props.history.push("/")}>{t("navigation.back")}</Button>
-                <Button id="submit1"
-                        variant="dark"
+                <Button id="submit"
                         className="button"
                         onClick={handleSubmit}>{t("navigation.submit")}</Button>
             </ButtonToolbar>

@@ -7,17 +7,15 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static pl.lodz.p.it.securental.utils.ApplicationProperties.EMAIL_REGEXP;
 
 @Entity
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 public @Data class Account extends BaseEntity {
 
     @Pattern(regexp = EMAIL_REGEXP)
@@ -65,6 +63,20 @@ public @Data class Account extends BaseEntity {
 
     @OneToMany(cascade = CascadeType.PERSIST)
     private List<AccessLevel> accessLevels = new ArrayList<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Account account = (Account) o;
+        return otpCredentials.getUsername().equals(account.otpCredentials.getUsername());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), otpCredentials.getUsername());
+    }
 
     public String toSignString() {
         return String.join(",", otpCredentials.getUsername(), Long.toString(getVersion()));

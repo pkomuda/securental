@@ -111,11 +111,9 @@ export const Register = props => {
                     </Form>
                     <ButtonToolbar className="justify-content-center">
                         <Button id="back1"
-                                variant="dark"
                                 className="button"
                                 onClick={() => props.history.goBack}>{t("navigation.back")}</Button>
                         <Button id="submit1"
-                                variant="dark"
                                 className="button"
                                 onClick={handleFirstStage}>{t("navigation.next")}</Button>
                     </ButtonToolbar>
@@ -136,11 +134,9 @@ export const Register = props => {
                     </Form>
                     <ButtonToolbar className="justify-content-center">
                         <Button id="back2"
-                                variant="dark"
                                 className="button"
                                 onClick={() => setStage(1)}>{t("navigation.back")}</Button>
                         <Button id="submit2"
-                                variant="dark"
                                 className="button"
                                 onClick={handleSecondStage}>{t("navigation.next")}</Button>
                     </ButtonToolbar>

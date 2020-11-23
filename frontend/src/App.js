@@ -1,4 +1,5 @@
 import React, { Suspense } from "react";
+import { Button } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { NavigationBar } from "./components/NavigationBar";
 import { Spinner } from "./components/Spinner";
@@ -14,9 +15,15 @@ import { AccountDetails } from "./components/AccountDetails";
 import { AddAccount } from "./components/AddAccount";
 import { EditAccount } from "./components/EditAccount";
 
-export const App = () => (
-    <Router>
-        <NavigationBar/>
+export const App = () => {
+
+    Button.defaultProps = {
+        variant: "dark"
+    };
+
+    return (
+        <Router>
+            <NavigationBar/>
             <Suspense fallback={<Spinner/>}>
                 <Switch>
                     <Route exact path="/" component={Home}/>
@@ -30,5 +37,6 @@ export const App = () => (
                     <Route component={NotFound}/>
                 </Switch>
             </Suspense>
-    </Router>
-);
+        </Router>
+    );
+};

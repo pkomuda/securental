@@ -60,7 +60,7 @@ public class AccountControllerImpl implements AccountController {
                                               @PathVariable int size,
                                               @PathVariable String property,
                                               @PathVariable String order) throws ApplicationBaseException {
-        return accountService.getAllAccounts(new PagingHelper(page, size, property, order));
+        return accountService.getAllAccounts(new PagingHelper(page, size, resolvePropertyName(property), order));
     }
 
     @Override
@@ -78,7 +78,7 @@ public class AccountControllerImpl implements AccountController {
                                                  @PathVariable int size,
                                                  @PathVariable String property,
                                                  @PathVariable String order) throws ApplicationBaseException {
-        return accountService.filterAccounts(filter, new PagingHelper(page, size, property, order));
+        return accountService.filterAccounts(filter, new PagingHelper(page, size, resolvePropertyName(property), order));
     }
 
     @Override
@@ -96,5 +96,13 @@ public class AccountControllerImpl implements AccountController {
     @GetMapping("/verify/{message}/{received}")
     public boolean verify(@PathVariable String message, @PathVariable String received) throws ApplicationBaseException {
         return signatureUtils.verify(message, received);
+    }
+
+    private String resolvePropertyName(String property) {
+        if (property.equals("username")) {
+            return "otpCredentials_username";
+        } else {
+            return property;
+        }
     }
 }

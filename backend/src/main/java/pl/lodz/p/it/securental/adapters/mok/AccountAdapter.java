@@ -4,11 +4,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.annotations.MandatoryTransaction;
 import pl.lodz.p.it.securental.entities.mok.Account;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.db.DatabaseConnectionException;
+import pl.lodz.p.it.securental.exceptions.db.PropertyNotFoundException;
 import pl.lodz.p.it.securental.repositories.mok.AccountRepository;
 
 import javax.persistence.PersistenceException;
@@ -51,6 +53,8 @@ public class AccountAdapter {
                     filter,
                     filter,
                     pageable);
+        } catch (PropertyReferenceException e) {
+            throw new PropertyNotFoundException(e);
         } catch (PersistenceException | DataAccessException e) {
             throw new DatabaseConnectionException(e);
         }
@@ -59,6 +63,8 @@ public class AccountAdapter {
     public Page<Account> getAllAccounts(Pageable pageable) throws ApplicationBaseException {
         try {
             return accountRepository.findAll(pageable);
+        } catch (PropertyReferenceException e) {
+            throw new PropertyNotFoundException(e);
         } catch (PersistenceException | DataAccessException e) {
             throw new DatabaseConnectionException(e);
         }

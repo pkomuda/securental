@@ -149,11 +149,9 @@ export const AddAccount = props => {
                         </Form>
                         <ButtonToolbar className="justify-content-center">
                             <Button id="back"
-                                    variant="dark"
                                     className="button"
                                     onClick={() => props.history.goBack}>{t("navigation.back")}</Button>
                             <Button id="submit"
-                                    variant="dark"
                                     className="button"
                                     onClick={handleSubmit}>{t("navigation.submit")}</Button>
                         </ButtonToolbar>

@@ -10,7 +10,6 @@ import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 import com.warrenstrange.googleauth.GoogleAuthenticatorQRGenerator;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.adapters.mok.AccountAdapter;
@@ -21,6 +20,7 @@ import pl.lodz.p.it.securental.dto.mok.AccountDto;
 import pl.lodz.p.it.securental.entities.mok.*;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.ApplicationOptimisticLockException;
+import pl.lodz.p.it.securental.exceptions.db.PropertyNotFoundException;
 import pl.lodz.p.it.securental.exceptions.mok.AccountAlreadyExistsException;
 import pl.lodz.p.it.securental.exceptions.mok.AccountNotFoundException;
 import pl.lodz.p.it.securental.exceptions.mok.QrCodeGenerationException;
@@ -159,7 +159,7 @@ public class AccountService {
     public Page<AccountDto> getAllAccounts(PagingHelper pagingHelper) throws ApplicationBaseException {
         try {
             return AccountMapper.toAccountDtos(accountAdapter.getAllAccounts(pagingHelper.withSorting()));
-        } catch (PropertyReferenceException e) {
+        } catch (PropertyNotFoundException e) {
             return AccountMapper.toAccountDtos(accountAdapter.getAllAccounts(pagingHelper.withoutSorting()));
         }
     }
@@ -167,7 +167,7 @@ public class AccountService {
     public Page<AccountDto> filterAccounts(String filter, PagingHelper pagingHelper) throws ApplicationBaseException {
         try {
             return AccountMapper.toAccountDtos(accountAdapter.filterAccounts(filter, pagingHelper.withSorting()));
-        } catch (PropertyReferenceException e) {
+        } catch (PropertyNotFoundException e) {
             return AccountMapper.toAccountDtos(accountAdapter.filterAccounts(filter, pagingHelper.withoutSorting()));
         }
     }

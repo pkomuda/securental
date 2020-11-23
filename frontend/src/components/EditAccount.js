@@ -6,9 +6,9 @@ import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormCheck, For
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
-import { bool, object, string } from "yup";
+import { array, bool, object, string, mixed } from "yup";
 import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_CLIENT, ACCESS_LEVEL_EMPLOYEE } from "../utils/Constants";
-import { EMAIL_REGEX } from "../utils/Validation";
+import { EMAIL_REGEX, validate } from "../utils/Validation";
 import { EditFormGroup } from "./EditFormGroup";
 import { Spinner } from "./Spinner";
 
@@ -20,7 +20,11 @@ export const EditAccount = props => {
         email: string().required("account.email.required").matches(EMAIL_REGEX, "account.email.invalid"),
         firstName: string().required("account.firstName.required").min(1, "account.firstName.min").max(32, "account.firstName.max"),
         lastName: string().required("account.lastName.required").min(1, "account.lastName.min").max(32, "account.lastName.max"),
-        active: bool()
+        active: bool(),
+        confirmed: bool(),
+        accessLevels: array(),
+        signature: string(),
+        password: mixed().nullable()
     });
     const [account, setAccount] = useState({
         username: "",
@@ -56,6 +60,7 @@ export const EditAccount = props => {
         };
         axios.get(`/account/${props.match.params.username}`)
             .then(response => {
+                console.log(response.data);
                 setAccount(response.data);
                 setAccessLevels(toAccessLevelsObject(response.data.accessLevels));
                 setLoaded(true);
@@ -104,6 +109,29 @@ export const EditAccount = props => {
         setAccount({...account, [event.target.id]: !account[event.target.id]});
     };
 
+    const handleSubmit = () => {
+        if (!!(validate(account, errors, setErrors, schema) & validateAccessLevels(accessLevels))) {
+            const tempAccount = {...account};
+            tempAccount.accessLevels = Object.keys(accessLevels).filter(key => accessLevels[key]);
+            console.log(tempAccount);
+            axios.put(`/account/${tempAccount.username}`, tempAccount)
+                .then(() => {
+                    const alerts = [];
+                    alerts.push({
+                        title: t("register.password.header"),
+                        html: t("register.password.text1"),
+                        icon: "success"
+                    });
+                    Swal.queue(alerts);
+                    props.history.push(`/accountDetails/${tempAccount.username}`);
+                }).catch(() => {
+                Swal.fire(t("errors:common.header"),
+                    t("errors:common.text"),
+                    "error");
+            });
+        }
+    };
+
     if (loaded) {
         return (
             <React.Fragment>
@@ -142,18 +170,16 @@ export const EditAccount = props => {
                                 </FormGroup>
                                 <FormGroup>
                                     <FormLabel className="font-weight-bold">{t("account.activity")}</FormLabel>
-                                    <FormCheck id="active" label={t("account.active")} onChange={handleChangeActive}/>
+                                    <FormCheck id="active" label={t("account.active")} onChange={handleChangeActive} defaultChecked={account.active}/>
                                 </FormGroup>
                             </Form>
                             <ButtonToolbar className="justify-content-center">
                                 <Button id="back"
-                                        variant="dark"
                                         className="button"
                                         onClick={() => props.history.goBack()}>{t("navigation.back")}</Button>
                                 <Button id="edit"
-                                        variant="dark"
                                         className="button"
-                                        onClick={() => console.log(accessLevels)}>{t("navigation.submit")}</Button>
+                                        onClick={handleSubmit}>{t("navigation.submit")}</Button>
                             </ButtonToolbar>
                         </Col>
                     </Row>

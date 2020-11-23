@@ -9,12 +9,13 @@ import pl.lodz.p.it.securental.entities.mok.Account;
 
 import java.util.Optional;
 
-@Repository("AccountRepository")
+@Repository
 @MandatoryTransaction
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Optional<Account> findByOtpCredentialsUsername(String username);
     Optional<Account> findByConfirmationToken(String token);
+    Page<Account> findAll(Pageable pageable);
     Page<Account> findAllByOtpCredentialsUsernameOrEmailOrFirstNameOrLastName(String username,
                                                                               String email,
                                                                               String firstName,

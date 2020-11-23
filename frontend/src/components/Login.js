@@ -102,11 +102,9 @@ export const Login = props => {
                     </Form>
                     <ButtonToolbar>
                         <Button id="back1"
-                                variant="dark"
                                 className="button"
                                 onClick={() => props.history.goBack}>{t("navigation.back")}</Button>
                         <Button id="submit1"
-                                variant="dark"
                                 className="button"
                                 onClick={handleFirstStage}>{t("navigation.next")}</Button>
                     </ButtonToolbar>
@@ -146,15 +144,12 @@ export const Login = props => {
                     </Form>
                     <ButtonToolbar>
                         <Button id="back2"
-                                variant="dark"
                                 className="button"
                                 onClick={() => setStage(1)}>{t("navigation.back")}</Button>
                         <Button id="clear"
-                                variant="dark"
                                 className="button"
                                 onClick={handleClearCharacters}>Clear</Button>
                         <Button id="submit2"
-                                variant="dark"
                                 className="button"
                                 onClick={handleSecondStage}>{t("navigation.next")}</Button>
                     </ButtonToolbar>
@@ -174,11 +169,9 @@ export const Login = props => {
                     </Form>
                     <ButtonToolbar>
                         <Button id="back3"
-                                variant="dark"
                                 className="button"
                                 onClick={() => setStage(2)}>{t("navigation.back")}</Button>
                         <Button id="submit3"
-                                variant="dark"
                                 className="button"
                                 onClick={handleThirdStage}>{t("login.sign.in")}</Button>
                     </ButtonToolbar>

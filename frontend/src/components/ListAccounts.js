@@ -82,6 +82,7 @@ export const ListAccounts = props => {
                 setTotalSize(response.data.totalElements);
                 setLoaded(true);
             }).catch(error => {
+                console.log(error);
             Swal.fire(t("errors:common.header"),
                 t(`errors:${error.response.data}`),
                 "error");
