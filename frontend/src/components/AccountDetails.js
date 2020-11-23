@@ -35,15 +35,6 @@ export const AccountDetails = props => {
         });
     }, [props.match.params.username, t]);
 
-    const activeBreadcrumb = () => {
-        switch (window.navigator.language) {
-            case "pl":
-                return `${t("breadcrumbs.accountDetails")} ${account.username}`;
-            default:
-                return `${account.username}'s ${t("breadcrumbs.accountDetails")}`;
-        }
-    };
-
     FlatFormGroup.defaultProps = {
         values: account
     };
@@ -60,7 +51,7 @@ export const AccountDetails = props => {
                     <LinkContainer to="/listAccounts" exact>
                         <Breadcrumb.Item>{t("breadcrumbs.listAccounts")}</Breadcrumb.Item>
                     </LinkContainer>
-                    <Breadcrumb.Item active>{activeBreadcrumb()}</Breadcrumb.Item>
+                    <Breadcrumb.Item active>{t("breadcrumbs.accountDetails")}</Breadcrumb.Item>
                 </Breadcrumb>
                 <Container>
                     <Row className="justify-content-center">

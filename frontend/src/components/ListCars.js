@@ -108,7 +108,7 @@ export const ListCars = props => {
                             <FontAwesomeIcon icon={faHome}/>
                         </Breadcrumb.Item>
                     </LinkContainer>
-                    <Breadcrumb.Item active>{t("breadcrumbs.listAccounts")}</Breadcrumb.Item>
+                    <Breadcrumb.Item active>{t("breadcrumbs.listCars")}</Breadcrumb.Item>
                 </Breadcrumb>
                 <Container>
                     <InputGroup>

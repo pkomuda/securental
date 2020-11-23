@@ -58,6 +58,7 @@ export const AddCar = props => {
         setCar({...car, [event.target.id]: !car[event.target.id]});
     };
 
+
     return (
         <React.Fragment>
             <Breadcrumb>
@@ -66,7 +67,7 @@ export const AddCar = props => {
                         <FontAwesomeIcon icon={faHome}/>
                     </Breadcrumb.Item>
                 </LinkContainer>
-                <Breadcrumb.Item active>{t("breadcrumbs.addAccount")}</Breadcrumb.Item>
+                <Breadcrumb.Item active>{t("breadcrumbs.addCar")}</Breadcrumb.Item>
             </Breadcrumb>
             <Container>
                 <Row className="justify-content-center">

@@ -44,8 +44,6 @@ export const EditAccount = props => {
         setErrors: newErrors => setErrors(newErrors)
     };
 
-
-
     const setAccessLevelValue = (object, array, name) => {
         object[name] = array.includes(name);
     };
@@ -70,24 +68,6 @@ export const EditAccount = props => {
                 "error");
         });
     }, [props.match.params.username, t]);
-
-    const accountDetailsBreadcrumb = () => {
-        switch (window.navigator.language) {
-            case "pl":
-                return `${t("breadcrumbs.accountDetails")} ${account.username}`;
-            default:
-                return `${account.username}'s ${t("breadcrumbs.accountDetails")}`;
-        }
-    };
-
-    const activeBreadcrumb = () => {
-        switch (window.navigator.language) {
-            case "pl":
-                return `${t("breadcrumbs.editAccount")} ${account.username}`;
-            default:
-                return `${t("navigation.edit")} ${account.username}'s ${t("breadcrumbs.editAccount")}`;
-        }
-    };
 
     const handleChangeAccessLevel = event => {
         const temp = {...accessLevels, [event.target.id]: !accessLevels[event.target.id]};
@@ -145,9 +125,9 @@ export const EditAccount = props => {
                         <Breadcrumb.Item>{t("breadcrumbs.listAccounts")}</Breadcrumb.Item>
                     </LinkContainer>
                     <LinkContainer to={`/accountDetails/${account.username}`} exact>
-                        <Breadcrumb.Item>{accountDetailsBreadcrumb()}</Breadcrumb.Item>
+                        <Breadcrumb.Item>{t("breadcrumbs.accountDetails")}</Breadcrumb.Item>
                     </LinkContainer>
-                    <Breadcrumb.Item active>{activeBreadcrumb()}</Breadcrumb.Item>
+                    <Breadcrumb.Item active>{t("breadcrumbs.editAccount")}</Breadcrumb.Item>
                 </Breadcrumb>
                 <Container>
                     <Row className="justify-content-center">

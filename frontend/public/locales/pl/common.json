@@ -13,6 +13,10 @@
   "breadcrumbs.accountDetails": "Szczegóły konta",
   "breadcrumbs.addAccount": "Dodaj konto",
   "breadcrumbs.editAccount": "Edycja konta",
+  "breadcrumbs.listCars": "Lista samochodów",
+  "breadcrumbs.carDetails": "Szczegóły samochodu",
+  "breadcrumbs.addCar": "Dodaj samochód",
+  "breadcrumbs.editCar": "Edytuj samochód",
 
   "account.details.header": "Szczegóły konta",
   "account.username": "Nazwa użytkownika",

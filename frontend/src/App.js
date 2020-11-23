@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 import { Button } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { AddCar } from "./components/AddCar";
+import { CarDetails } from "./components/CarDetails";
 import { ListCars } from "./components/ListCars";
 import { NavigationBar } from "./components/NavigationBar";
 import { Spinner } from "./components/Spinner";
@@ -38,6 +39,7 @@ export const App = () => {
                     <Route exact path="/editAccount/:username" component={EditAccount}/>
                     <Route exact path="/addCar" component={AddCar}/>
                     <Route exact path="/listCars" component={ListCars}/>
+                    <Route exact path="/carDetails/:number" component={CarDetails}/>
                     <Route component={NotFound}/>
                 </Switch>
             </Suspense>
