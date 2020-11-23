@@ -28,6 +28,15 @@
   "account.confirmed": "Confirmed",
   "account.notConfirmed": "Not confirmed",
 
+  "car.make": "Make",
+  "car.model": "Model",
+  "car.description": "Description",
+  "car.productionYear": "Production year",
+  "car.price": "Rental price (per day)",
+  "car.activity": "Activity",
+  "car.active": "Active",
+  "car.inactive": "Inactive",
+
   "ADMIN": "Admin",
   "EMPLOYEE": "Employee",
   "CLIENT": "Client",

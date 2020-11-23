@@ -14,10 +14,10 @@ import "../styles/Table.css";
 import { PAGINATION_SIZES } from "../utils/Constants";
 import { Spinner } from "./Spinner";
 
-export const ListAccounts = props => {
+export const ListCars = props => {
 
     const {t} = useTranslation();
-    const [accounts, setAccounts] = useState([]);
+    const [cars, setCars] = useState([]);
     const [page, setPage] = useState(1);
     const [sizePerPage, setSizePerPage] = useState(5);
     const [totalSize, setTotalSize] = useState(0);
@@ -26,30 +26,33 @@ export const ListAccounts = props => {
     const [filter, setFilter] = useState("");
     const [loaded, setLoaded] = useState(false);
     const columns = [{
-        dataField: "username",
-        text: t("account.username"),
+        dataField: "make",
+        text: t("car.make"),
         sort: true
     }, {
-        dataField: "email",
-        text: t("account.email"),
+        dataField: "model",
+        text: t("car.model"),
         sort: true
     }, {
-        dataField: "firstName",
-        text: t("account.firstName"),
+        dataField: "productionYear",
+        text: t("car.productionYear"),
         sort: true
     }, {
-        dataField: "lastName",
-        text: t("account.lastName"),
-        sort: true
+        dataField: "price",
+        text: t("car.price"),
+        sort: true,
+        formatter: (cell, row) => {
+            return `${row["price"]} zł`;
+        }
     }, {
         dataField: "details",
         text: t("navigation.details"),
         isDummyField: true,
         formatter: (cell, row) => {
-            const handleDetails = username => {
-                props.history.push(`/accountDetails/${username}`)
+            const handleDetails = number => {
+                props.history.push(`/carDetails/${number}`)
             };
-            return <Button onClick={() => handleDetails(row["username"])}>{t("navigation.details")}</Button>;
+            return <Button onClick={() => handleDetails(row["number"])}>{t("navigation.details")}</Button>;
         }
     }];
 
@@ -57,15 +60,15 @@ export const ListAccounts = props => {
         const url = () => {
             if (filter) {
                 if (sortField) {
-                    return `/accounts/${filter}/${page - 1}/${sizePerPage}/${sortField}/${sortOrder}`;
+                    return `/cars/${filter}/${page - 1}/${sizePerPage}/${sortField}/${sortOrder}`;
                 } else {
-                    return `/accounts/${filter}/${page - 1}/${sizePerPage}`;
+                    return `/cars/${filter}/${page - 1}/${sizePerPage}`;
                 }
             } else {
                 if (sortField) {
-                    return `/accounts/${page - 1}/${sizePerPage}/${sortField}/${sortOrder}`;
+                    return `/cars/${page - 1}/${sizePerPage}/${sortField}/${sortOrder}`;
                 } else {
-                    return `/accounts/${page - 1}/${sizePerPage}`;
+                    return `/cars/${page - 1}/${sizePerPage}`;
                 }
             }
         };
@@ -78,11 +81,11 @@ export const ListAccounts = props => {
                         setPage(response.data.totalPages);
                     }
                 }
-                setAccounts(response.data.content);
+                setCars(response.data.content);
                 setTotalSize(response.data.totalElements);
                 setLoaded(true);
             }).catch(error => {
-                console.log(error);
+            console.log(error);
             Swal.fire(t("errors:common.header"),
                 t(`errors:${error.response.data}`),
                 "error");
@@ -121,8 +124,8 @@ export const ListAccounts = props => {
                     </InputGroup>
                     <BootstrapTable remote
                                     bootstrap4
-                                    keyField="username"
-                                    data={accounts}
+                                    keyField="number"
+                                    data={cars}
                                     columns={columns}
                                     pagination={paginationFactory({page, sizePerPage, totalSize, sizePerPageList: PAGINATION_SIZES})}
                                     onTableChange={handleTableChange}/>

@@ -16,6 +16,7 @@ import static pl.lodz.p.it.securental.utils.ApplicationProperties.EMAIL_REGEXP;
 @Entity
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public @Data class Account extends BaseEntity {
 
     @Pattern(regexp = EMAIL_REGEXP)

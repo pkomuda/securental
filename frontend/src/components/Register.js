@@ -129,8 +129,8 @@ export const Register = props => {
                     <Form>
                         <EditFormGroup id="password"
                                        label="account.password"
-                                       required
-                                       password/>
+                                       type="password"
+                                       required/>
                     </Form>
                     <ButtonToolbar className="justify-content-center">
                         <Button id="back2"

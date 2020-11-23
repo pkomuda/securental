@@ -1,6 +1,8 @@
 import React, { Suspense } from "react";
 import { Button } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { AddCar } from "./components/AddCar";
+import { ListCars } from "./components/ListCars";
 import { NavigationBar } from "./components/NavigationBar";
 import { Spinner } from "./components/Spinner";
 import { Home } from "./components/Home";
@@ -34,6 +36,8 @@ export const App = () => {
                     <Route exact path="/accountDetails/:username" component={AccountDetails}/>
                     <Route exact path="/addAccount" component={AddAccount}/>
                     <Route exact path="/editAccount/:username" component={EditAccount}/>
+                    <Route exact path="/addCar" component={AddCar}/>
+                    <Route exact path="/listCars" component={ListCars}/>
                     <Route component={NotFound}/>
                 </Switch>
             </Suspense>

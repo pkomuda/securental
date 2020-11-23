@@ -122,8 +122,8 @@ export const AddAccount = props => {
                                            required/>
                             <EditFormGroup id="password"
                                            label="account.password"
-                                           required
-                                           password/>
+                                           type="password"
+                                           required/>
                             <EditFormGroup id="email"
                                            label="account.email"
                                            required/>

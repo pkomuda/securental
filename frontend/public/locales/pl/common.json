@@ -28,6 +28,15 @@
   "account.confirmed": "Potwierdzony",
   "account.notConfirmed": "Niepotwierdzony",
 
+  "car.make": "Marka",
+  "car.model": "Model",
+  "car.description": "Opis",
+  "car.productionYear": "Rok produkcji",
+  "car.price": "Cena wynajmu (za dzień)",
+  "car.activity": "Aktywność",
+  "car.active": "Aktywny",
+  "car.inactive": "Nieaktywny",
+
   "ADMIN": "Administrator",
   "EMPLOYEE": "Pracownik",
   "CLIENT": "Klient",

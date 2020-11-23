@@ -31,7 +31,7 @@ export const EditFormGroup = props => {
                          value={props.values[props.id]}
                          onChange={handleChange}
                          isInvalid={props.errors.hasOwnProperty(props.id)}
-                         type={props.password && "password"}/>
+                         type={props.type}/>
             <FormControl.Feedback type="invalid">{props.errors.hasOwnProperty(props.id) && t(props.errors[props.id])}</FormControl.Feedback>
         </FormGroup>
     );

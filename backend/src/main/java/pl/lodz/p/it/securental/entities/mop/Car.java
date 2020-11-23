@@ -1,9 +1,6 @@
 package pl.lodz.p.it.securental.entities.mop;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import pl.lodz.p.it.securental.entities.BaseEntity;
 
 import javax.persistence.Entity;
@@ -11,6 +8,7 @@ import javax.persistence.Entity;
 @Entity
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 public @Data class Car extends BaseEntity {
 
