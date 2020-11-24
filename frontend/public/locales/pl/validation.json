@@ -18,5 +18,23 @@
   "account.password.min": "Hasło jest zbyt krótkie",
   "account.password.max": "Hasło jest zbyt długie",
 
-  "account.accessLevels.required": "Przynajmniej jeden poziom dostępu jest wymagany"
+  "account.accessLevels.required": "Przynajmniej jeden poziom dostępu jest wymagany",
+
+  "car.make.required": "Marka jest wymagana",
+  "car.make.min": "Marka jest zbyt krótka",
+  "car.make.max": "Marka jest zbyt długa",
+
+  "car.model.required": "Model jest wymagany",
+  "car.model.min": "Model jest zbyt krótki",
+  "car.model.max": "Model jest zbyt długi",
+
+  "car.description.required": "Opis jest wymagany",
+  "car.description.min": "Opis jest zbyt krótki",
+  "car.description.max": "Opis jest zbyt długi",
+
+  "car.productionYear.required": "Rok produkcji jest wymagany",
+  "car.productionYear.invalid": "Rok produkcji jest nieprawidłowy",
+
+  "car.price.required": "Cena jest wymagana",
+  "car.price.invalid": "Cena jest nieprawidłowa"
 }

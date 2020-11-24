@@ -42,7 +42,7 @@ export const ListCars = props => {
         text: t("car.price"),
         sort: true,
         formatter: (cell, row) => {
-            return `${row["price"]} zł`;
+            return `${row["price"]} PLN`;
         }
     }, {
         dataField: "details",

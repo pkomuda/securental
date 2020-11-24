@@ -65,7 +65,8 @@ export const CarDetails = props => {
                                 <FlatFormGroup id="productionYear"
                                                label="car.productionYear"/>
                                 <FlatFormGroup id="price"
-                                               label="car.price" suffix="zł"/>
+                                               label="car.price"
+                                               suffix="PLN"/>
                                 <FormGroup>
                                     <FormLabel className="flat-form-label">{t("car.activity")}</FormLabel>
                                     <FormControl id="active"

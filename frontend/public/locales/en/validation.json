@@ -35,5 +35,6 @@
   "car.productionYear.required": "Production year is required",
   "car.productionYear.invalid": "Production year is invalid",
 
-  "car.price.required": "Price is required"
+  "car.price.required": "Price is required",
+  "car.price.invalid": "Price is invalid"
 }

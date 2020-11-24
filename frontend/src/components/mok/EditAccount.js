@@ -31,7 +31,7 @@ export const EditAccount = props => {
         firstName: "",
         lastName: "",
         accessLevels: [],
-        active: null
+        active: false
     });
     const [loaded, setLoaded] = useState(false);
     const [accessLevels, setAccessLevels] = useState({});

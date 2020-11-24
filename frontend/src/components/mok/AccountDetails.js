@@ -90,7 +90,7 @@ export const AccountDetails = props => {
                             <ButtonToolbar className="justify-content-center">
                                 <Button id="back"
                                         className="button"
-                                        onClick={() => props.history.goBack()}>{t("navigation.back")}</Button>
+                                        onClick={() => props.history.push("/listAccounts")}>{t("navigation.back")}</Button>
                                 <Button id="edit"
                                         className="button"
                                         onClick={() => props.history.push(`/editAccount/${account.username}`)}>{t("navigation.edit")}</Button>

@@ -6,8 +6,8 @@ import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormCheck, For
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
-import { bool, number, object, string } from "yup";
-import { FOUR_DIGIT_INTEGER_REGEX, validate } from "../../utils/Validation";
+import { bool, object, string } from "yup";
+import { MONEY_REGEX, validate, YEAR_REGEX } from "../../utils/Validation";
 import { EditFormGroup } from "../EditFormGroup";
 import { Spinner } from "../Spinner";
 
@@ -18,8 +18,8 @@ export const EditCar = props => {
         make: string().required("car.make.required").min(1, "car.make.min").max(32, "car.make.max"),
         model: string().required("car.model.required").min(1, "car.model.min").max(32, "car.model.max"),
         description: string().required("car.description.required").min(1, "car.description.min").max(255, "car.description.max"),
-        productionYear: string().required("car.productionYear.required").matches(FOUR_DIGIT_INTEGER_REGEX, "car.productionYear.invalid"),
-        price: number().required(),
+        productionYear: string().required("car.productionYear.required").matches(YEAR_REGEX, "car.productionYear.invalid"),
+        price: string().required("car.price.required").matches(MONEY_REGEX, "car.price.invalid"),
         active: bool()
     });
     const [car, setCar] = useState({
@@ -43,7 +43,6 @@ export const EditCar = props => {
     useEffect(() => {
         axios.get(`/car/${props.match.params.number}`)
             .then(response => {
-                console.log(response.data);
                 setCar(response.data);
                 setLoaded(true);
             }).catch(error => {
@@ -58,26 +57,30 @@ export const EditCar = props => {
     };
 
     const handleSubmit = () => {
-        if (validate(car, errors, setErrors, schema)) {
-            const tempCar = {...car};
-            tempCar.active = parseInt(tempCar.active, 10);
-            console.log(tempCar);
-            axios.put(`/car/${tempCar.number}`, tempCar)
-                .then(() => {
-                    const alerts = [];
-                    alerts.push({
-                        title: t("register.password.header"),
-                        html: t("register.password.text1"),
-                        icon: "success"
-                    });
-                    Swal.queue(alerts);
-                    props.history.push(`/carDetails/${tempCar.number}`);
-                }).catch(() => {
-                Swal.fire(t("errors:common.header"),
-                    t("errors:common.text"),
-                    "error");
-            });
-        }
+        const tempCar = {...car};
+        tempCar.productionYear = parseInt(tempCar.productionYear, 10);
+        tempCar.price = parseFloat(tempCar.price);
+        console.log(tempCar);
+        // if (validate(car, errors, setErrors, schema)) {
+        //     const tempCar = {...car};
+        //     tempCar.productionYear = parseInt(tempCar.productionYear, 10);
+        //     console.log(tempCar);
+        //     axios.put(`/car/${tempCar.number}`, tempCar)
+        //         .then(() => {
+        //             const alerts = [];
+        //             alerts.push({
+        //                 title: t("register.password.header"),
+        //                 html: t("register.password.text1"),
+        //                 icon: "success"
+        //             });
+        //             Swal.queue(alerts);
+        //             props.history.push(`/carDetails/${tempCar.number}`);
+        //         }).catch(() => {
+        //         Swal.fire(t("errors:common.header"),
+        //             t("errors:common.text"),
+        //             "error");
+        //     });
+        // }
     };
 
     if (loaded) {
@@ -118,7 +121,7 @@ export const EditCar = props => {
                                 <EditFormGroup id="price"
                                                label="car.price"
                                                type="number"
-                                               suffix="zł"
+                                               suffix="PLN"
                                                required/>
                                 <FormGroup>
                                     <FormLabel className="font-weight-bold">{t("car.activity")}</FormLabel>

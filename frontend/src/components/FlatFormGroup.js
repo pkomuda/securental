@@ -8,7 +8,7 @@ export const FlatFormGroup = props => {
 
     const suffix = () => {
         if (props.suffix) {
-            return props.suffix;
+            return " " + props.suffix;
         } else {
             return "";
         }
@@ -18,7 +18,7 @@ export const FlatFormGroup = props => {
         <FormGroup>
             <FormLabel className="flat-form-label">{t(`${props.label}`)}</FormLabel>
             <FormControl id={props.id}
-                         value={props.values[props.id] + " " + suffix()}
+                         value={props.values[props.id] + suffix()}
                          disabled
                          plaintext/>
         </FormGroup>
