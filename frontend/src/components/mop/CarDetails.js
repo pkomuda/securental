@@ -6,8 +6,8 @@ import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormControl, F
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
-import { FlatFormGroup } from "./FlatFormGroup";
-import { Spinner } from "./Spinner";
+import { FlatFormGroup } from "../FlatFormGroup";
+import { Spinner } from "../Spinner";
 
 export const CarDetails = props => {
 
@@ -77,7 +77,7 @@ export const CarDetails = props => {
                             <ButtonToolbar className="justify-content-center">
                                 <Button id="back"
                                         className="button"
-                                        onClick={() => props.history.goBack()}>{t("navigation.back")}</Button>
+                                        onClick={() => props.history.push("/listCars")}>{t("navigation.back")}</Button>
                                 <Button id="edit"
                                         className="button"
                                         onClick={() => props.history.push(`/editCar/${car.number}`)}>{t("navigation.edit")}</Button>

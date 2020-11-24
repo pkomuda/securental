@@ -1,22 +1,23 @@
 import React, { Suspense } from "react";
 import { Button } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { AddCar } from "./components/AddCar";
-import { CarDetails } from "./components/CarDetails";
-import { ListCars } from "./components/ListCars";
+import { AddCar } from "./components/mop/AddCar";
+import { CarDetails } from "./components/mop/CarDetails";
+import { EditCar } from "./components/mop/EditCar";
+import { ListCars } from "./components/mop/ListCars";
 import { NavigationBar } from "./components/NavigationBar";
 import { Spinner } from "./components/Spinner";
 import { Home } from "./components/Home";
-import { Login } from "./components/Login";
-import { Register } from "./components/Register";
-import { Confirm } from "./components/Confirm";
+import { Login } from "./components/mok/Login";
+import { Register } from "./components/mok/Register";
+import { Confirm } from "./components/mok/Confirm";
 import { NotFound } from "./components/NotFound";
 import "./styles/Common.css";
 import "@sweetalert2/theme-bootstrap-4";
-import { ListAccounts } from "./components/ListAccounts";
-import { AccountDetails } from "./components/AccountDetails";
-import { AddAccount } from "./components/AddAccount";
-import { EditAccount } from "./components/EditAccount";
+import { ListAccounts } from "./components/mok/ListAccounts";
+import { AccountDetails } from "./components/mok/AccountDetails";
+import { AddAccount } from "./components/mok/AddAccount";
+import { EditAccount } from "./components/mok/EditAccount";
 
 export const App = () => {
 
@@ -40,6 +41,7 @@ export const App = () => {
                     <Route exact path="/addCar" component={AddCar}/>
                     <Route exact path="/listCars" component={ListCars}/>
                     <Route exact path="/carDetails/:number" component={CarDetails}/>
+                    <Route exact path="/editCar/:number" component={EditCar}/>
                     <Route component={NotFound}/>
                 </Switch>
             </Suspense>

@@ -5,9 +5,9 @@ import { useTranslation } from "react-i18next";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { object, string } from "yup";
-import { LAST_PASSWORD_CHARACTERS } from "../utils/Constants";
-import { EMAIL_REGEX, validate } from "../utils/Validation";
-import { EditFormGroup } from "./EditFormGroup";
+import { LAST_PASSWORD_CHARACTERS } from "../../utils/Constants";
+import { EMAIL_REGEX, validate } from "../../utils/Validation";
+import { EditFormGroup } from "../EditFormGroup";
 
 export const Register = props => {
 

@@ -7,10 +7,10 @@ import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
 import { array, bool, object, string, mixed } from "yup";
-import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_CLIENT, ACCESS_LEVEL_EMPLOYEE } from "../utils/Constants";
-import { EMAIL_REGEX, validate } from "../utils/Validation";
-import { EditFormGroup } from "./EditFormGroup";
-import { Spinner } from "./Spinner";
+import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_CLIENT, ACCESS_LEVEL_EMPLOYEE } from "../../utils/Constants";
+import { EMAIL_REGEX, validate } from "../../utils/Validation";
+import { EditFormGroup } from "../EditFormGroup";
+import { Spinner } from "../Spinner";
 
 export const EditAccount = props => {
 

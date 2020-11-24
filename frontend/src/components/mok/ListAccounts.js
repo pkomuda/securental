@@ -10,9 +10,9 @@ import "react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.m
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from 'react-router-bootstrap';
 import Swal from "sweetalert2";
-import "../styles/Table.css";
-import { PAGINATION_SIZES } from "../utils/Constants";
-import { Spinner } from "./Spinner";
+import "../../styles/Table.css";
+import { PAGINATION_SIZES } from "../../utils/Constants";
+import { Spinner } from "../Spinner";
 
 export const ListAccounts = props => {
 

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Button, ButtonToolbar, Col, Form, FormControl, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { object, string } from "yup";
-import { EditFormGroup } from "./EditFormGroup";
+import { EditFormGroup } from "../EditFormGroup";
 
 export const Login = props => {
 

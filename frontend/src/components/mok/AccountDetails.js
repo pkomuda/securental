@@ -6,8 +6,8 @@ import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormControl, F
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
-import { FlatFormGroup } from "./FlatFormGroup";
-import { Spinner } from "./Spinner";
+import { FlatFormGroup } from "../FlatFormGroup";
+import { Spinner } from "../Spinner";
 
 export const AccountDetails = props => {
 
