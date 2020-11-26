@@ -18,7 +18,7 @@ import pl.lodz.p.it.securental.utils.SignatureUtils;
 
 import java.util.Optional;
 
-import static pl.lodz.p.it.securental.utils.StringUtils.randomBase64;
+import static pl.lodz.p.it.securental.utils.StringUtils.randomBase64Url;
 
 @Service
 @AllArgsConstructor
@@ -31,7 +31,7 @@ public class CarService {
 
     public void addCar(CarDto carDto) throws ApplicationBaseException {
         Car car = CarMapper.toCar(carDto);
-        car.setNumber(randomBase64());
+        car.setNumber(randomBase64Url());
         carAdapter.addCar(car);
     }
 

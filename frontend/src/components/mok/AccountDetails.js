@@ -18,8 +18,8 @@ export const AccountDetails = props => {
         firstName: "",
         lastName: "",
         accessLevels: [],
-        active: null,
-        confirmed: null
+        active: false,
+        confirmed: false
     });
     const [loaded, setLoaded] = useState(false);
 

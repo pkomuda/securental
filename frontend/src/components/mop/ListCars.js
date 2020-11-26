@@ -4,13 +4,10 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Breadcrumb, Button, Container, FormControl, InputGroup } from "react-bootstrap";
 import BootstrapTable from 'react-bootstrap-table-next';
-import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import paginationFactory from 'react-bootstrap-table2-paginator';
-import "react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from 'react-router-bootstrap';
 import Swal from "sweetalert2";
-import "../../styles/Table.css";
 import { PAGINATION_SIZES } from "../../utils/Constants";
 import { Spinner } from "../Spinner";
 

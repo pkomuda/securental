@@ -23,14 +23,17 @@
   "car.make.required": "Marka jest wymagana",
   "car.make.min": "Marka jest zbyt krótka",
   "car.make.max": "Marka jest zbyt długa",
+  "car.make.invalid": "Marka jest nieprawidłowa",
 
   "car.model.required": "Model jest wymagany",
   "car.model.min": "Model jest zbyt krótki",
   "car.model.max": "Model jest zbyt długi",
+  "car.model.invalid": "Model jest nieprawidłowy",
 
   "car.description.required": "Opis jest wymagany",
   "car.description.min": "Opis jest zbyt krótki",
   "car.description.max": "Opis jest zbyt długi",
+  "car.description.invalid": "Opis jest nieprawidłowy",
 
   "car.productionYear.required": "Rok produkcji jest wymagany",
   "car.productionYear.invalid": "Rok produkcji jest nieprawidłowy",

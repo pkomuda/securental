@@ -4,7 +4,7 @@ import { Button, ButtonToolbar, Col, Form, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { object, string } from "yup";
+import { array, object, string } from "yup";
 import { LAST_PASSWORD_CHARACTERS } from "../../utils/Constants";
 import { EMAIL_REGEX, validate } from "../../utils/Validation";
 import { EditFormGroup } from "../EditFormGroup";
@@ -18,14 +18,16 @@ export const Register = props => {
         email: string().required("account.email.required").matches(EMAIL_REGEX, "account.email.invalid"),
         firstName: string().required("account.firstName.required").min(1, "account.firstName.min").max(32, "account.firstName.max"),
         lastName: string().required("account.lastName.required").min(1, "account.lastName.min").max(32, "account.lastName.max"),
-        password: string().required("account.password.required").length(8, "account.password.min").max(8, "account.password.max")
+        password: string().required("account.password.required").length(8, "account.password.min").max(8, "account.password.max"),
+        accessLevels: array(),
     });
     const [account, setAccount] = useState({
         username: "",
         email: "",
         firstName: "",
         lastName: "",
-        password: ""
+        password: "",
+        accessLevels: []
     });
     const [errors, setErrors] = useState({});
     const [stage, setStage] = useState(1);
@@ -41,8 +43,10 @@ export const Register = props => {
         const tempAccount = {...account};
         delete tempAccount.password;
         const valid = validate(tempAccount, errors, setErrors, schema);
+        console.log(valid);
+        console.log(errors);
         if (valid) {
-            setStage(1);
+            setStage(2);
         }
     };
 

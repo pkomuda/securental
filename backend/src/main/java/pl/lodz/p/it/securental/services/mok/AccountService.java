@@ -98,14 +98,14 @@ public class AccountService {
 
     public String register(AccountDto accountDto, String language) throws ApplicationBaseException {
         GoogleAuthenticatorKey key = googleAuthenticator.createCredentials(accountDto.getUsername());
-        if (accountAdapter.getAccount(accountDto.getUsername()).isEmpty()) {
+//        if (accountAdapter.getAccount(accountDto.getUsername()).isEmpty()) {
             Account account = AccountMapper.toAccount(accountDto);
             account.setActive(true);
             account.setConfirmed(false);
-            account.setConfirmationToken(randomBase64());
+            account.setConfirmationToken(randomBase64Url());
             account.setCredentials(new Credentials(generateMaskedPasswords(accountDto.getPassword())));
             account.setAuthenticationToken(new AuthenticationToken(new ArrayList<>(), LocalDateTime.now()));
-            account.getAccessLevels().forEach(accessLevel -> accessLevel.setActive(accessLevel instanceof Client));
+            account.setAccessLevels(generateClientAccessLevels());
             if (otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).isPresent()) {
                 account.setOtpCredentials(otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).get());
                 String subject = getTranslatedText("confirm.subject", language);
@@ -116,10 +116,18 @@ public class AccountService {
                 throw new AccountNotFoundException();
             }
             accountAdapter.addAccount(account);
-        } else {
-            throw new AccountAlreadyExistsException();
-        }
+//        } else {
+//            throw new AccountAlreadyExistsException();
+//        }
         return generateQrCode(accountDto.getUsername(), key);
+    }
+
+    private List<AccessLevel> generateClientAccessLevels() {
+        List<AccessLevel> accessLevels = new ArrayList<>();
+        accessLevels.add((new Admin(ACCESS_LEVEL_ADMIN, false)));
+        accessLevels.add((new Employee(ACCESS_LEVEL_EMPLOYEE, false)));
+        accessLevels.add((new Client(ACCESS_LEVEL_CLIENT, true)));
+        return accessLevels;
     }
 
     public void confirmAccount(String token) throws ApplicationBaseException {
@@ -203,6 +211,6 @@ public class AccountService {
         } catch (WriterException | IOException e) {
             throw new QrCodeGenerationException(e);
         }
-        return base64(qrCode);
+        return encodeBase64(qrCode);
     }
 }

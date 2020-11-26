@@ -1,7 +1,6 @@
 import React from "react";
 import { Nav, Navbar, NavDropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import "../styles/NavigationBar.css";
 
 export const NavigationBar = () => (
     <Navbar expand="lg" className="navbar-dark">

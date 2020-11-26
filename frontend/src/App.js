@@ -12,8 +12,6 @@ import { Login } from "./components/mok/Login";
 import { Register } from "./components/mok/Register";
 import { Confirm } from "./components/mok/Confirm";
 import { NotFound } from "./components/NotFound";
-import "./styles/Common.css";
-import "@sweetalert2/theme-bootstrap-4";
 import { ListAccounts } from "./components/mok/ListAccounts";
 import { AccountDetails } from "./components/mok/AccountDetails";
 import { AddAccount } from "./components/mok/AddAccount";

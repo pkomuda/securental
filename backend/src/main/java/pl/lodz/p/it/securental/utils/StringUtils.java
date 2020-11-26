@@ -54,16 +54,20 @@ public final class StringUtils {
                 .toArray(), 0, indices.length);
     }
 
-    public static String base64(byte[] bytes) {
+    public static String encodeBase64(byte[] bytes) {
+        return Base64.getEncoder().encodeToString(bytes);
+    }
+
+    public static String encodeBase64Url(byte[] bytes) {
         return Base64.getUrlEncoder().encodeToString(bytes);
     }
 
-    public static byte[] decode(String base64) {
+    public static byte[] decodeBase64Url(String base64) {
         return Base64.getUrlDecoder().decode(base64);
     }
 
-    public static String randomBase64() {
-        return base64(UUID.randomUUID().toString().getBytes(StandardCharsets.UTF_8));
+    public static String randomBase64Url() {
+        return encodeBase64Url(UUID.randomUUID().toString().getBytes(StandardCharsets.UTF_8));
     }
 
     public static List<Integer> randomCombination(int full, int min, int max) {

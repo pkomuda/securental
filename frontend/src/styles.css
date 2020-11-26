@@ -1,0 +1,89 @@
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.button {
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.form-container {
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    padding: 2em;
+}
+
+.invalid {
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 80%;
+    color: #dc3545;
+}
+
+.flat-form-label {
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+.navbar {
+    background-color: #333a41;
+}
+
+.nav-link {
+    color: white !important;
+}
+
+.spinner-border {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+}
+
+th {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.react-bootstrap-table table {
+    table-layout: auto;
+}
+
+.jumbo {
+    background: url("./images/subaru.png") no-repeat bottom;
+    background-size: cover;
+    color: #efefef;
+    height: 200px;
+    position: relative;
+    z-index: -2;
+}
+
+.overlay {
+    background-color: #000;
+    opacity: 0.6;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: -1;
+}

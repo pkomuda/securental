@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static pl.lodz.p.it.securental.utils.ApplicationProperties.EMAIL_REGEXP;
+import static pl.lodz.p.it.securental.utils.ApplicationProperties.EMAIL_REGEX;
 
 @Entity
 @Builder
@@ -19,7 +19,7 @@ import static pl.lodz.p.it.securental.utils.ApplicationProperties.EMAIL_REGEXP;
 @AllArgsConstructor
 public @Data class Account extends BaseEntity {
 
-    @Pattern(regexp = EMAIL_REGEXP)
+    @Pattern(regexp = EMAIL_REGEX)
     @NotNull
     @Size(min = 1, max = 32)
     @Column(nullable = false, length = 32, unique = true, updatable = false)
