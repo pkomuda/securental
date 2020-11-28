@@ -83,9 +83,11 @@ export const Login = props => {
         const tempAuthRequest = {...authRequest};
         tempAuthRequest.otpCode = parseInt(tempAuthRequest.otpCode);
         tempAuthRequest.characters = tempAuthRequest.characters.join("");
+        console.log(tempAuthRequest);
         axios.post("/login", tempAuthRequest)
-            .then(() => {
+            .then(response => {
                 props.history.push("/");
+                console.log(response);
             }).catch(error => {
                 alert(error.response.data);
         });
@@ -102,10 +104,8 @@ export const Login = props => {
                     </Form>
                     <ButtonToolbar>
                         <Button id="back1"
-                                className="button"
                                 onClick={() => props.history.goBack}>{t("navigation.back")}</Button>
                         <Button id="submit1"
-                                className="button"
                                 onClick={handleFirstStage}>{t("navigation.next")}</Button>
                     </ButtonToolbar>
                 </Col>
@@ -144,13 +144,10 @@ export const Login = props => {
                     </Form>
                     <ButtonToolbar>
                         <Button id="back2"
-                                className="button"
                                 onClick={() => setStage(1)}>{t("navigation.back")}</Button>
                         <Button id="clear"
-                                className="button"
                                 onClick={handleClearCharacters}>Clear</Button>
                         <Button id="submit2"
-                                className="button"
                                 onClick={handleSecondStage}>{t("navigation.next")}</Button>
                     </ButtonToolbar>
                 </div>
@@ -169,10 +166,8 @@ export const Login = props => {
                     </Form>
                     <ButtonToolbar>
                         <Button id="back3"
-                                className="button"
                                 onClick={() => setStage(2)}>{t("navigation.back")}</Button>
                         <Button id="submit3"
-                                className="button"
                                 onClick={handleThirdStage}>{t("login.sign.in")}</Button>
                     </ButtonToolbar>
                 </Col>

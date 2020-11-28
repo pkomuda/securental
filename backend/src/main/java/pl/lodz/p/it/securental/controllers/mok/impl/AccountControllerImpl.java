@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.securental.annotations.NeverTransaction;
 import pl.lodz.p.it.securental.controllers.mok.AccountController;
 import pl.lodz.p.it.securental.dto.mok.AccountDto;
-import pl.lodz.p.it.securental.dto.mok.ConfirmAccountDto;
+import pl.lodz.p.it.securental.dto.mok.ConfirmAccountRequest;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.services.mok.AccountService;
 import pl.lodz.p.it.securental.utils.PagingHelper;
@@ -37,8 +37,8 @@ public class AccountControllerImpl implements AccountController {
 
     @Override
     @PutMapping("/confirm")
-    public void confirmAccount(@RequestBody ConfirmAccountDto confirmAccountDto) throws ApplicationBaseException {
-        accountService.confirmAccount(confirmAccountDto.getToken());
+    public void confirmAccount(@RequestBody ConfirmAccountRequest confirmAccountRequest) throws ApplicationBaseException {
+        accountService.confirmAccount(confirmAccountRequest.getToken());
     }
 
     @Override

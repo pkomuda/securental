@@ -1,4 +1,3 @@
-import "@sweetalert2/theme-bootstrap-4";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import React from "react";

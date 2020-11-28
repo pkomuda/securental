@@ -77,10 +77,8 @@ export const CarDetails = props => {
                             </Form>
                             <ButtonToolbar className="justify-content-center">
                                 <Button id="back"
-                                        className="button"
                                         onClick={() => props.history.push("/listCars")}>{t("navigation.back")}</Button>
                                 <Button id="edit"
-                                        className="button"
                                         onClick={() => props.history.push(`/editCar/${car.number}`)}>{t("navigation.edit")}</Button>
                             </ButtonToolbar>
                         </Col>

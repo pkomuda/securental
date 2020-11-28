@@ -1,26 +1,27 @@
 import React, { Suspense } from "react";
 import { Button } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { Home } from "./components/Home";
+import { AccountDetails } from "./components/mok/AccountDetails";
+import { AddAccount } from "./components/mok/AddAccount";
+import { Confirm } from "./components/mok/Confirm";
+import { EditAccount } from "./components/mok/EditAccount";
+import { ListAccounts } from "./components/mok/ListAccounts";
+import { Login } from "./components/mok/Login";
+import { Register } from "./components/mok/Register";
 import { AddCar } from "./components/mop/AddCar";
 import { CarDetails } from "./components/mop/CarDetails";
 import { EditCar } from "./components/mop/EditCar";
 import { ListCars } from "./components/mop/ListCars";
 import { NavigationBar } from "./components/NavigationBar";
-import { Spinner } from "./components/Spinner";
-import { Home } from "./components/Home";
-import { Login } from "./components/mok/Login";
-import { Register } from "./components/mok/Register";
-import { Confirm } from "./components/mok/Confirm";
 import { NotFound } from "./components/NotFound";
-import { ListAccounts } from "./components/mok/ListAccounts";
-import { AccountDetails } from "./components/mok/AccountDetails";
-import { AddAccount } from "./components/mok/AddAccount";
-import { EditAccount } from "./components/mok/EditAccount";
+import { Spinner } from "./components/Spinner";
 
 export const App = () => {
 
     Button.defaultProps = {
-        variant: "dark"
+        variant: "dark",
+        className: "button"
     };
 
     return (

@@ -115,10 +115,10 @@ export const Register = props => {
                     </Form>
                     <ButtonToolbar className="justify-content-center">
                         <Button id="back1"
-                                className="button"
+
                                 onClick={() => props.history.goBack}>{t("navigation.back")}</Button>
                         <Button id="submit1"
-                                className="button"
+
                                 onClick={handleFirstStage}>{t("navigation.next")}</Button>
                     </ButtonToolbar>
                 </Col>
@@ -138,10 +138,10 @@ export const Register = props => {
                     </Form>
                     <ButtonToolbar className="justify-content-center">
                         <Button id="back2"
-                                className="button"
+
                                 onClick={() => setStage(1)}>{t("navigation.back")}</Button>
                         <Button id="submit2"
-                                className="button"
+
                                 onClick={handleSecondStage}>{t("navigation.next")}</Button>
                     </ButtonToolbar>
                 </Col>
