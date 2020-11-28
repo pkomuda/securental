@@ -1,8 +1,9 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Button, ButtonToolbar, Col, Form, FormControl, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { object, string } from "yup";
+import { AuthenticationContext } from "../../utils/AuthenticationContext";
 import { EditFormGroup } from "../EditFormGroup";
 
 export const Login = props => {
@@ -12,6 +13,7 @@ export const Login = props => {
         username: string().required("account.username.required").min(1, "account.username.min").max(32, "account.username.max"),
         otpCode: string().required("account.username.required").min(1, "account.username.min").max(32, "account.username.max")
     });
+    const {user, setUser} = useContext(AuthenticationContext);
     const [authRequest, setAuthRequest] = useState({
         username: "",
         combination: [],
@@ -84,8 +86,9 @@ export const Login = props => {
         tempAuthRequest.otpCode = parseInt(tempAuthRequest.otpCode);
         tempAuthRequest.characters = tempAuthRequest.characters.join("");
         console.log(tempAuthRequest);
-        axios.post("/login", tempAuthRequest)
+        axios.post("/login", tempAuthRequest, {withCredentials: true})
             .then(response => {
+                setUser(response.data);
                 props.history.push("/");
                 console.log(response);
             }).catch(error => {
@@ -167,8 +170,8 @@ export const Login = props => {
                     <ButtonToolbar>
                         <Button id="back3"
                                 onClick={() => setStage(2)}>{t("navigation.back")}</Button>
-                        <Button id="submit3"
-                                onClick={handleThirdStage}>{t("login.sign.in")}</Button>
+                            <Button id="submit3"
+                                    onClick={handleThirdStage}>{t("login.sign.in")}</Button>
                     </ButtonToolbar>
                 </Col>
             );

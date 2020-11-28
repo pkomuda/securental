@@ -12,9 +12,12 @@ import pl.lodz.p.it.securental.annotations.RequiresNewTransaction;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Optional;
 
 import static pl.lodz.p.it.securental.utils.JwtUtils.*;
 
@@ -28,20 +31,23 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain)
             throws ServletException, IOException {
-        final String authHeader = request.getHeader("Authorization");
-
         String jwt = null;
-        String username = null;
-        String combination = null;
-
-        if (authHeader != null) {
-            jwt = authHeader;
-            username = extractUsername(jwt);
-            combination = extractString(jwt, "combination");
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            Optional<Cookie> cookieOptional = Arrays.stream(cookies)
+                    .filter(cookie -> cookie.getName().equals("jwt"))
+                    .findFirst();
+            if (cookieOptional.isPresent()) {
+                jwt = cookieOptional.get().getValue();
+            }
         }
 
-        if (username != null && combination != null
-                && SecurityContextHolder.getContext().getAuthentication() == null) {
+        String username = null;
+        if (jwt != null) {
+            username = extractUsername(jwt);
+        }
+
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             if (validateToken(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(

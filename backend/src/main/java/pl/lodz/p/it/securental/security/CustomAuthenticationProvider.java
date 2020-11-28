@@ -38,10 +38,10 @@ public class CustomAuthenticationProvider extends AbstractUserDetailsAuthenticat
                     messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
         }
 
-        if (!googleAuthenticator.authorizeUser(auth.getPrincipal().toString(), auth.getOtpCode())) {
-            throw new BadCredentialsException(
-                    messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
-        }
+//        if (!googleAuthenticator.authorizeUser(auth.getPrincipal().toString(), auth.getOtpCode())) {
+//            throw new BadCredentialsException(
+//                    messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
+//        }
 
         String presentedPassword = authentication.getCredentials()
                 .toString();

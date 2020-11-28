@@ -1,6 +1,7 @@
 package pl.lodz.p.it.securental.security;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,15 +13,13 @@ import pl.lodz.p.it.securental.entities.mok.Account;
 import pl.lodz.p.it.securental.entities.mok.MaskedPassword;
 import pl.lodz.p.it.securental.repositories.mok.AccountRepository;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static pl.lodz.p.it.securental.exceptions.mok.AccountNotFoundException.KEY_ACCOUNT_NOT_FOUND;
 import static pl.lodz.p.it.securental.utils.StringUtils.integerArrayToString;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 @RequiresNewTransaction
@@ -37,7 +36,9 @@ public class CustomUserDetailsService {
             Account account = accountOptional.get();
             for (MaskedPassword maskedPassword : account.getCredentials().getMaskedPasswords()) {
                 if (passwordEncoder.matches(combination, maskedPassword.getCombination())) {
-                    if (integerArrayToString(account.getAuthenticationToken().getCombination().stream().mapToInt(i -> i).toArray()).equals(combination)) {
+                    List<Integer> combinationList = account.getAuthenticationToken().getCombination();
+                    String combinationString = combination;
+//                    if (integerArrayToString(account.getAuthenticationToken().getCombination().stream().mapToInt(i -> i).toArray()).equals(combination)) {
                         return new CustomUserDetails(
                                 username,
                                 combination,
@@ -47,7 +48,7 @@ public class CustomUserDetailsService {
                                 true,
                                 account.isActive(),
                                 getUserFrontendRoles(account));
-                }
+//                }
                 }
             }
             return null;
