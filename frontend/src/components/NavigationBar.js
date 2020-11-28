@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { Nav, Navbar, NavDropdown } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
 import { Link } from "react-router-dom";
 import { AuthenticationContext } from "../utils/AuthenticationContext";
 
@@ -13,18 +14,14 @@ export const NavigationBar = () => {
             <Navbar.Toggle id="toggle" aria-controls="basic-navbar-nav"/>
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="ml-auto">
-                    <NavDropdown id="dropdown" title={user.username}>
-                        <NavDropdown.Item>
-                            <Nav.Link>
-                                <Link id="login" to="/login">Login</Link>
-                            </Nav.Link>
-                        </NavDropdown.Item>
+                    <NavDropdown id="dropdown" title={user.username} alignRight>
+                        <LinkContainer to="/login">
+                            <NavDropdown.Item>Login</NavDropdown.Item>
+                        </LinkContainer>
 
-                        <NavDropdown.Item>
-                            <Nav.Link>
-                                <Link id="register" to="/register">Register</Link>
-                            </Nav.Link>
-                        </NavDropdown.Item>
+                        <LinkContainer to="/register">
+                            <NavDropdown.Item>Register</NavDropdown.Item>
+                        </LinkContainer>
                     </NavDropdown>
                 </Nav>
             </Navbar.Collapse>

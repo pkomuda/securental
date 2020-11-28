@@ -70,6 +70,12 @@ th {
     color: white !important;
 }
 
+.dropdown-item.active,
+.dropdown-item:active {
+    color: #212529;
+    background-color: transparent;
+}
+
 .spinner-border {
     position: fixed;
     top: 50%;
