@@ -25,9 +25,13 @@ import pl.lodz.p.it.securental.services.mok.AccountService;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static pl.lodz.p.it.securental.utils.JwtUtils.extractUsername;
 import static pl.lodz.p.it.securental.utils.JwtUtils.generateToken;
 import static pl.lodz.p.it.securental.utils.StringUtils.integerArrayToString;
 
@@ -81,6 +85,30 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     @Override
     public void logout() {
         throw new UnsupportedOperationException();
+    }
+
+    @GetMapping("/currentUser")
+    @PreAuthorize("hasAuthority('currentUser')")
+    public AuthenticationResponse currentUser(HttpServletRequest request) throws ApplicationBaseException {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            Optional<Cookie> cookieOptional = Arrays.stream(cookies)
+                    .filter(cookie -> cookie.getName().equals("jwt"))
+                    .findFirst();
+            if (cookieOptional.isPresent()) {
+                return accountService.currentUser(extractUsername(cookieOptional.get().getValue()));
+            } else {
+                return AuthenticationResponse.builder()
+                        .username("")
+                        .accessLevels(Collections.emptyList())
+                        .build();
+            }
+        } else {
+            return AuthenticationResponse.builder()
+                    .username("")
+                    .accessLevels(Collections.emptyList())
+                    .build();
+        }
     }
 
     @GetMapping("/employee")

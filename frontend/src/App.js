@@ -1,4 +1,5 @@
-import React, { Suspense, useState } from "react";
+import axios from "axios";
+import React, { Suspense, useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Home } from "./components/Home";
@@ -16,12 +17,23 @@ import { ListCars } from "./components/mop/ListCars";
 import { NavigationBar } from "./components/NavigationBar";
 import { NotFound } from "./components/NotFound";
 import { Spinner } from "./components/Spinner";
-import { AuthenticationContext } from "./utils/AuthenticationContext";
+import { AuthenticationContext, isAuthenticated } from "./utils/AuthenticationContext";
 
 export const App = () => {
 
     const [user, setUser] = useState({username: "", accessLevels: []});
     const value = {user, setUser};
+
+    useEffect(() => {
+        if (!isAuthenticated(user)) {
+            axios.get("/currentUser", {withCredentials: true})
+                .then(response => {
+                    setUser(response.data);
+                }).catch(error => {
+                    alert(error.statusCode);
+            });
+        }
+    }, [user]);
 
     Button.defaultProps = {
         variant: "dark",

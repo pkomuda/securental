@@ -17,6 +17,7 @@ import pl.lodz.p.it.securental.adapters.mok.OtpCredentialsAdapter;
 import pl.lodz.p.it.securental.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.dto.mappers.mok.AccountMapper;
 import pl.lodz.p.it.securental.dto.mok.AccountDto;
+import pl.lodz.p.it.securental.dto.mok.AuthenticationResponse;
 import pl.lodz.p.it.securental.entities.mok.*;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.ApplicationOptimisticLockException;
@@ -36,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.apache.commons.math3.util.CombinatoricsUtils.combinationsIterator;
@@ -199,6 +201,26 @@ public class AccountService {
         } else {
             throw new UsernameNotMatchingException();
         }
+    }
+
+    public AuthenticationResponse currentUser(String username) throws ApplicationBaseException {
+        Optional<Account> accountOptional = accountAdapter.getAccount(username);
+        if (accountOptional.isPresent()) {
+            Account account = accountOptional.get();
+            return AuthenticationResponse.builder()
+                    .username(username)
+                    .accessLevels(getUserFrontendRoles(account))
+                    .build();
+        } else {
+            throw new AccountNotFoundException();
+        }
+    }
+
+    private List<String> getUserFrontendRoles(Account account) {
+        return account.getAccessLevels().stream()
+                .filter(AccessLevel::isActive)
+                .map(AccessLevel::getName)
+                .collect(Collectors.toList());
     }
 
     private String generateQrCode(String username, GoogleAuthenticatorKey key) throws ApplicationBaseException {
