@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static pl.lodz.p.it.securental.utils.ApplicationProperties.*;
 import static pl.lodz.p.it.securental.utils.JwtUtils.*;
 import static pl.lodz.p.it.securental.utils.StringUtils.integerArrayToString;
 
@@ -71,12 +72,14 @@ public class AuthenticationControllerImpl implements AuthenticationController {
         String jwt = generateToken(userDetails);
         Cookie cookie = new Cookie("jwt", jwt);
         cookie.setHttpOnly(true);
-        cookie.setMaxAge(60);
+        cookie.setMaxAge(60 * JWT_EXPIRATION_TIME);
         response.addCookie(cookie);
 
+        List<String> accessLevels = getAccessLevels(userDetails);
         return AuthenticationResponse.builder()
                 .username(userDetails.getUsername())
-                .accessLevels(getAccessLevels(userDetails))
+                .accessLevels(accessLevels)
+                .currentAccessLevel(getHighestAccessLevel(accessLevels))
                 .tokenExpiration(JwtUtils.extractExpiration(jwt).getTime())
                 .build();
     }
@@ -131,5 +134,15 @@ public class AuthenticationControllerImpl implements AuthenticationController {
         return userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
+    }
+
+    private String getHighestAccessLevel(List<String> accessLevels) {
+        if (accessLevels.contains(ACCESS_LEVEL_ADMIN)) {
+            return ACCESS_LEVEL_ADMIN;
+        } else if (accessLevels.contains(ACCESS_LEVEL_EMPLOYEE)) {
+            return ACCESS_LEVEL_EMPLOYEE;
+        } else {
+            return ACCESS_LEVEL_CLIENT;
+        }
     }
 }

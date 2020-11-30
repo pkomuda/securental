@@ -18,6 +18,7 @@ public class ApplicationProperties {
     public static Integer AUTHENTICATION_TOKEN_EXPIRATION;
     public static String FRONTEND_ORIGIN;
     public static Integer FULL_PASSWORD_LENGTH;
+    public static Integer JWT_EXPIRATION_TIME;
     public static String JWT_KEY;
     public static char[] KEYSTORE_PASSWORD;
     public static Integer MASKED_PASSWORD_MAX_LENGTH;
@@ -29,6 +30,7 @@ public class ApplicationProperties {
                                  @Value("${FRONTEND_ORIGIN}") String frontendOrigin,
                                  @Value("${FULL_PASSWORD_LENGTH}") Integer fullPasswordLength,
                                  @Value("${JWT_KEY}") String jwtKey,
+                                 @Value("${JWT_EXPIRATION_TIME}") Integer jwtExpirationTime,
                                  @Value("${KEYSTORE_PASSWORD}") String keystorePassword,
                                  @Value("${MASKED_PASSWORD_MAX_LENGTH}") Integer maskedPasswordMaxLength,
                                  @Value("${MASKED_PASSWORD_MIN_LENGTH}") Integer maskedPasswordMinLength,
@@ -37,6 +39,7 @@ public class ApplicationProperties {
         AUTHENTICATION_TOKEN_EXPIRATION = authenticationTokenExpiration;
         FRONTEND_ORIGIN = frontendOrigin;
         FULL_PASSWORD_LENGTH = fullPasswordLength;
+        JWT_EXPIRATION_TIME = jwtExpirationTime;
         JWT_KEY = jwtKey;
         KEYSTORE_PASSWORD = keystorePassword.toCharArray();
         MASKED_PASSWORD_MAX_LENGTH = maskedPasswordMaxLength;

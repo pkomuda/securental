@@ -207,9 +207,11 @@ public class AccountService {
         Optional<Account> accountOptional = accountAdapter.getAccount(username);
         if (accountOptional.isPresent()) {
             Account account = accountOptional.get();
+            List<String> accessLevels = getUserFrontendRoles(account);
             return AuthenticationResponse.builder()
                     .username(username)
-                    .accessLevels(getUserFrontendRoles(account));
+                    .accessLevels(accessLevels)
+                    .currentAccessLevel(getHighestFrontendRole(accessLevels));
         } else {
             throw new AccountNotFoundException();
         }
@@ -220,6 +222,16 @@ public class AccountService {
                 .filter(AccessLevel::isActive)
                 .map(AccessLevel::getName)
                 .collect(Collectors.toList());
+    }
+
+    private String getHighestFrontendRole(List<String> roles) {
+        if (roles.contains(ACCESS_LEVEL_ADMIN)) {
+            return ACCESS_LEVEL_ADMIN;
+        } else if (roles.contains(ACCESS_LEVEL_EMPLOYEE)) {
+            return ACCESS_LEVEL_EMPLOYEE;
+        } else {
+            return ACCESS_LEVEL_CLIENT;
+        }
     }
 
     private String generateQrCode(String username, GoogleAuthenticatorKey key) throws ApplicationBaseException {

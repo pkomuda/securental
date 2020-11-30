@@ -25,7 +25,7 @@ export const App = () => {
     const [userInfo, setUserInfo] = useState({
         username: "",
         accessLevels: [],
-        // currentAccessLevel: "",
+        currentAccessLevel: "",
         tokenExpiration: 0
     });
     const value = [userInfo, setUserInfo];

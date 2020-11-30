@@ -1,25 +1,29 @@
 import { faSignInAlt, faUser, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Nav, Navbar, NavDropdown } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 import { AuthenticationContext, isAuthenticated } from "../utils/AuthenticationContext";
 
-export const NavigationBar = props => {
+export const NavigationBar = () => {
 
     const {t} = useTranslation();
     const history = useHistory();
     const [userInfo, setUserInfo] = useContext(AuthenticationContext);
+    const [currentAccessLevel, setCurrentAccessLevel] = useState(userInfo.currentAccessLevel);
+
+    useEffect(() => {
+        setCurrentAccessLevel(userInfo.currentAccessLevel);
+    }, [userInfo.currentAccessLevel]);
 
     if (isAuthenticated(userInfo)) {
         setTimeout(() => {
-            // console.log(`Token expired at ${new Date()}`);
             setUserInfo({
                 username: "",
                 accessLevels: [],
-                // currentAccessLevel: "",
+                currentAccessLevel: "",
                 tokenExpiration: 0
             });
             history.push("/login/sessionExpired");
@@ -34,11 +38,34 @@ export const NavigationBar = props => {
         );
     };
 
+    const accessLevelsDropdown = () => {
+        if (userInfo.accessLevels.length > 1) {
+            const accessLevels = [];
+            for (let accessLevel of userInfo.accessLevels) {
+                accessLevels.push(
+                    <NavDropdown.Item key={accessLevel}
+                                      onClick={() => {
+                                          setUserInfo({...userInfo, currentAccessLevel: accessLevel});
+                                          setCurrentAccessLevel(accessLevel);
+                                      }}>
+                        {t(accessLevel)}
+                    </NavDropdown.Item>
+                );
+            }
+            return (
+                <NavDropdown id="accessLevels" title={t(currentAccessLevel)} alignRight>
+                    {accessLevels}
+                </NavDropdown>
+            );
+        }
+    };
+
     const renderNav = () => {
         if (isAuthenticated(userInfo)) {
             return (
                 <Nav className="ml-auto">
-                    <NavDropdown id="dropdown" title={authenticatedDropdownTitle()} alignRight>
+                    {accessLevelsDropdown()}
+                    <NavDropdown id="profile" title={authenticatedDropdownTitle()} alignRight>
                         <LinkContainer to="/addCar">
                             <NavDropdown.Item>Add car</NavDropdown.Item>
                         </LinkContainer>
@@ -75,10 +102,10 @@ export const NavigationBar = props => {
     return (
         <Navbar expand="lg" className="navbar-dark">
             <Navbar.Brand id="home" as={Link} to="/">Securental</Navbar.Brand>
-            <Navbar.Toggle id="toggle" aria-controls="basic-navbar-nav"/>
-            <Navbar.Collapse id="basic-navbar-nav">
+            {/*<Navbar.Toggle id="toggle" aria-controls="basic-navbar-nav"/>*/}
+            {/*<Navbar.Collapse id="basic-navbar-nav">*/}
                 {renderNav()}
-            </Navbar.Collapse>
+            {/*</Navbar.Collapse>*/}
         </Navbar>
     );
 };
