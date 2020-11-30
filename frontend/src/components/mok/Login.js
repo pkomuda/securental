@@ -13,7 +13,7 @@ export const Login = props => {
         username: string().required("account.username.required").min(1, "account.username.min").max(32, "account.username.max"),
         otpCode: string().required("account.username.required").min(1, "account.username.min").max(32, "account.username.max")
     });
-    const {user, setUser} = useContext(AuthenticationContext);
+    const [, setUserInfo] = useContext(AuthenticationContext);
     const [authRequest, setAuthRequest] = useState({
         username: "",
         combination: [],
@@ -88,24 +88,31 @@ export const Login = props => {
         console.log(tempAuthRequest);
         axios.post("/login", tempAuthRequest, {withCredentials: true})
             .then(response => {
-                setUser(response.data);
+                setUserInfo(response.data);
                 props.history.push("/");
-                console.log(response);
             }).catch(error => {
-                alert(error.response.data);
+                console.log(error);
         });
+    };
+
+    const renderSessionExpiredText = () => {
+        if (props.match.params.session === "sessionExpired") {
+            return <h5 className="text-center">{t("login.session.expired")}</h5>;
+        }
     };
 
     const renderFirstStage = () => {
         if (stage === 1) {
             return (
-                <Col sm={5}>
-                    <Form>
+                <Col sm={5} className="form-container">
+                    <h1 className="text-center">{t("login.header")}</h1>
+                    {renderSessionExpiredText()}
+                    <Form style={{marginTop: "2em"}}>
                         <EditFormGroup id="username"
                                        label="account.username"
                                        required/>
                     </Form>
-                    <ButtonToolbar>
+                    <ButtonToolbar className="justify-content-center">
                         <Button id="back1"
                                 onClick={() => props.history.goBack}>{t("navigation.back")}</Button>
                         <Button id="submit1"
@@ -125,7 +132,7 @@ export const Login = props => {
                     boxes.push(
                         <div key={i} style={{display: "inline-block", position: "relative", marginBottom: "1em"}}>
                             <FormControl style={{width: "3em", marginRight: "1em"}} id={"enabled" + currentIndex} value={authRequest.characters[currentIndex]}
-                                         onChange={handleChangeCharacters} maxLength="1"/>
+                                         onChange={handleChangeCharacters} maxLength="1" type="password"/>
                             <span style={{position: "absolute", marginLeft: "30%"}}>{i + 1}</span>
                         </div>
                     );
@@ -133,7 +140,7 @@ export const Login = props => {
                 } else {
                     boxes.push(
                         <div key={i} style={{display: "inline-block", position: "relative", marginBottom: "1em"}}>
-                            <FormControl style={{width: "3em", marginRight: "1em"}} id={"disabled" + i} disabled={true}/>
+                            <FormControl style={{width: "3em", marginRight: "1em"}} id={"disabled" + i} disabled/>
                             <p style={{position: "absolute", marginLeft: "30%"}}>{i + 1}</p>
                         </div>
                     );
@@ -142,10 +149,10 @@ export const Login = props => {
             return (
                 <div>
                     <p>{t("login.password.characters")}</p>
-                    <Form>
+                    <Form className="form-container">
                         {boxes}
                     </Form>
-                    <ButtonToolbar>
+                    <ButtonToolbar className="justify-content-center" style={{marginTop: "1em"}}>
                         <Button id="back2"
                                 onClick={() => setStage(1)}>{t("navigation.back")}</Button>
                         <Button id="clear"
@@ -161,13 +168,13 @@ export const Login = props => {
     const renderThirdStage = () => {
         if (stage === 3) {
             return (
-                <Col sm={5}>
+                <Col sm={5} className="form-container">
                     <Form>
                         <EditFormGroup id="otpCode"
                                        label="login.otp.code"
                                        required/>
                     </Form>
-                    <ButtonToolbar>
+                    <ButtonToolbar className="justify-content-center">
                         <Button id="back3"
                                 onClick={() => setStage(2)}>{t("navigation.back")}</Button>
                             <Button id="submit3"
@@ -180,7 +187,6 @@ export const Login = props => {
 
     return (
         <React.Fragment>
-            <h1 className="text-center">{t("login.header")}</h1>
             <Row className="justify-content-center">
                 {renderFirstStage()}
                 {renderSecondStage()}

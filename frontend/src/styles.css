@@ -70,6 +70,24 @@ th {
     color: white !important;
 }
 
+.nav-link:hover {
+    color: #ced4da !important;
+}
+
+.navbar-brand:hover {
+    color: #ced4da !important;
+}
+
+.nav-icon-item {
+    color: white;
+    margin-left: 2em;
+    cursor: pointer;
+}
+
+.nav-icon-item:hover {
+    color: #ced4da;
+}
+
 .dropdown-item.active,
 .dropdown-item:active {
     color: #212529;
@@ -87,6 +105,7 @@ th {
     border: 1px solid #ced4da;
     border-radius: 0.25rem;
     padding: 2em;
+    margin: 2em;
 }
 
 .flat-form-label {

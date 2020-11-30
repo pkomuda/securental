@@ -2,10 +2,6 @@ package pl.lodz.p.it.securental.controllers.mok.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpCookie;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.AuthenticationException;
@@ -21,6 +17,7 @@ import pl.lodz.p.it.securental.exceptions.mok.IncorrectCredentialsException;
 import pl.lodz.p.it.securental.security.CustomAuthenticationToken;
 import pl.lodz.p.it.securental.security.CustomUserDetailsService;
 import pl.lodz.p.it.securental.services.mok.AccountService;
+import pl.lodz.p.it.securental.utils.JwtUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -31,8 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static pl.lodz.p.it.securental.utils.JwtUtils.extractUsername;
-import static pl.lodz.p.it.securental.utils.JwtUtils.generateToken;
+import static pl.lodz.p.it.securental.utils.JwtUtils.*;
 import static pl.lodz.p.it.securental.utils.StringUtils.integerArrayToString;
 
 @Slf4j
@@ -72,13 +68,16 @@ public class AuthenticationControllerImpl implements AuthenticationController {
             throw new IncorrectCredentialsException(e);
         }
 
-        Cookie cookie = new Cookie("jwt", generateToken(userDetails));
+        String jwt = generateToken(userDetails);
+        Cookie cookie = new Cookie("jwt", jwt);
         cookie.setHttpOnly(true);
+        cookie.setMaxAge(60);
         response.addCookie(cookie);
 
         return AuthenticationResponse.builder()
                 .username(userDetails.getUsername())
                 .accessLevels(getAccessLevels(userDetails))
+                .tokenExpiration(JwtUtils.extractExpiration(jwt).getTime())
                 .build();
     }
 
@@ -96,17 +95,22 @@ public class AuthenticationControllerImpl implements AuthenticationController {
                     .filter(cookie -> cookie.getName().equals("jwt"))
                     .findFirst();
             if (cookieOptional.isPresent()) {
-                return accountService.currentUser(extractUsername(cookieOptional.get().getValue()));
+                Cookie cookie = cookieOptional.get();
+                return accountService.currentUser(extractUsername(cookie.getValue()))
+                        .tokenExpiration(extractExpiration(cookie.getValue()).getTime())
+                        .build();
             } else {
                 return AuthenticationResponse.builder()
                         .username("")
                         .accessLevels(Collections.emptyList())
+                        .tokenExpiration(0)
                         .build();
             }
         } else {
             return AuthenticationResponse.builder()
                     .username("")
                     .accessLevels(Collections.emptyList())
+                    .tokenExpiration(0)
                     .build();
         }
     }

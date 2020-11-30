@@ -21,19 +21,25 @@ import { AuthenticationContext, isAuthenticated } from "./utils/AuthenticationCo
 
 export const App = () => {
 
-    const [user, setUser] = useState({username: "", accessLevels: []});
-    const value = {user, setUser};
+    const [tokenPresent, setTokenPresent] = useState(true);
+    const [userInfo, setUserInfo] = useState({
+        username: "",
+        accessLevels: [],
+        // currentAccessLevel: "",
+        tokenExpiration: 0
+    });
+    const value = [userInfo, setUserInfo];
 
     useEffect(() => {
-        if (!isAuthenticated(user)) {
+        if (!isAuthenticated(userInfo) && tokenPresent) {
             axios.get("/currentUser", {withCredentials: true})
                 .then(response => {
-                    setUser(response.data);
-                }).catch(error => {
-                    alert(error.statusCode);
+                    setUserInfo(response.data);
+                }).catch(() => {
+                    setTokenPresent(false);
             });
         }
-    }, [user]);
+    }, [tokenPresent, userInfo]);
 
     Button.defaultProps = {
         variant: "dark",
@@ -43,11 +49,11 @@ export const App = () => {
     return (
         <AuthenticationContext.Provider value={value}>
             <Router>
-                <NavigationBar/>
                 <Suspense fallback={<Spinner/>}>
+                    <NavigationBar/>
                     <Switch>
                         <Route exact path="/" component={Home}/>
-                        <Route exact path="/login" component={Login}/>
+                        <Route exact path="/login/:session?" component={Login}/>
                         <Route exact path="/register" component={Register}/>
                         <Route exact path="/confirm/:token" component={Confirm}/>
                         <Route exact path="/listAccounts" component={ListAccounts}/>

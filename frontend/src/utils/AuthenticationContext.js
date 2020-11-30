@@ -1,13 +1,15 @@
 import React from "react";
 
 export const AuthenticationContext = React.createContext({
-    user: {
+    userInfo: {
         username: "",
-        accessLevels: []
+        accessLevels: [],
+        // currentAccessLevel: "",
+        tokenExpiration: 0
     },
-    setUser: () => {}
+    setUserInfo: () => {}
 });
 
-export const isAuthenticated = user => {
-    return user.username && user.accessLevels;
+export const isAuthenticated = userInfo => {
+    return userInfo.username;
 };

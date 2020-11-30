@@ -7,6 +7,9 @@
   "navigation.details": "Details",
   "navigation.search": "Search",
 
+  "navbar.login": "Sign in",
+  "navbar.register": "Register",
+
   "breadcrumbs.login": "Login",
   "breadcrumbs.register": "Register",
   "breadcrumbs.listAccounts": "Account list",
@@ -49,6 +52,7 @@
   "login.password.characters": "Password characters",
   "login.otp.code": "One time code",
   "login.sign.in": "Sign in",
+  "login.session.expired": "Your session has expired. Please sign in again.",
 
   "register.header": "Registration",
   "register.password.header": "These are the last characters of your password",

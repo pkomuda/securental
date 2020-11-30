@@ -203,14 +203,13 @@ public class AccountService {
         }
     }
 
-    public AuthenticationResponse currentUser(String username) throws ApplicationBaseException {
+    public AuthenticationResponse.AuthenticationResponseBuilder currentUser(String username) throws ApplicationBaseException {
         Optional<Account> accountOptional = accountAdapter.getAccount(username);
         if (accountOptional.isPresent()) {
             Account account = accountOptional.get();
             return AuthenticationResponse.builder()
                     .username(username)
-                    .accessLevels(getUserFrontendRoles(account))
-                    .build();
+                    .accessLevels(getUserFrontendRoles(account));
         } else {
             throw new AccountNotFoundException();
         }

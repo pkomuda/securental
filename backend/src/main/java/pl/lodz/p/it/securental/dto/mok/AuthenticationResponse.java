@@ -10,4 +10,5 @@ public @Data class AuthenticationResponse {
 
     private String username;
     private List<String> accessLevels;
+    private long tokenExpiration;
 }

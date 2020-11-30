@@ -7,6 +7,9 @@
   "navigation.details": "Szczegóły",
   "navigation.search": "Szukaj",
 
+  "navbar.login": "Zaloguj się",
+  "navbar.register": "Zarejestruj",
+
   "breadcrumbs.login": "Logowanie",
   "breadcrumbs.register": "Rejestracja",
   "breadcrumbs.listAccounts": "Lista kont",
@@ -49,6 +52,7 @@
   "login.password.characters": "Znaki hasła",
   "login.otp.code": "Jednorazowy kod",
   "login.sign.in": "Zaloguj się",
+  "login.session.expired": "Twoja sesja wygasła. Proszę zalogować się ponownie.",
 
   "register.header": "Rejestracja",
   "register.password.header": "To są ostatnie znaki twojego hasła",
