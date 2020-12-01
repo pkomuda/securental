@@ -3,6 +3,7 @@ import React, { useContext, useState } from "react";
 import { Button, ButtonToolbar, Col, Form, FormControl, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { object, string } from "yup";
+import { handleError } from "../../utils/Alerts";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
 import { EditFormGroup } from "../EditFormGroup";
 
@@ -64,8 +65,8 @@ export const Login = props => {
                 tempAuthRequest.characters = tempCharacters;
                 setAuthRequest(tempAuthRequest);
                 setStage(2);
-            }).catch(error => {
-                alert(error.response.data);
+            }).catch(err => {
+                handleError(err);
         });
     };
 
@@ -148,18 +149,19 @@ export const Login = props => {
             }
             return (
                 <div>
-                    <p>{t("login.password.characters")}</p>
                     <Form className="form-container">
+                        <h1 className="text-center">{t("login.header")}</h1>
+                        <p className="font-weight-bold" style={{marginTop: "2em"}}>{t("login.password.characters")} *</p>
                         {boxes}
+                        <ButtonToolbar className="justify-content-center" style={{marginTop: "1em"}}>
+                            <Button id="back2"
+                                    onClick={() => setStage(1)}>{t("navigation.back")}</Button>
+                            <Button id="clear"
+                                    onClick={handleClearCharacters}>{t("login.clear")}</Button>
+                            <Button id="submit2"
+                                    onClick={handleSecondStage}>{t("navigation.next")}</Button>
+                        </ButtonToolbar>
                     </Form>
-                    <ButtonToolbar className="justify-content-center" style={{marginTop: "1em"}}>
-                        <Button id="back2"
-                                onClick={() => setStage(1)}>{t("navigation.back")}</Button>
-                        <Button id="clear"
-                                onClick={handleClearCharacters}>Clear</Button>
-                        <Button id="submit2"
-                                onClick={handleSecondStage}>{t("navigation.next")}</Button>
-                    </ButtonToolbar>
                 </div>
             );
         }
@@ -169,7 +171,8 @@ export const Login = props => {
         if (stage === 3) {
             return (
                 <Col sm={5} className="form-container">
-                    <Form>
+                    <h1 className="text-center">{t("login.header")}</h1>
+                    <Form style={{marginTop: "2em"}}>
                         <EditFormGroup id="otpCode"
                                        label="login.otp.code"
                                        required/>

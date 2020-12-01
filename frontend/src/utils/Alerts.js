@@ -9,6 +9,14 @@ export const error = (title, text) => {
     }).then(() => {});
 };
 
+export const handleError = e => {
+    if (!e.response) {
+        error("common.header", "common.text");
+    } else {
+        error("common.header", e.response.data);
+    }
+}
+
 export const info = (title, text) => {
     Swal.fire({
         titleText: i18n.t(title),

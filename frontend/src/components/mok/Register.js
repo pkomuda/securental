@@ -99,7 +99,8 @@ export const Register = props => {
         if (stage === 1) {
             return (
                 <Col sm={5} className="form-container">
-                    <Form>
+                    <h1 className="text-center">{t("register.header")}</h1>
+                    <Form style={{marginTop: "2em"}}>
                         <EditFormGroup id="username"
                                        label="account.username"
                                        required/>
@@ -130,7 +131,8 @@ export const Register = props => {
         if (stage === 2) {
             return (
                 <Col sm={5} className="form-container">
-                    <Form>
+                    <h1 className="text-center">{t("register.header")}</h1>
+                    <Form style={{marginTop: "2em"}}>
                         <EditFormGroup id="password"
                                        label="account.password"
                                        type="password"
@@ -151,7 +153,6 @@ export const Register = props => {
 
     return (
         <React.Fragment>
-            <h1 className="text-center">{t("register.header")}</h1>
             <Row className="justify-content-center">
                 {renderFirstStage()}
                 {renderSecondStage()}

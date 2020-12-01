@@ -53,6 +53,7 @@
   "login.otp.code": "Jednorazowy kod",
   "login.sign.in": "Zaloguj się",
   "login.session.expired": "Twoja sesja wygasła. Proszę zalogować się ponownie.",
+  "login.clear": "Wyczyść",
 
   "register.header": "Rejestracja",
   "register.password.header": "To są ostatnie znaki twojego hasła",

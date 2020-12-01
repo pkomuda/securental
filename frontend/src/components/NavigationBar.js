@@ -12,7 +12,7 @@ export const NavigationBar = () => {
     const {t} = useTranslation();
     const history = useHistory();
     const [userInfo, setUserInfo] = useContext(AuthenticationContext);
-    const [currentAccessLevel, setCurrentAccessLevel] = useState(userInfo.currentAccessLevel);
+    const [currentAccessLevel, setCurrentAccessLevel] = useState("");
 
     useEffect(() => {
         setCurrentAccessLevel(userInfo.currentAccessLevel);
