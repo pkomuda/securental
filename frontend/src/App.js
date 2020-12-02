@@ -15,9 +15,13 @@ import { CarDetails } from "./components/mop/CarDetails";
 import { EditCar } from "./components/mop/EditCar";
 import { ListCars } from "./components/mop/ListCars";
 import { NavigationBar } from "./components/NavigationBar";
+import { NoAccess } from "./components/NoAccess";
 import { NotFound } from "./components/NotFound";
+import { PrivateRoute } from "./components/PrivateRoute";
+import { RestrictedRoute } from "./components/RestrictedRoute";
 import { Spinner } from "./components/Spinner";
 import { AuthenticationContext, isAuthenticated } from "./utils/AuthenticationContext";
+import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_EMPLOYEE } from "./utils/Constants";
 
 export const App = () => {
 
@@ -53,17 +57,18 @@ export const App = () => {
                     <NavigationBar/>
                     <Switch>
                         <Route exact path="/" component={Home}/>
-                        <Route exact path="/login/:session?" component={Login}/>
+                        <RestrictedRoute exact path="/login/:session?" component={Login}/>
                         <Route exact path="/register" component={Register}/>
                         <Route exact path="/confirm/:token" component={Confirm}/>
                         <Route exact path="/listAccounts" component={ListAccounts}/>
                         <Route exact path="/accountDetails/:username" component={AccountDetails}/>
-                        <Route exact path="/addAccount" component={AddAccount}/>
+                        <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN]} exact path="/addAccount" component={AddAccount}/>
                         <Route exact path="/editAccount/:username" component={EditAccount}/>
-                        <Route exact path="/addCar" component={AddCar}/>
+                        <PrivateRoute accessLevels={[ACCESS_LEVEL_EMPLOYEE]} exact path="/addCar" component={AddCar}/>
                         <Route exact path="/listCars" component={ListCars}/>
                         <Route exact path="/carDetails/:number" component={CarDetails}/>
                         <Route exact path="/editCar/:number" component={EditCar}/>
+                        <Route exact path="/noAccess" component={NoAccess}/>
                         <Route component={NotFound}/>
                     </Switch>
                 </Suspense>

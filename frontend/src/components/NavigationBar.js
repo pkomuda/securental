@@ -65,7 +65,7 @@ export const NavigationBar = () => {
             return (
                 <Nav className="ml-auto">
                     {accessLevelsDropdown()}
-                    <NavDropdown id="profile" title={authenticatedDropdownTitle()} alignRight>
+                    <NavDropdown id="profile" title={authenticatedDropdownTitle()} alignRight onClick={() => console.log(userInfo)}>
                         <LinkContainer to="/addCar">
                             <NavDropdown.Item>Add car</NavDropdown.Item>
                         </LinkContainer>

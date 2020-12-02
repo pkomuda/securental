@@ -87,7 +87,7 @@ export const Login = props => {
         tempAuthRequest.otpCode = parseInt(tempAuthRequest.otpCode);
         tempAuthRequest.characters = tempAuthRequest.characters.join("");
         console.log(tempAuthRequest);
-        axios.post("/login", tempAuthRequest, {withCredentials: true})
+        axios.post("/login", tempAuthRequest)
             .then(response => {
                 setUserInfo(response.data);
                 props.history.push("/");
@@ -124,6 +124,14 @@ export const Login = props => {
         }
     };
 
+    const blockMargin = index => {
+        if (index < 9) {
+            return {position: "absolute", marginLeft: "25%"};
+        } else {
+            return {position: "absolute", marginLeft: "15%"};
+        }
+    };
+
     const renderSecondStage = () => {
         if (stage === 2) {
             let boxes = [];
@@ -132,17 +140,17 @@ export const Login = props => {
                 if (authRequest.combination.includes(i)) {
                     boxes.push(
                         <div key={i} style={{display: "inline-block", position: "relative", marginBottom: "1em"}}>
-                            <FormControl style={{width: "3em", marginRight: "1em"}} id={"enabled" + currentIndex} value={authRequest.characters[currentIndex]}
+                            <FormControl style={{width: "2em", marginRight: "1em"}} id={"enabled" + currentIndex} value={authRequest.characters[currentIndex]}
                                          onChange={handleChangeCharacters} maxLength="1" type="password"/>
-                            <span style={{position: "absolute", marginLeft: "30%"}}>{i + 1}</span>
+                            <span style={blockMargin(i)}>{i + 1}</span>
                         </div>
                     );
                     currentIndex++;
                 } else {
                     boxes.push(
                         <div key={i} style={{display: "inline-block", position: "relative", marginBottom: "1em"}}>
-                            <FormControl style={{width: "3em", marginRight: "1em"}} id={"disabled" + i} disabled/>
-                            <p style={{position: "absolute", marginLeft: "30%"}}>{i + 1}</p>
+                            <FormControl style={{width: "2em", marginRight: "1em"}} id={"disabled" + i} disabled/>
+                            <p style={blockMargin(i)}>{i + 1}</p>
                         </div>
                     );
                 }
@@ -151,6 +159,7 @@ export const Login = props => {
                 <div>
                     <Form className="form-container">
                         <h1 className="text-center">{t("login.header")}</h1>
+                        {renderSessionExpiredText()}
                         <p className="font-weight-bold" style={{marginTop: "2em"}}>{t("login.password.characters")} *</p>
                         {boxes}
                         <ButtonToolbar className="justify-content-center" style={{marginTop: "1em"}}>
@@ -172,6 +181,7 @@ export const Login = props => {
             return (
                 <Col sm={5} className="form-container">
                     <h1 className="text-center">{t("login.header")}</h1>
+                    {renderSessionExpiredText()}
                     <Form style={{marginTop: "2em"}}>
                         <EditFormGroup id="otpCode"
                                        label="login.otp.code"

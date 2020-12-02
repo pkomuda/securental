@@ -3,6 +3,6 @@ import { Jumbotron as Jumbo } from "react-bootstrap";
 
 export const Jumbotron = () => (
     <Jumbo fluid className="jumbo">
-        <div className="overlay"/>
+        {/*<div className="overlay"/>*/}
     </Jumbo>
 );

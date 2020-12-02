@@ -1,42 +1,13 @@
-import axios from "axios";
-import React, { useContext } from "react";
-import { Button, Container } from "react-bootstrap";
-import { AuthenticationContext } from "../utils/AuthenticationContext";
+import React from "react";
+import { Container } from "react-bootstrap";
 import { Jumbotron } from "./Jumbotron";
 
 export const Home = () => {
-
-    const [userInfo] = useContext(AuthenticationContext);
-
-    const handleEmployee = () => {
-        axios.get("/employee", {withCredentials: true})
-            .then(response => {
-                alert(response.status);
-            }).catch(error => {
-                alert(error.response);
-        });
-    };
-
-    const handleAdmin = () => {
-        axios.get("/admin", {withCredentials: true})
-            .then(response => {
-                alert(response.status);
-            }).catch(error => {
-            alert(error.response);
-        });
-    };
-
-    const handleUserInfo = () => {
-        console.log(userInfo);
-    };
 
     return (
         <React.Fragment>
             <Jumbotron/>
             <Container>
-                <Button onClick={handleEmployee}>Employee</Button>
-                <Button onClick={handleAdmin}>Admin</Button>
-                <Button onClick={handleUserInfo}>UserInfo</Button>
                 <h1>Lorem ipsum</h1>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque in orci et tellus ullamcorper hendrerit vitae at felis. Nullam placerat venenatis eros, at mollis justo ultrices quis. Donec in finibus risus. Nullam facilisis diam sed lectus laoreet, sed convallis nibh fermentum. Integer non tincidunt nibh. Sed facilisis porta congue. Etiam eu posuere sapien, eget fringilla diam. Cras mattis varius est. Donec efficitur lobortis nibh non ultrices. Fusce ut mattis dui, eu placerat libero. Maecenas euismod risus id ex dictum, in cursus dolor pellentesque. Proin mollis pellentesque dolor, vitae semper felis consequat non. Maecenas feugiat elit sodales iaculis commodo. Donec turpis lorem, tristique ac mollis tempus, maximus quis sem.</p>
                 <p>Sed vel orci a orci volutpat sodales. Curabitur egestas mauris nec ante scelerisque, nec facilisis mi pharetra. Aenean vel felis ac odio malesuada bibendum nec a lectus. Nulla in sodales ex, non vestibulum elit. Proin auctor, lectus id dictum sodales, urna arcu rhoncus mauris, et posuere urna tortor vehicula eros. Vestibulum semper nulla sed gravida venenatis. Praesent non sem eu risus vehicula vulputate pellentesque vitae eros. Mauris ut congue mauris. In ut ultricies ligula, ac sagittis metus. Etiam facilisis vel est sit amet facilisis.</p>

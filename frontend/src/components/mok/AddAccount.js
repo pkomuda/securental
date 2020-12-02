@@ -53,7 +53,7 @@ export const AddAccount = props => {
             tempAccount.password += lastPasswordCharacters;
             tempAccount.accessLevels = Object.keys(accessLevels).filter(key => accessLevels[key]);
             console.log(tempAccount);
-            axios.post("/account", tempAccount, {headers: {"Accept-Language": window.navigator.language}})
+            axios.post("/account", tempAccount, {withCredentials: true, headers: {"Accept-Language": window.navigator.language}})
                 .then(() => {
                     const alerts = [];
                     alerts.push({

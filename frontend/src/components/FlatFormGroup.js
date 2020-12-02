@@ -21,6 +21,7 @@ export const FlatFormGroup = props => {
                          value={props.values[props.id] + suffix()}
                          disabled
                          plaintext/>
+            {!props.last && <hr/>}
         </FormGroup>
     );
 };

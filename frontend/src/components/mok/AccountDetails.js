@@ -24,7 +24,7 @@ export const AccountDetails = props => {
     const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
-        axios.get(`/account/${props.match.params.username}`)
+        axios.get(`/account/${props.match.params.username}`, {withCredentials: true})
             .then(response => {
                 setAccount(response.data);
                 setLoaded(true);

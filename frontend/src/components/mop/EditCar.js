@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
 import { bool, object, string } from "yup";
-import { MONEY_REGEX, STRING_REGEX, YEAR_REGEX } from "../../utils/Validation";
+import { MONEY_REGEX, STRING_REGEX, validate, YEAR_REGEX } from "../../utils/Validation";
 import { EditFormGroup } from "../EditFormGroup";
 import { Spinner } from "../Spinner";
 
@@ -41,7 +41,7 @@ export const EditCar = props => {
     };
 
     useEffect(() => {
-        axios.get(`/car/${props.match.params.number}`)
+        axios.get(`/car/${props.match.params.number}`, {withCredentials: true})
             .then(response => {
                 setCar(response.data);
                 setLoaded(true);
@@ -61,26 +61,26 @@ export const EditCar = props => {
         tempCar.productionYear = parseInt(tempCar.productionYear, 10);
         tempCar.price = parseFloat(tempCar.price);
         console.log(tempCar);
-        // if (validate(car, errors, setErrors, schema)) {
-        //     const tempCar = {...car};
-        //     tempCar.productionYear = parseInt(tempCar.productionYear, 10);
-        //     console.log(tempCar);
-        //     axios.put(`/car/${tempCar.number}`, tempCar)
-        //         .then(() => {
-        //             const alerts = [];
-        //             alerts.push({
-        //                 title: t("register.password.header"),
-        //                 html: t("register.password.text1"),
-        //                 icon: "success"
-        //             });
-        //             Swal.queue(alerts);
-        //             props.history.push(`/carDetails/${tempCar.number}`);
-        //         }).catch(() => {
-        //         Swal.fire(t("errors:common.header"),
-        //             t("errors:common.text"),
-        //             "error");
-        //     });
-        // }
+        if (validate(car, errors, setErrors, schema)) {
+            const tempCar = {...car};
+            tempCar.productionYear = parseInt(tempCar.productionYear, 10);
+            console.log(tempCar);
+            axios.put(`/car/${tempCar.number}`, tempCar, {withCredentials: true})
+                .then(() => {
+                    const alerts = [];
+                    alerts.push({
+                        title: t("register.password.header"),
+                        html: t("register.password.text1"),
+                        icon: "success"
+                    });
+                    Swal.queue(alerts);
+                    props.history.push(`/carDetails/${tempCar.number}`);
+                }).catch(() => {
+                Swal.fire(t("errors:common.header"),
+                    t("errors:common.text"),
+                    "error");
+            });
+        }
     };
 
     if (loaded) {

@@ -40,7 +40,7 @@ export const AddCar = props => {
 
     const handleSubmit = () => {
         if (validate(car, errors, setErrors, schema)) {
-            axios.post("/car", car)
+            axios.post("/car", car, {withCredentials: true})
                 .then(() => {
                     Swal.fire(t("errors:common.header"),
                         t("errors:common.text"),
