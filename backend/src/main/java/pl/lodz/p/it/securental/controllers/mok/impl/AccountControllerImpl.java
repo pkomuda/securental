@@ -12,7 +12,6 @@ import pl.lodz.p.it.securental.services.mok.AccountService;
 import pl.lodz.p.it.securental.utils.PagingHelper;
 import pl.lodz.p.it.securental.utils.SignatureUtils;
 
-@CrossOrigin
 @RestController
 @AllArgsConstructor
 @NeverTransaction

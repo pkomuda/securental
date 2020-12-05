@@ -14,9 +14,16 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import pl.lodz.p.it.securental.security.CustomAuthenticationProvider;
 import pl.lodz.p.it.securental.security.CustomUserDetailsService;
 import pl.lodz.p.it.securental.security.JwtRequestFilter;
+
+import java.util.Collections;
+
+import static pl.lodz.p.it.securental.utils.ApplicationProperties.FRONTEND_ORIGIN;
 
 @Configuration
 @EnableWebSecurity
@@ -36,9 +43,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http.cors().and().csrf().disable()
 //                .authorizeRequests().anyRequest().permitAll()
-                .authorizeRequests().antMatchers("/register", "/confirm", "/initializeLogin/*", "/login").permitAll()
+                .authorizeRequests().antMatchers("/register", "/confirm", "/initializeLogin/*", "/login", "/car/*", "/cars/**").permitAll()
                 .anyRequest().authenticated()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -54,5 +61,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManager();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration().applyPermitDefaultValues();
+        configuration.setAllowedOrigins(Collections.singletonList(FRONTEND_ORIGIN));
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }

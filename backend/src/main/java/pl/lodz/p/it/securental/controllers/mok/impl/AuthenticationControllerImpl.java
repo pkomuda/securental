@@ -1,7 +1,6 @@
 package pl.lodz.p.it.securental.controllers.mok.impl;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.AuthenticationException;
@@ -32,8 +31,6 @@ import static pl.lodz.p.it.securental.utils.ApplicationProperties.*;
 import static pl.lodz.p.it.securental.utils.JwtUtils.*;
 import static pl.lodz.p.it.securental.utils.StringUtils.integerArrayToString;
 
-@Slf4j
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RestController
 @AllArgsConstructor
 @NeverTransaction
@@ -116,18 +113,6 @@ public class AuthenticationControllerImpl implements AuthenticationController {
                     .tokenExpiration(0)
                     .build();
         }
-    }
-
-    @GetMapping("/employee")
-    @PreAuthorize("hasAuthority('employeeTest')")
-    public void employeeTest(HttpServletRequest request) {
-        log.info("employee");
-    }
-
-    @GetMapping("/admin")
-    @PreAuthorize("hasAuthority('adminTest')")
-    public void adminTest(HttpServletRequest request) {
-        log.info("admin");
     }
 
     private List<String> getAccessLevels(UserDetails userDetails) {
