@@ -54,7 +54,7 @@ export const Login = props => {
     };
 
     const handleFirstStage = () => {
-        axios.get(`/initializeLogin/${authRequest.username}`)
+        axios.get(`/initializeLogin/${authRequest.username}`, {withCredentials: true})
             .then(response => {
                 const tempAuthRequest = {...authRequest};
                 tempAuthRequest.combination = response.data;
@@ -87,7 +87,7 @@ export const Login = props => {
         tempAuthRequest.otpCode = parseInt(tempAuthRequest.otpCode);
         tempAuthRequest.characters = tempAuthRequest.characters.join("");
         console.log(tempAuthRequest);
-        axios.post("/login", tempAuthRequest)
+        axios.post("/login", tempAuthRequest, {withCredentials: true})
             .then(response => {
                 setUserInfo(response.data);
                 props.history.push("/");
