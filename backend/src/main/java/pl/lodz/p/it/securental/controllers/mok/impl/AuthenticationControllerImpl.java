@@ -71,6 +71,9 @@ public class AuthenticationControllerImpl implements AuthenticationController {
         cookie.setHttpOnly(true);
         cookie.setMaxAge(60 * JWT_EXPIRATION_TIME);
         response.addCookie(cookie);
+        if (FRONTEND_ORIGIN.contains("https")) {
+            response.setHeader("Set-Cookie", response.getHeader("Set-Cookie") + "; SameSite=None; Secure");
+        }
 
         List<String> accessLevels = getAccessLevels(userDetails);
         return AuthenticationResponse.builder()
