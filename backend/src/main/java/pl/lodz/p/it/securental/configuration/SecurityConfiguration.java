@@ -2,6 +2,7 @@ package pl.lodz.p.it.securental.configuration;
 
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,17 +15,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import pl.lodz.p.it.securental.security.CustomAuthenticationProvider;
 import pl.lodz.p.it.securental.security.CustomUserDetailsService;
 import pl.lodz.p.it.securental.security.JwtRequestFilter;
 
-import java.util.Collections;
-
-import static pl.lodz.p.it.securental.utils.ApplicationProperties.FRONTEND_ORIGIN;
-
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -43,8 +38,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().configurationSource(corsConfigurationSource())
-                .and().csrf().disable()
+        http.csrf().disable()
 //                .authorizeRequests().anyRequest().permitAll()
                 .authorizeRequests().antMatchers("/register", "/confirm", "/initializeLogin/*", "/login", "/car/*", "/cars/**").permitAll()
                 .anyRequest().authenticated()
@@ -62,15 +56,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManager();
-    }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration().applyPermitDefaultValues();
-        configuration.setAllowedOrigins(Collections.singletonList(FRONTEND_ORIGIN));
-        configuration.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
     }
 }

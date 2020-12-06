@@ -34,6 +34,7 @@ import static pl.lodz.p.it.securental.utils.StringUtils.integerArrayToString;
 @RestController
 @AllArgsConstructor
 @NeverTransaction
+@CrossOrigin(origins = "${FRONTEND_ORIGIN}", allowCredentials = "true")
 public class AuthenticationControllerImpl implements AuthenticationController {
 
     private final AuthenticationManager authManager;

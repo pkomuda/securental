@@ -14,6 +14,7 @@ import pl.lodz.p.it.securental.utils.PagingHelper;
 @RestController
 @AllArgsConstructor
 @NeverTransaction
+@CrossOrigin(origins = "${FRONTEND_ORIGIN}", allowCredentials = "true")
 public class CarControllerImpl implements CarController {
 
     private final CarService carService;
