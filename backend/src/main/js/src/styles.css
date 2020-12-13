@@ -1,0 +1,126 @@
+@import "~@sweetalert2/theme-bootstrap-4/bootstrap-4.css";
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.swal2-styled,
+.swal2-confirm {
+    background-color: #333a41 !important;
+}
+
+th {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.react-bootstrap-table table {
+    table-layout: auto;
+}
+
+.page-item.active .page-link {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.jumbo {
+    background: url("./images/subaru.png") no-repeat bottom;
+    background-size: cover;
+    color: #efefef;
+    height: 300px;
+    position: relative;
+    z-index: -2;
+}
+
+.overlay {
+    background-color: #000;
+    opacity: 0.6;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: -1;
+}
+
+.navbar {
+    background-color: #333a41;
+}
+
+.nav-link {
+    color: white !important;
+}
+
+.nav-link:hover {
+    color: #ced4da !important;
+}
+
+.navbar-brand:hover {
+    color: #ced4da !important;
+}
+
+.nav-icon-item {
+    color: white;
+    margin-left: 2em;
+    cursor: pointer;
+}
+
+.nav-icon-item:hover {
+    color: #ced4da;
+}
+
+.dropdown-item.active,
+.dropdown-item:active {
+    color: #212529;
+    background-color: transparent;
+}
+
+.spinner-border {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+}
+
+.form-container {
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    padding: 2em;
+    margin: 2em;
+}
+
+.flat-form-label {
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+.invalid {
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 80%;
+    color: #dc3545;
+}
+
+.button {
+    margin-left: 1em;
+    margin-right: 1em;
+}

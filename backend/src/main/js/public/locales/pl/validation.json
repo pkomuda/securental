@@ -1,0 +1,43 @@
+{
+  "account.username.required": "Nazwa użytkownika jest wymagana",
+  "account.username.min": "Nazwa użytkownika jest zbyt krótka",
+  "account.username.max": "Nazwa użytkownika jest zbyt długa",
+
+  "account.email.required": "Adres email jest wymagany",
+  "account.email.invalid": "Adres email jest nieprawidłowy",
+
+  "account.firstName.required": "Imię jest wymagane",
+  "account.firstName.min": "Imię jest zbyt krótkie",
+  "account.firstName.max": "Imię jest zbyt długie",
+
+  "account.lastName.required": "Nazwisko jest wymagane",
+  "account.lastName.min": "Nazwisko jest zbyt krótkie",
+  "account.lastName.max": "Nazwisko jest zbyt długie",
+
+  "account.password.required": "Hasło jest wymagane",
+  "account.password.min": "Hasło jest zbyt krótkie",
+  "account.password.max": "Hasło jest zbyt długie",
+
+  "account.accessLevels.required": "Przynajmniej jeden poziom dostępu jest wymagany",
+
+  "car.make.required": "Marka jest wymagana",
+  "car.make.min": "Marka jest zbyt krótka",
+  "car.make.max": "Marka jest zbyt długa",
+  "car.make.invalid": "Marka jest nieprawidłowa",
+
+  "car.model.required": "Model jest wymagany",
+  "car.model.min": "Model jest zbyt krótki",
+  "car.model.max": "Model jest zbyt długi",
+  "car.model.invalid": "Model jest nieprawidłowy",
+
+  "car.description.required": "Opis jest wymagany",
+  "car.description.min": "Opis jest zbyt krótki",
+  "car.description.max": "Opis jest zbyt długi",
+  "car.description.invalid": "Opis jest nieprawidłowy",
+
+  "car.productionYear.required": "Rok produkcji jest wymagany",
+  "car.productionYear.invalid": "Rok produkcji jest nieprawidłowy",
+
+  "car.price.required": "Cena jest wymagana",
+  "car.price.invalid": "Cena jest nieprawidłowa"
+}

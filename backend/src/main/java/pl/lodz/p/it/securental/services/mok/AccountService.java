@@ -238,7 +238,7 @@ public class AccountService {
         byte[] qrCode;
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            BitMatrix bitMatrix = qrCodeWriter.encode(GoogleAuthenticatorQRGenerator.getOtpAuthTotpURL(APPLICATION_NAME, username, key), BarcodeFormat.QR_CODE, 200, 200);
+            BitMatrix bitMatrix = qrCodeWriter.encode(GoogleAuthenticatorQRGenerator.getOtpAuthTotpURL("Securental", username, key), BarcodeFormat.QR_CODE, 200, 200);
             MatrixToImageWriter.writeToStream(bitMatrix, "PNG", outputStream);
             qrCode = outputStream.toByteArray();
         } catch (WriterException | IOException e) {

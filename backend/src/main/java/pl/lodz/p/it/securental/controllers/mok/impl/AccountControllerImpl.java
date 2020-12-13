@@ -15,7 +15,6 @@ import pl.lodz.p.it.securental.utils.SignatureUtils;
 @RestController
 @AllArgsConstructor
 @NeverTransaction
-@CrossOrigin(origins = "${FRONTEND_ORIGIN}", allowCredentials = "true")
 public class AccountControllerImpl implements AccountController {
 
     private final AccountService accountService;

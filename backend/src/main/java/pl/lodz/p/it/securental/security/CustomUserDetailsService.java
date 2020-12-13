@@ -17,6 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static pl.lodz.p.it.securental.exceptions.mok.AccountNotFoundException.KEY_ACCOUNT_NOT_FOUND;
+import static pl.lodz.p.it.securental.utils.ApplicationProperties.*;
 import static pl.lodz.p.it.securental.utils.StringUtils.integerArrayToString;
 
 @Slf4j
@@ -74,7 +75,16 @@ public class CustomUserDetailsService {
     }
 
     private String[] getRolesForGroup(String groupName) {
-        return ResourceBundle.getBundle("roles").getString(groupName).split(",");
+        switch (groupName) {
+            case ACCESS_LEVEL_ADMIN:
+                return ADMIN_ROLES;
+            case ACCESS_LEVEL_CLIENT:
+                return CLIENT_ROLES;
+            case ACCESS_LEVEL_EMPLOYEE:
+                return EMPLOYEE_ROLES;
+            default:
+                return new String[0];
+        }
     }
 
     private Set<String> getUserGroupNames(Account account) {

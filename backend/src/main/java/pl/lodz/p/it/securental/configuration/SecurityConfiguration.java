@@ -40,7 +40,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
 //                .authorizeRequests().anyRequest().permitAll()
-                .authorizeRequests().antMatchers("/register", "/confirm", "/initializeLogin/*", "/login", "/car/*", "/cars/**").permitAll()
+                .authorizeRequests().antMatchers("/**", "/api/register", "/api/confirm", "/api/initializeLogin/*", "/api/login", "/api/car/*", "/api/cars/**").permitAll()
                 .anyRequest().authenticated()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
