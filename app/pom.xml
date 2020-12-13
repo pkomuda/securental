@@ -22,8 +22,8 @@
 		<zxing.version>3.4.1</zxing.version>
 		<frontend-maven-plugin.version>1.10.4</frontend-maven-plugin.version>
 		<node.version>v12.20.0</node.version>
-<!--		<react.app.api>${react.app.api}</react.app.api>-->
-<!--		<react.app.last.password.characters>${react.app.last.password.characters}</react.app.last.password.characters>-->
+		<react.app.api>${react.app.api}</react.app.api>
+		<react.app.last.password.characters>${react.app.last.password.characters}</react.app.last.password.characters>
 	</properties>
 
 	<dependencies>
@@ -98,14 +98,38 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
-				<configuration>
-					<outputDirectory>target/classes/public</outputDirectory>
-					<resources>
-						<resource>
-							<directory>src/main/js/build</directory>
-						</resource>
-					</resources>
-				</configuration>
+				<executions>
+					<execution>
+						<id>backend</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>target/classes</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/resources</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>frontend</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>target/classes/public</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/js/build</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>com.github.eirslett</groupId>
@@ -141,10 +165,10 @@
 						</goals>
 						<configuration>
 							<arguments>run build</arguments>
-<!--							<environmentVariables>-->
-<!--								<REACT_APP_API>${react.app.api}</REACT_APP_API>-->
-<!--								<REACT_APP_LAST_PASSWORD_CHARACTERS>${react.app.last.password.characters}</REACT_APP_LAST_PASSWORD_CHARACTERS>-->
-<!--							</environmentVariables>-->
+							<environmentVariables>
+								<REACT_APP_API>${react.app.api}</REACT_APP_API>
+								<REACT_APP_LAST_PASSWORD_CHARACTERS>${react.app.last.password.characters}</REACT_APP_LAST_PASSWORD_CHARACTERS>
+							</environmentVariables>
 						</configuration>
 					</execution>
 				</executions>

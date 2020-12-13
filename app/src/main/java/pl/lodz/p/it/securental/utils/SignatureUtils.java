@@ -23,11 +23,11 @@ public class SignatureUtils {
     public SignatureUtils() throws ApplicationBaseException {
         try {
             KeyStore privateKeystore = KeyStore.getInstance("PKCS12");
-            privateKeystore.load(new ClassPathResource("public/private_keystore.p12").getInputStream(), KEYSTORE_PASSWORD);
+            privateKeystore.load(new ClassPathResource("private_keystore.p12").getInputStream(), KEYSTORE_PASSWORD);
             privateKey = (PrivateKey) privateKeystore.getKey("senderKeyPair", KEYSTORE_PASSWORD);
 
             KeyStore publicKeystore = KeyStore.getInstance("PKCS12");
-            publicKeystore.load(new ClassPathResource("public/public_keystore.p12").getInputStream(), KEYSTORE_PASSWORD);
+            publicKeystore.load(new ClassPathResource("public_keystore.p12").getInputStream(), KEYSTORE_PASSWORD);
             Certificate certificate = publicKeystore.getCertificate("receiverKeyPair");
             publicKey = certificate.getPublicKey();
         } catch (GeneralSecurityException | IOException e) {
