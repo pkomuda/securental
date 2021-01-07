@@ -1,5 +1,8 @@
 package pl.lodz.p.it.securental.utils;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -85,5 +88,13 @@ public final class StringUtils {
 
     public static boolean isNullOrEmpty(String str) {
         return Objects.isNull(str) || "".equals(str);
+    }
+
+    public static BigDecimal stringToBigDecimal(String amount) {
+        return new BigDecimal(amount, new MathContext(2, RoundingMode.HALF_UP));
+    }
+
+    public static String bigDecimalToString(BigDecimal amount) {
+        return amount.setScale(2, RoundingMode.HALF_UP).toString();
     }
 }

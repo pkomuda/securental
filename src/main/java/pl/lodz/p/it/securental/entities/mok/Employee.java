@@ -15,7 +15,7 @@ import static pl.lodz.p.it.securental.utils.ApplicationProperties.ACCESS_LEVEL_E
 @EqualsAndHashCode(callSuper = true)
 public @Data class Employee extends AccessLevel {
 
-    public Employee(String name, boolean active) {
-        super(name, active);
+    public Employee(String name, boolean active, Account account) {
+        super(name, active, account);
     }
 }

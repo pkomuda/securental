@@ -107,7 +107,7 @@ public class AccountService {
             account.setConfirmationToken(randomBase64Url());
             account.setCredentials(new Credentials(generateMaskedPasswords(accountDto.getPassword())));
             account.setAuthenticationToken(new AuthenticationToken(new ArrayList<>(), LocalDateTime.now()));
-            account.setAccessLevels(generateClientAccessLevels());
+            account.setAccessLevels(generateClientAccessLevels(account));
             if (otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).isPresent()) {
                 account.setOtpCredentials(otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).get());
                 String subject = getTranslatedText("confirm.subject", language);
@@ -124,11 +124,11 @@ public class AccountService {
         return generateQrCode(accountDto.getUsername(), key);
     }
 
-    private List<AccessLevel> generateClientAccessLevels() {
+    private List<AccessLevel> generateClientAccessLevels(Account account) {
         List<AccessLevel> accessLevels = new ArrayList<>();
-        accessLevels.add((new Admin(ACCESS_LEVEL_ADMIN, false)));
-        accessLevels.add((new Employee(ACCESS_LEVEL_EMPLOYEE, false)));
-        accessLevels.add((new Client(ACCESS_LEVEL_CLIENT, true)));
+        accessLevels.add((new Admin(ACCESS_LEVEL_ADMIN, false, account)));
+        accessLevels.add((new Employee(ACCESS_LEVEL_EMPLOYEE, false, account)));
+        accessLevels.add((new Client(ACCESS_LEVEL_CLIENT, true, account)));
         return accessLevels;
     }
 

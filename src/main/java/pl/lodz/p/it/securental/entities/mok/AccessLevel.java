@@ -26,4 +26,7 @@ public @Data class AccessLevel extends BaseEntity {
     @NotNull
     @Column(nullable = false)
     private boolean active;
+
+    @ManyToOne
+    private Account account;
 }

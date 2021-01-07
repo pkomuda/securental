@@ -12,6 +12,9 @@ public class ApplicationProperties {
     public static final String ACCESS_LEVEL_ADMIN = "ADMIN";
     public static final String ACCESS_LEVEL_EMPLOYEE = "EMPLOYEE";
     public static final String ACCESS_LEVEL_CLIENT = "CLIENT";
+    public static final String RESERVATION_STATUS_NEW = "NEW";
+    public static final String RESERVATION_STATUS_CANCELLED = "CANCELLED";
+    public static final String RESERVATION_STATUS_FINISHED = "FINISHED";
 
     public static final String STRING_REGEX = "^[a-zA-Z0-9!@#$%^ąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+$";
     public static final String EMAIL_REGEX = "^[a-zA-Z0-9-_]+(\\.[a-zA-Z0-9-_]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9]+)*(\\.[a-zA-Z]{2,})$";

@@ -15,7 +15,7 @@ import static pl.lodz.p.it.securental.utils.ApplicationProperties.ACCESS_LEVEL_C
 @EqualsAndHashCode(callSuper = true)
 public @Data class Client extends AccessLevel {
 
-    public Client(String name, boolean active) {
-        super(name, active);
+    public Client(String name, boolean active, Account account) {
+        super(name, active, account);
     }
 }

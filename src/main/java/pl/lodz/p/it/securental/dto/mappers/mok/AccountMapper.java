@@ -21,15 +21,16 @@ public class AccountMapper {
     private final SignatureUtils signatureUtils;
 
     public static Account toAccount(AccountDto accountDto) {
-        return Account.builder()
+        Account account = Account.builder()
                 .email(accountDto.getEmail())
                 .fullPassword(accountDto.getPassword())
                 .firstName(accountDto.getFirstName())
                 .lastName(accountDto.getLastName())
                 .active(accountDto.isActive())
                 .confirmed(accountDto.isConfirmed())
-                .accessLevels(toAccessLevels(accountDto.getAccessLevels()))
                 .build();
+        account.setAccessLevels(toAccessLevels(account, accountDto.getAccessLevels()));
+        return account;
     }
 
     public AccountDto toAccountDtoWithSignature(Account account) throws ApplicationBaseException {
@@ -61,24 +62,24 @@ public class AccountMapper {
         return accounts.map(AccountMapper::toAccountDtoWithoutSignature);
     }
 
-    private static List<AccessLevel> toAccessLevels(List<String> accessLevelStrings) {
+    private static List<AccessLevel> toAccessLevels(Account account, List<String> accessLevelStrings) {
         List<AccessLevel> accessLevels = new ArrayList<>();
         if (accessLevelStrings.contains(ACCESS_LEVEL_ADMIN)) {
-            accessLevels.add(new Admin(ACCESS_LEVEL_ADMIN, true));
+            accessLevels.add(new Admin(ACCESS_LEVEL_ADMIN, true, account));
         } else {
-            accessLevels.add(new Admin(ACCESS_LEVEL_ADMIN, false));
+            accessLevels.add(new Admin(ACCESS_LEVEL_ADMIN, false, account));
         }
 
         if (accessLevelStrings.contains(ACCESS_LEVEL_EMPLOYEE)) {
-            accessLevels.add(new Employee(ACCESS_LEVEL_EMPLOYEE, true));
+            accessLevels.add(new Employee(ACCESS_LEVEL_EMPLOYEE, true, account));
         } else {
-            accessLevels.add(new Employee(ACCESS_LEVEL_EMPLOYEE, false));
+            accessLevels.add(new Employee(ACCESS_LEVEL_EMPLOYEE, false, account));
         }
 
         if (accessLevelStrings.contains(ACCESS_LEVEL_CLIENT)) {
-            accessLevels.add(new Client(ACCESS_LEVEL_CLIENT, true));
+            accessLevels.add(new Client(ACCESS_LEVEL_CLIENT, true, account));
         } else {
-            accessLevels.add(new Client(ACCESS_LEVEL_CLIENT, false));
+            accessLevels.add(new Client(ACCESS_LEVEL_CLIENT, false, account));
         }
         return accessLevels;
     }
