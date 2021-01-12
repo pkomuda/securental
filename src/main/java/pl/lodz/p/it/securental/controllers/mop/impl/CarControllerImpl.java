@@ -11,6 +11,7 @@ import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.services.mop.CarService;
 import pl.lodz.p.it.securental.utils.PagingHelper;
 
+@CrossOrigin //TODO
 @RestController
 @AllArgsConstructor
 @NeverTransaction

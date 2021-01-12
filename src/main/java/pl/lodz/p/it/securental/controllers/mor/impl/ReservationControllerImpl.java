@@ -57,7 +57,7 @@ public class ReservationControllerImpl implements ReservationController {
     public Page<ReservationDto> filterReservations(@PathVariable String filter,
                                                    @PathVariable int page,
                                                    @PathVariable int size) throws ApplicationBaseException {
-        return null;
+        return reservationService.filterReservations(filter, new PagingHelper(page, size));
     }
 
     @Override
@@ -67,6 +67,6 @@ public class ReservationControllerImpl implements ReservationController {
                                                          @PathVariable int size,
                                                          @PathVariable String property,
                                                          @PathVariable String order) throws ApplicationBaseException {
-        return null;
+        return reservationService.filterReservations(filter, new PagingHelper(page, size, property, order));
     }
 }

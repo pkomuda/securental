@@ -28,7 +28,7 @@ export const EditCar = props => {
         description: "",
         productionYear: "",
         price: "",
-        active: false,
+        active: false
     });
     const [loaded, setLoaded] = useState(false);
     const [errors, setErrors] = useState({});
@@ -41,7 +41,7 @@ export const EditCar = props => {
     };
 
     useEffect(() => {
-        axios.get(`/car/${props.match.params.number}`, {withCredentials: true})
+        axios.get(`/car/${props.match.params.number}`)
             .then(response => {
                 setCar(response.data);
                 setLoaded(true);
@@ -57,23 +57,16 @@ export const EditCar = props => {
     };
 
     const handleSubmit = () => {
-        const tempCar = {...car};
-        tempCar.productionYear = parseInt(tempCar.productionYear, 10);
-        tempCar.price = parseFloat(tempCar.price);
-        console.log(tempCar);
         if (validate(car, errors, setErrors, schema)) {
             const tempCar = {...car};
             tempCar.productionYear = parseInt(tempCar.productionYear, 10);
+            tempCar.price = tempCar.price.replaceAll(",", ".");
             console.log(tempCar);
             axios.put(`/car/${tempCar.number}`, tempCar, {withCredentials: true})
                 .then(() => {
-                    const alerts = [];
-                    alerts.push({
-                        title: t("register.password.header"),
-                        html: t("register.password.text1"),
-                        icon: "success"
-                    });
-                    Swal.queue(alerts);
+                    Swal.fire(t("errors:common.header"),
+                        t("errors:common.text"),
+                        "success");
                     props.history.push(`/carDetails/${tempCar.number}`);
                 }).catch(() => {
                 Swal.fire(t("errors:common.header"),

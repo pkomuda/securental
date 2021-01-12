@@ -57,15 +57,4 @@ public class ReservationMapper {
     public static Page<ReservationDto> toReservationDtos(Page<Reservation> reservations) {
         return reservations.map(ReservationMapper::toReservationDtoWithoutSignature);
     }
-
-    private static Status toStatus(String statusString) {
-        switch (statusString) {
-            case RESERVATION_STATUS_CANCELLED:
-                return new Status(RESERVATION_STATUS_CANCELLED);
-            case RESERVATION_STATUS_FINISHED:
-                return new Status(RESERVATION_STATUS_FINISHED);
-            default:
-                return new Status(RESERVATION_STATUS_NEW);
-        }
-    }
 }

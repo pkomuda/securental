@@ -20,6 +20,7 @@
   "breadcrumbs.carDetails": "Szczegóły samochodu",
   "breadcrumbs.addCar": "Dodaj samochód",
   "breadcrumbs.editCar": "Edytuj samochód",
+  "breadcrumbs.addReservation": "Zarezerwuj samochód",
 
   "account.details.header": "Szczegóły konta",
   "account.username": "Nazwa użytkownika",
@@ -39,7 +40,7 @@
   "car.model": "Model",
   "car.description": "Opis",
   "car.productionYear": "Rok produkcji",
-  "car.price": "Cena wynajmu (za dzień)",
+  "car.price": "Cena wynajmu",
   "car.activity": "Aktywność",
   "car.active": "Aktywny",
   "car.inactive": "Nieaktywny",
@@ -64,5 +65,10 @@
   "register.success.text2": "Zeskanuj poniższy kod QR aplikacją w telefonie (np. Google Authenticator, Authy), aby móc zalogować się do swojego konta.",
 
   "confirm.header": "Potwierdź swoje konto",
-  "confirm.success": "Konto potwierdzone pomyślnie"
+  "confirm.success": "Konto potwierdzone pomyślnie",
+
+  "reservation.reserve": "Zarezerwuj",
+  "reservation.car": "Samochód",
+  "reservation.startDate": "Data rozpoczęcia",
+  "reservation.endDate": "Data zakończenia"
 }

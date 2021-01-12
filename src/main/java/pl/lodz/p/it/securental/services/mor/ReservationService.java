@@ -15,19 +15,21 @@ import pl.lodz.p.it.securental.entities.mop.Car;
 import pl.lodz.p.it.securental.entities.mor.Reservation;
 import pl.lodz.p.it.securental.entities.mor.Status;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
+import pl.lodz.p.it.securental.exceptions.ApplicationOptimisticLockException;
+import pl.lodz.p.it.securental.exceptions.db.PropertyNotFoundException;
 import pl.lodz.p.it.securental.exceptions.mok.AccountNotFoundException;
 import pl.lodz.p.it.securental.exceptions.mop.CarNotFoundException;
 import pl.lodz.p.it.securental.exceptions.mor.ReservationNotFoundException;
+import pl.lodz.p.it.securental.exceptions.mor.ReservationNumberNotMatchingException;
 import pl.lodz.p.it.securental.exceptions.mor.StatusNotFoundException;
 import pl.lodz.p.it.securental.utils.PagingHelper;
 import pl.lodz.p.it.securental.utils.SignatureUtils;
 
 import java.math.BigDecimal;
-import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
-import static java.time.temporal.ChronoUnit.SECONDS;
+import static pl.lodz.p.it.securental.utils.ApplicationProperties.*;
 import static pl.lodz.p.it.securental.utils.StringUtils.randomBase64Url;
 
 @Service
@@ -45,13 +47,7 @@ public class ReservationService {
     public void addReservation(ReservationDto reservationDto) throws ApplicationBaseException {
         Reservation reservation = ReservationMapper.toReservation(reservationDto);
         reservation.setNumber(randomBase64Url());
-
-        Optional<Status> statusOptional = statusAdapter.getStatusNew();
-        if (statusOptional.isPresent()) {
-            reservation.setStatus(statusOptional.get());
-        } else {
-            throw new StatusNotFoundException();
-        }
+        reservation.setStatus(getStatus(RESERVATION_STATUS_NEW));
 
         Optional<Client> clientOptional = accessLevelAdapter.getClient(reservationDto.getClientDto().getUsername());
         if (clientOptional.isPresent() && clientOptional.get().isActive()) {
@@ -68,8 +64,8 @@ public class ReservationService {
         }
 
         long minutes = MINUTES.between(reservation.getStartDate(), reservation.getEndDate());
-        long days = (long) Math.ceil(minutes/1440.0);
-        BigDecimal price = BigDecimal.valueOf(reservation.getCar().getPrice()).multiply(BigDecimal.valueOf(days));
+        long hours = (long) Math.ceil(minutes/60.0);
+        BigDecimal price = BigDecimal.valueOf(hours).multiply(reservation.getCar().getPrice());
         reservation.setPrice(price);
         
         reservationAdapter.addReservation(reservation);
@@ -84,11 +80,48 @@ public class ReservationService {
         }
     }
 
-    public void editReservation(String number, ReservationDto reservationDto) {
-
+    public void editReservation(String number, ReservationDto reservationDto) throws ApplicationBaseException {
+        if (number.equals(reservationDto.getNumber())) {
+            Optional<Reservation> reservationOptional = reservationAdapter.getReservation(number);
+            if (reservationOptional.isPresent()) {
+                Reservation reservation = reservationOptional.get();
+                if (signatureUtils.verify(reservation.toSignString(), reservationDto.getSignature())) {
+                    reservation.setStartDate(reservationDto.getStartDate());
+                    reservation.setEndDate(reservationDto.getEndDate());
+                    reservation.setStatus(getStatus(reservationDto.getStatus()));
+                } else {
+                    throw new ApplicationOptimisticLockException();
+                }
+            } else {
+                throw new ReservationNotFoundException();
+            }
+        } else {
+            throw new ReservationNumberNotMatchingException();
+        }
     }
 
-    public Page<ReservationDto> getAllReservations(PagingHelper pagingHelper) {
-        return null;
+    public Page<ReservationDto> getAllReservations(PagingHelper pagingHelper) throws ApplicationBaseException {
+        try {
+            return ReservationMapper.toReservationDtos(reservationAdapter.getAllReservations(pagingHelper.withSorting()));
+        } catch (PropertyNotFoundException e) {
+            return ReservationMapper.toReservationDtos(reservationAdapter.getAllReservations(pagingHelper.withoutSorting()));
+        }
+    }
+
+    public Page<ReservationDto> filterReservations(String filter, PagingHelper pagingHelper) throws ApplicationBaseException {
+        try {
+            return ReservationMapper.toReservationDtos(reservationAdapter.filterReservations(filter, pagingHelper.withSorting()));
+        } catch (PropertyNotFoundException e) {
+            return ReservationMapper.toReservationDtos(reservationAdapter.filterReservations(filter, pagingHelper.withoutSorting()));
+        }
+    }
+
+    private Status getStatus(String name) throws ApplicationBaseException {
+        Optional<Status> statusOptional = statusAdapter.getStatus(name);
+        if (statusOptional.isPresent()) {
+            return statusOptional.get();
+        } else {
+            throw new StatusNotFoundException();
+        }
     }
 }

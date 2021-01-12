@@ -20,10 +20,10 @@
 		<jjwt.version>0.9.1</jjwt.version>
 		<googleauth.version>1.5.0</googleauth.version>
 		<zxing.version>3.4.1</zxing.version>
-		<frontend-maven-plugin.version>1.10.4</frontend-maven-plugin.version>
-		<node.version>v12.20.0</node.version>
-		<react.app.api>${react.app.api}</react.app.api>
-		<react.app.last.password.characters>4</react.app.last.password.characters>
+		<frontend-maven-plugin.version>1.11.0</frontend-maven-plugin.version>
+		<node.version>v12.20.1</node.version>
+<!--		<react.app.api>${react.app.api}</react.app.api>-->
+<!--		<react.app.last.password.characters>4</react.app.last.password.characters>-->
 	</properties>
 
 	<dependencies>
@@ -165,10 +165,10 @@
 						</goals>
 						<configuration>
 							<arguments>run build</arguments>
-							<environmentVariables>
-								<REACT_APP_API>${react.app.api}</REACT_APP_API>
-								<REACT_APP_LAST_PASSWORD_CHARACTERS>${react.app.last.password.characters}</REACT_APP_LAST_PASSWORD_CHARACTERS>
-							</environmentVariables>
+<!--							<environmentVariables>-->
+<!--								<REACT_APP_API>${react.app.api}</REACT_APP_API>-->
+<!--								<REACT_APP_LAST_PASSWORD_CHARACTERS>${react.app.last.password.characters}</REACT_APP_LAST_PASSWORD_CHARACTERS>-->
+<!--							</environmentVariables>-->
 						</configuration>
 					</execution>
 				</executions>

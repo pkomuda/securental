@@ -12,13 +12,14 @@ import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.ApplicationOptimisticLockException;
 import pl.lodz.p.it.securental.exceptions.db.PropertyNotFoundException;
 import pl.lodz.p.it.securental.exceptions.mop.CarNotFoundException;
-import pl.lodz.p.it.securental.exceptions.mop.NumberNotMatchingException;
+import pl.lodz.p.it.securental.exceptions.mop.CarNumberNotMatchingException;
 import pl.lodz.p.it.securental.utils.PagingHelper;
 import pl.lodz.p.it.securental.utils.SignatureUtils;
 
 import java.util.Optional;
 
 import static pl.lodz.p.it.securental.utils.StringUtils.randomBase64Url;
+import static pl.lodz.p.it.securental.utils.StringUtils.stringToBigDecimal;
 
 @Service
 @AllArgsConstructor
@@ -54,7 +55,7 @@ public class CarService {
                     car.setModel(carDto.getModel());
                     car.setDescription(carDto.getDescription());
                     car.setProductionYear(carDto.getProductionYear());
-                    car.setPrice(carDto.getPrice());
+                    car.setPrice(stringToBigDecimal(carDto.getPrice()));
                     car.setActive(carDto.isActive());
                 } else {
                     throw new ApplicationOptimisticLockException();
@@ -63,7 +64,7 @@ public class CarService {
                 throw new CarNotFoundException();
             }
         } else {
-            throw new NumberNotMatchingException();
+            throw new CarNumberNotMatchingException();
         }
     }
 

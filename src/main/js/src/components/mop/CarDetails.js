@@ -18,13 +18,14 @@ export const CarDetails = props => {
         description: "",
         productionYear: "",
         price: 0,
-        active: false,
+        active: false
     });
     const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
         axios.get(`/car/${props.match.params.number}`)
             .then(response => {
+                const tempCar = response.data
                 setCar(response.data);
                 setLoaded(true);
             }).catch(error => {
@@ -80,6 +81,8 @@ export const CarDetails = props => {
                                         onClick={() => props.history.push("/listCars")}>{t("navigation.back")}</Button>
                                 <Button id="edit"
                                         onClick={() => props.history.push(`/editCar/${car.number}`)}>{t("navigation.edit")}</Button>
+                                <Button id="reserve"
+                                        onClick={() => props.history.push(`/addReservation/${car.number}`)}>{t("reservation.reserve")}</Button>
                             </ButtonToolbar>
                         </Col>
                     </Row>

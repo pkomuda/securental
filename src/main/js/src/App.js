@@ -14,6 +14,7 @@ import { AddCar } from "./components/mop/AddCar";
 import { CarDetails } from "./components/mop/CarDetails";
 import { EditCar } from "./components/mop/EditCar";
 import { ListCars } from "./components/mop/ListCars";
+import { AddReservation } from "./components/mor/AddReservation";
 import { NavigationBar } from "./components/NavigationBar";
 import { NoAccess } from "./components/NoAccess";
 import { NotFound } from "./components/NotFound";
@@ -68,6 +69,7 @@ export const App = () => {
                         <Route exact path="/listCars" component={ListCars}/>
                         <Route exact path="/carDetails/:number" component={CarDetails}/>
                         <Route exact path="/editCar/:number" component={EditCar}/>
+                        <Route exact path="/addReservation/:number" component={AddReservation}/>
                         <Route exact path="/noAccess" component={NoAccess}/>
                         <Route component={NotFound}/>
                     </Switch>

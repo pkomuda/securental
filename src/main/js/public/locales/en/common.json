@@ -20,6 +20,7 @@
   "breadcrumbs.carDetails": "Car details",
   "breadcrumbs.addCar": "Add car",
   "breadcrumbs.editCar": "Edit car",
+  "breadcrumbs.addReservation": "Reserve car",
 
   "account.details.header": "Account details",
   "account.username": "Username",
@@ -39,7 +40,7 @@
   "car.model": "Model",
   "car.description": "Description",
   "car.productionYear": "Production year",
-  "car.price": "Rental price (per day)",
+  "car.price": "Rental price",
   "car.activity": "Activity",
   "car.active": "Active",
   "car.inactive": "Inactive",
@@ -64,5 +65,10 @@
   "register.success.text2": "Scan the following QR code with a phone app (e.g. Google Authenticator, Authy) to sign in to your account.",
 
   "confirm.header": "Confirm your account",
-  "confirm.success": "Account confirmed successfully"
+  "confirm.success": "Account confirmed successfully",
+
+  "reservation.reserve": "Reserve",
+  "reservation.car": "Car",
+  "reservation.startDate": "Start date",
+  "reservation.endDate": "End date"
 }

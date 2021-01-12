@@ -27,7 +27,7 @@ export const AddCar = props => {
         description: "",
         productionYear: "",
         price: "",
-        active: false,
+        active: false
     });
     const [errors, setErrors] = useState({});
     EditFormGroup.defaultProps = {
@@ -40,6 +40,10 @@ export const AddCar = props => {
 
     const handleSubmit = () => {
         if (validate(car, errors, setErrors, schema)) {
+            const tempCar = {...car};
+            tempCar.productionYear = parseInt(tempCar.productionYear, 10);
+            tempCar.price = tempCar.price.replaceAll(",", ".");
+            console.log(tempCar);
             axios.post("/car", car, {withCredentials: true})
                 .then(() => {
                     Swal.fire(t("errors:common.header"),
@@ -57,7 +61,6 @@ export const AddCar = props => {
     const handleChangeActive = event => {
         setCar({...car, [event.target.id]: !car[event.target.id]});
     };
-
 
     return (
         <React.Fragment>
