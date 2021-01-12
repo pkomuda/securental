@@ -15,9 +15,17 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import pl.lodz.p.it.securental.security.CustomAuthenticationProvider;
 import pl.lodz.p.it.securental.security.CustomUserDetailsService;
 import pl.lodz.p.it.securental.security.JwtRequestFilter;
+
+import java.util.Collections;
+
+import static pl.lodz.p.it.securental.utils.ApplicationProperties.FRONTEND_ORIGIN;
+import static pl.lodz.p.it.securental.utils.ApplicationProperties.isProduction;
 
 @Slf4j
 @Configuration
@@ -38,7 +46,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http.cors().and().csrf().disable()
 //                .authorizeRequests().anyRequest().permitAll()
                 .authorizeRequests().antMatchers("/**", "/api/register", "/api/confirm", "/api/initializeLogin/*", "/api/login", "/api/car/*", "/api/cars/**").permitAll()
                 .anyRequest().authenticated()
@@ -56,5 +64,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManager();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        if (!isProduction()) {
+            configuration.applyPermitDefaultValues();
+            configuration.setAllowCredentials(true);
+            configuration.setAllowedHeaders(Collections.singletonList("*"));
+            configuration.setAllowedMethods(Collections.singletonList("*"));
+            configuration.setAllowedOrigins(Collections.singletonList(FRONTEND_ORIGIN));
+            configuration.setExposedHeaders(Collections.singletonList("*"));
+        }
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }

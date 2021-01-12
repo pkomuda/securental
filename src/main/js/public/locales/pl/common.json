@@ -21,6 +21,7 @@
   "breadcrumbs.addCar": "Dodaj samochód",
   "breadcrumbs.editCar": "Edytuj samochód",
   "breadcrumbs.addReservation": "Zarezerwuj samochód",
+  "breadcrumbs.listReservations": "Lista rezerwacji",
 
   "account.details.header": "Szczegóły konta",
   "account.username": "Nazwa użytkownika",
@@ -69,7 +70,10 @@
 
   "reservation.reserve": "Zarezerwuj",
   "reservation.car": "Samochód",
+  "reservation.number": "Numer rezerwacji",
   "reservation.startDate": "Data rozpoczęcia",
   "reservation.endDate": "Data zakończenia",
-  "reservation.time": "Czas"
+  "reservation.time": "Czas",
+  "reservation.make": "Marka samochodu",
+  "reservation.model": "Model samochodu"
 }

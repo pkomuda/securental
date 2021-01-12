@@ -21,6 +21,7 @@
   "breadcrumbs.addCar": "Add car",
   "breadcrumbs.editCar": "Edit car",
   "breadcrumbs.addReservation": "Reserve car",
+  "breadcrumbs.listReservations": "Reservation list",
 
   "account.details.header": "Account details",
   "account.username": "Username",
@@ -69,7 +70,10 @@
 
   "reservation.reserve": "Reserve",
   "reservation.car": "Car",
+  "reservation.number": "Reservation number",
   "reservation.startDate": "Start date",
   "reservation.endDate": "End date",
-  "reservation.time": "Time"
+  "reservation.time": "Time",
+  "reservation.make": "Car make",
+  "reservation.model": "Car model"
 }

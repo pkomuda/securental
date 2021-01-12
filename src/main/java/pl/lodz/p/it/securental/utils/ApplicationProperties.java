@@ -57,4 +57,8 @@ public class ApplicationProperties {
         MASKED_PASSWORD_MIN_LENGTH = maskedPasswordMinLength;
         PASSWORD_HASHING_ALGORITHM = passwordHashingAlgorithm;
     }
+
+    public static boolean isProduction() {
+        return FRONTEND_ORIGIN.startsWith("https");
+    }
 }
