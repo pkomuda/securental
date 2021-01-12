@@ -70,5 +70,6 @@
   "reservation.reserve": "Reserve",
   "reservation.car": "Car",
   "reservation.startDate": "Start date",
-  "reservation.endDate": "End date"
+  "reservation.endDate": "End date",
+  "reservation.time": "Time"
 }

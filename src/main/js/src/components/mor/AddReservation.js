@@ -1,19 +1,28 @@
 import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
+import en from 'date-fns/locale/en-GB';
+import pl from 'date-fns/locale/pl';
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormCheck, FormControl, FormGroup, FormLabel, Row } from "react-bootstrap";
-import DatePicker from "react-datepicker";
+import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormControl, FormGroup, FormLabel, Row } from "react-bootstrap";
+import DatePicker, { registerLocale } from "react-datepicker";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
 import { date, object } from "yup";
+import { isLanguagePolish } from "../../utils/i18n";
+import { hoursBetween, nearestFullHour } from "../../utils/Time";
 import { validate } from "../../utils/Validation";
 import { EditFormGroup } from "../EditFormGroup";
-import { FlatFormGroup } from "../FlatFormGroup";
 import { Spinner } from "../Spinner";
 
 export const AddReservation = props => {
+
+    if (isLanguagePolish()) {
+        registerLocale("pl", pl);
+    } else {
+        registerLocale("en", en);
+    }
 
     const {t} = useTranslation();
     const schema = object().shape({
@@ -21,9 +30,9 @@ export const AddReservation = props => {
         endDate: date().required("reservation.endDate.required")
     });
     const [reservation, setReservation] = useState({
-        startDate: new Date(),
-        endDate: new Date(),
-        price: ""
+        startDate: nearestFullHour(),
+        endDate: nearestFullHour(),
+        price: "0"
     });
     const [car, setCar] = useState({
         make: "",
@@ -43,13 +52,11 @@ export const AddReservation = props => {
         setValues: newReservation => setReservation(newReservation),
         setErrors: newErrors => setErrors(newErrors)
     };
-    FlatFormGroup.defaultProps = {
-        values: reservation
-    };
 
     useEffect(() => {
         axios.get(`/car/${props.match.params.number}`)
             .then(response => {
+                console.log(response.data);
                 setCar(response.data);
                 setLoaded(true);
             }).catch(error => {
@@ -59,25 +66,40 @@ export const AddReservation = props => {
         });
     }, [props.match.params.number, t]);
 
+    const handleChangeDate = (value, property) => {
+        const tempReservation = {...reservation};
+        tempReservation[property] = value;
+
+        if (tempReservation.endDate.getTime() > tempReservation.startDate.getTime()) {
+            let price = hoursBetween(tempReservation.startDate, tempReservation.endDate) * parseFloat(car.price);
+            tempReservation.price = price.toString();
+        } else {
+            tempReservation.price = "0";
+        }
+
+        setReservation(tempReservation)
+    }
+
     const handleSubmit = () => {
         console.log(reservation);
-        // if (validate(reservation, errors, setErrors, schema)) {
-        //     axios.post(`/reservation`, reservation, {withCredentials: true})
-        //         .then(() => {
-        //             const alerts = [];
-        //             alerts.push({
-        //                 title: t("register.password.header"),
-        //                 html: t("register.password.text1"),
-        //                 icon: "success"
-        //             });
-        //             Swal.queue(alerts);
-        //             props.history.push(`/carDetails/${tempCar.number}`);
-        //         }).catch(() => {
-        //         Swal.fire(t("errors:common.header"),
-        //             t("errors:common.text"),
-        //             "error");
-        //     });
-        // }
+        if (validate(reservation, errors, setErrors, schema)) {
+            // console.log(reservation);
+            // axios.post(`/reservation`, reservation, {withCredentials: true})
+            //     .then(() => {
+            //         const alerts = [];
+            //         alerts.push({
+            //             title: t("register.password.header"),
+            //             html: t("register.password.text1"),
+            //             icon: "success"
+            //         });
+            //         Swal.queue(alerts);
+            //         props.history.push(`/carDetails/${tempCar.number}`);
+            //     }).catch(() => {
+            //     Swal.fire(t("errors:common.header"),
+            //         t("errors:common.text"),
+            //         "error");
+            // });
+        }
     };
 
     if (loaded) {
@@ -109,16 +131,38 @@ export const AddReservation = props => {
                                                  plaintext/>
                                 </FormGroup>
                                 <FormGroup>
+                                    <FormLabel className="font-weight-bold">{t("car.price")}</FormLabel>
+                                    <FormControl id="price"
+                                                 value={`${reservation.price} PLN`}
+                                                 disabled
+                                                 plaintext/>
+                                </FormGroup>
+                                <FormGroup>
                                     <FormLabel className="font-weight-bold">{t("reservation.startDate")}</FormLabel>
-                                    <DatePicker selected={reservation.startDate} onChange={date => setReservation({...reservation, "startDate": date})}/>
+                                    <div>
+                                        <DatePicker selected={reservation.startDate}
+                                                    onChange={date => handleChangeDate(date, "startDate")}
+                                                    locale={isLanguagePolish() ? "pl" : "en"}
+                                                    timeCaption={t("reservation.time")}
+                                                    timeFormat="HH:mm"
+                                                    dateFormat="yyyy.MM.dd HH:mm"
+                                                    timeIntervals={60}
+                                                    showTimeSelect/>
+                                    </div>
                                 </FormGroup>
                                 <FormGroup>
                                     <FormLabel className="font-weight-bold">{t("reservation.endDate")}</FormLabel>
-                                    <DatePicker selected={reservation.endDate} onChange={date => setReservation({...reservation, "endDate": date})}/>
+                                    <div>
+                                        <DatePicker selected={reservation.endDate}
+                                                    onChange={date => handleChangeDate(date, "endDate")}
+                                                    locale={isLanguagePolish() ? "pl" : "en"}
+                                                    timeCaption={t("reservation.time")}
+                                                    timeFormat="HH:mm"
+                                                    dateFormat="yyyy.MM.dd HH:mm"
+                                                    timeIntervals={60}
+                                                    showTimeSelect/>
+                                    </div>
                                 </FormGroup>
-                                <FlatFormGroup id="price"
-                                               label="car.price"
-                                               suffix="PLN"/>
                             </Form>
                             <ButtonToolbar className="justify-content-center">
                                 <Button id="back"

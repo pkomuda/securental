@@ -25,7 +25,6 @@ export const CarDetails = props => {
     useEffect(() => {
         axios.get(`/car/${props.match.params.number}`)
             .then(response => {
-                const tempCar = response.data
                 setCar(response.data);
                 setLoaded(true);
             }).catch(error => {

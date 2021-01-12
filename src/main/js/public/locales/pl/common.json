@@ -70,5 +70,6 @@
   "reservation.reserve": "Zarezerwuj",
   "reservation.car": "Samochód",
   "reservation.startDate": "Data rozpoczęcia",
-  "reservation.endDate": "Data zakończenia"
+  "reservation.endDate": "Data zakończenia",
+  "reservation.time": "Czas"
 }
