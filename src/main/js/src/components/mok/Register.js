@@ -98,7 +98,7 @@ export const Register = props => {
     const renderFirstStage = () => {
         if (stage === 1) {
             return (
-                <Col sm={5} className="form-container">
+                <Col sm={6} className="form-container">
                     <h1 className="text-center">{t("register.header")}</h1>
                     <Form style={{marginTop: "2em"}}>
                         <EditFormGroup id="username"
@@ -130,7 +130,7 @@ export const Register = props => {
     const renderSecondStage = () => {
         if (stage === 2) {
             return (
-                <Col sm={5} className="form-container">
+                <Col sm={6} className="form-container">
                     <h1 className="text-center">{t("register.header")}</h1>
                     <Form style={{marginTop: "2em"}}>
                         <EditFormGroup id="password"

@@ -11,7 +11,7 @@ import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
 import { date, object } from "yup";
 import { isLanguagePolish } from "../../utils/i18n";
-import { hoursBetween, nearestFullHour } from "../../utils/Time";
+import { hoursBetween, nearestFullHour } from "../../utils/DateTime";
 import { validate } from "../../utils/Validation";
 import { EditFormGroup } from "../EditFormGroup";
 import { Spinner } from "../Spinner";
@@ -121,7 +121,7 @@ export const AddReservation = props => {
                 </Breadcrumb>
                 <Container>
                     <Row className="justify-content-center">
-                        <Col sm={5} className="form-container">
+                        <Col sm={6} className="form-container">
                             <Form>
                                 <FormGroup>
                                     <FormLabel className="font-weight-bold">{t("reservation.car")}</FormLabel>
@@ -131,7 +131,7 @@ export const AddReservation = props => {
                                                  plaintext/>
                                 </FormGroup>
                                 <FormGroup>
-                                    <FormLabel className="font-weight-bold">{t("car.price")}</FormLabel>
+                                    <FormLabel className="font-weight-bold">{t("reservation.price")}</FormLabel>
                                     <FormControl id="price"
                                                  value={`${reservation.price} PLN`}
                                                  disabled

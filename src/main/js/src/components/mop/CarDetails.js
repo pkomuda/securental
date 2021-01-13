@@ -13,6 +13,7 @@ export const CarDetails = props => {
 
     const {t} = useTranslation();
     const [car, setCar] = useState({
+        number: "",
         make: "",
         model: "",
         description: "",
@@ -54,8 +55,10 @@ export const CarDetails = props => {
                 </Breadcrumb>
                 <Container>
                     <Row className="justify-content-center">
-                        <Col sm={5} className="form-container">
+                        <Col sm={6} className="form-container">
                             <Form>
+                                <FlatFormGroup id="number"
+                                               label="car.number"/>
                                 <FlatFormGroup id="make"
                                                label="car.make"/>
                                 <FlatFormGroup id="model"

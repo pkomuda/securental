@@ -32,11 +32,11 @@ export const ListReservations = props => {
         sort: true
     }, {
         dataField: "carDto.make",
-        text: t("reservation.make"),
+        text: t("reservation.carMake"),
         sort: true
     }, {
         dataField: "carDto.model",
-        text: t("reservation.model"),
+        text: t("reservation.carModel"),
         sort: true
     }, {
         dataField: "details",

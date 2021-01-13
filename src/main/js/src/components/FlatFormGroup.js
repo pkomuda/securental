@@ -6,6 +6,14 @@ export const FlatFormGroup = props => {
 
     const {t} = useTranslation();
 
+    const property = () => {
+        if (props.id.includes(".")) {
+            return props.values[props.id.split(".")[0]][props.id.split(".")[1]]
+        } else {
+            return props.values[props.id];
+        }
+    };
+
     const suffix = () => {
         if (props.suffix) {
             return " " + props.suffix;
@@ -18,7 +26,7 @@ export const FlatFormGroup = props => {
         <FormGroup>
             <FormLabel className="flat-form-label">{t(`${props.label}`)}</FormLabel>
             <FormControl id={props.id}
-                         value={props.values[props.id] + suffix()}
+                         value={property() + suffix()}
                          disabled
                          plaintext/>
             {!props.last && <hr/>}

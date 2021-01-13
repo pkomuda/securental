@@ -131,7 +131,7 @@ export const EditAccount = props => {
                 </Breadcrumb>
                 <Container>
                     <Row className="justify-content-center">
-                        <Col sm={5} className="form-container">
+                        <Col sm={6} className="form-container">
                             <Form>
                                 <EditFormGroup id="firstName"
                                                label="account.firstName"

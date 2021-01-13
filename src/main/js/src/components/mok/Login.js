@@ -105,7 +105,7 @@ export const Login = props => {
     const renderFirstStage = () => {
         if (stage === 1) {
             return (
-                <Col sm={5} className="form-container">
+                <Col sm={6} className="form-container">
                     <h1 className="text-center">{t("login.header")}</h1>
                     {renderSessionExpiredText()}
                     <Form style={{marginTop: "2em"}}>
@@ -179,7 +179,7 @@ export const Login = props => {
     const renderThirdStage = () => {
         if (stage === 3) {
             return (
-                <Col sm={5} className="form-container">
+                <Col sm={6} className="form-container">
                     <h1 className="text-center">{t("login.header")}</h1>
                     {renderSessionExpiredText()}
                     <Form style={{marginTop: "2em"}}>

@@ -22,6 +22,7 @@
   "breadcrumbs.editCar": "Edit car",
   "breadcrumbs.addReservation": "Reserve car",
   "breadcrumbs.listReservations": "Reservation list",
+  "breadcrumbs.reservationDetails": "Reservation details",
 
   "account.details.header": "Account details",
   "account.username": "Username",
@@ -37,11 +38,12 @@
   "account.confirmed": "Confirmed",
   "account.notConfirmed": "Not confirmed",
 
+  "car.number": "Car number",
   "car.make": "Make",
   "car.model": "Model",
   "car.description": "Description",
   "car.productionYear": "Production year",
-  "car.price": "Rental price",
+  "car.price": "Rental price (for each started hour)",
   "car.activity": "Activity",
   "car.active": "Active",
   "car.inactive": "Inactive",
@@ -73,7 +75,9 @@
   "reservation.number": "Reservation number",
   "reservation.startDate": "Start date",
   "reservation.endDate": "End date",
+  "reservation.price": "Price",
   "reservation.time": "Time",
-  "reservation.make": "Car make",
-  "reservation.model": "Car model"
+  "reservation.clientName": "Client name",
+  "reservation.carMake": "Car make",
+  "reservation.carModel": "Car model"
 }

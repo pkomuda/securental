@@ -22,6 +22,7 @@
   "breadcrumbs.editCar": "Edytuj samochód",
   "breadcrumbs.addReservation": "Zarezerwuj samochód",
   "breadcrumbs.listReservations": "Lista rezerwacji",
+  "breadcrumbs.reservationDetails": "Szczegóły rezerwacji",
 
   "account.details.header": "Szczegóły konta",
   "account.username": "Nazwa użytkownika",
@@ -37,11 +38,12 @@
   "account.confirmed": "Potwierdzony",
   "account.notConfirmed": "Niepotwierdzony",
 
+  "car.number": "Numer samochodu",
   "car.make": "Marka",
   "car.model": "Model",
   "car.description": "Opis",
   "car.productionYear": "Rok produkcji",
-  "car.price": "Cena wynajmu",
+  "car.price": "Cena wynajmu (za każdą rozpoczętą godzinę)",
   "car.activity": "Aktywność",
   "car.active": "Aktywny",
   "car.inactive": "Nieaktywny",
@@ -73,7 +75,9 @@
   "reservation.number": "Numer rezerwacji",
   "reservation.startDate": "Data rozpoczęcia",
   "reservation.endDate": "Data zakończenia",
+  "reservation.price": "Cena",
   "reservation.time": "Czas",
-  "reservation.make": "Marka samochodu",
-  "reservation.model": "Model samochodu"
+  "reservation.clientName": "Imię i nazwisko klienta",
+  "reservation.carMake": "Marka samochodu",
+  "reservation.carModel": "Model samochodu"
 }

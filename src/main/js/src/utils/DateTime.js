@@ -1,3 +1,7 @@
+export const formatDate = (date) => {
+    return date.slice(0, -3).replaceAll("-", ".").replace("T", " ");
+}
+
 export const hoursBetween = (start, end) => {
     return Math.ceil((end.getTime() - start.getTime())/1000/60/60);
 };
