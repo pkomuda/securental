@@ -23,6 +23,7 @@
   "breadcrumbs.addReservation": "Reserve car",
   "breadcrumbs.listReservations": "Reservation list",
   "breadcrumbs.reservationDetails": "Reservation details",
+  "breadcrumbs.editReservation": "Edit reservation",
 
   "account.details.header": "Account details",
   "account.username": "Username",

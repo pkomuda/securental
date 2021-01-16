@@ -18,7 +18,9 @@ import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.ApplicationOptimisticLockException;
 import pl.lodz.p.it.securental.exceptions.db.PropertyNotFoundException;
 import pl.lodz.p.it.securental.exceptions.mok.AccountNotFoundException;
+import pl.lodz.p.it.securental.exceptions.mok.UsernameNotMatchingException;
 import pl.lodz.p.it.securental.exceptions.mop.CarNotFoundException;
+import pl.lodz.p.it.securental.exceptions.mor.IncorrectStatusException;
 import pl.lodz.p.it.securental.exceptions.mor.ReservationNotFoundException;
 import pl.lodz.p.it.securental.exceptions.mor.ReservationNumberNotMatchingException;
 import pl.lodz.p.it.securental.exceptions.mor.StatusNotFoundException;
@@ -44,30 +46,20 @@ public class ReservationService {
     private final ReservationMapper reservationMapper;
     private final SignatureUtils signatureUtils;
 
-    public void addReservation(ReservationDto reservationDto) throws ApplicationBaseException {
+    public void addReservation(String username, ReservationDto reservationDto) throws ApplicationBaseException {
         Reservation reservation = ReservationMapper.toReservation(reservationDto);
+
+        if (username.equals(reservationDto.getClientDto().getUsername())) {
+            reservation.setClient(getClient(username));
+        } else {
+            throw new UsernameNotMatchingException();
+        }
+
         reservation.setNumber(randomBase64Url());
         reservation.setStatus(getStatus(RESERVATION_STATUS_NEW));
+        reservation.setCar(getCar(reservationDto.getCarDto().getNumber()));
+        reservation.setPrice(calculateReservationPrice(reservation));
 
-        Optional<Client> clientOptional = accessLevelAdapter.getClient(reservationDto.getClientDto().getUsername());
-        if (clientOptional.isPresent() && clientOptional.get().isActive()) {
-            reservation.setClient(clientOptional.get());
-        } else {
-            throw new AccountNotFoundException();
-        }
-
-        Optional<Car> carOptional = carAdapter.getCar(reservationDto.getCarDto().getNumber());
-        if (carOptional.isPresent()) {
-            reservation.setCar(carOptional.get());
-        } else {
-            throw new CarNotFoundException();
-        }
-
-        long minutes = MINUTES.between(reservation.getStartDate(), reservation.getEndDate());
-        long hours = (long) Math.ceil(minutes/60.0);
-        BigDecimal price = BigDecimal.valueOf(hours).multiply(reservation.getCar().getPrice());
-        reservation.setPrice(price);
-        
         reservationAdapter.addReservation(reservation);
     }
 
@@ -80,15 +72,65 @@ public class ReservationService {
         }
     }
 
-    public void editReservation(String number, ReservationDto reservationDto) throws ApplicationBaseException {
+    public ReservationDto getOwnReservation(String username, String number) throws ApplicationBaseException {
+        Optional<Reservation> reservationOptional = reservationAdapter.getOwnReservation(username, number);
+        if (reservationOptional.isPresent()) {
+            return reservationMapper.toReservationDtoWithSignature(reservationOptional.get());
+        } else {
+            throw new ReservationNotFoundException();
+        }
+    }
+
+    public void editOwnReservation(String username, String number, ReservationDto reservationDto) throws ApplicationBaseException {
         if (number.equals(reservationDto.getNumber())) {
-            Optional<Reservation> reservationOptional = reservationAdapter.getReservation(number);
+            Optional<Reservation> reservationOptional = reservationAdapter.getOwnReservation(username, number);
             if (reservationOptional.isPresent()) {
                 Reservation reservation = reservationOptional.get();
                 if (signatureUtils.verify(reservation.toSignString(), reservationDto.getSignature())) {
                     reservation.setStartDate(reservationDto.getStartDate());
                     reservation.setEndDate(reservationDto.getEndDate());
+                    reservation.setPrice(calculateReservationPrice(reservation));
+                } else {
+                    throw new ApplicationOptimisticLockException();
+                }
+            } else {
+                throw new ReservationNotFoundException();
+            }
+        } else {
+            throw new ReservationNumberNotMatchingException();
+        }
+    }
+
+    public void changeReservationStatus(String number, ReservationDto reservationDto) throws ApplicationBaseException {
+        if (number.equals(reservationDto.getNumber())) {
+            Optional<Reservation> reservationOptional = reservationAdapter.getReservation(number);
+            if (reservationOptional.isPresent()) {
+                Reservation reservation = reservationOptional.get();
+                if (signatureUtils.verify(reservation.toSignString(), reservationDto.getSignature())) {
                     reservation.setStatus(getStatus(reservationDto.getStatus()));
+                } else {
+                    throw new ApplicationOptimisticLockException();
+                }
+            } else {
+                throw new ReservationNotFoundException();
+            }
+        } else {
+            throw new ReservationNumberNotMatchingException();
+        }
+    }
+
+    public void changeOwnReservationStatus(String username, String number, ReservationDto reservationDto) throws ApplicationBaseException {
+        if (number.equals(reservationDto.getNumber())) {
+            Optional<Reservation> reservationOptional = reservationAdapter.getOwnReservation(username, number);
+            if (reservationOptional.isPresent()) {
+                Reservation reservation = reservationOptional.get();
+                if (signatureUtils.verify(reservation.toSignString(), reservationDto.getSignature())) {
+                    if (reservation.getStatus().getName().equals(RESERVATION_STATUS_NEW)
+                            && reservationDto.getStatus().equals(RESERVATION_STATUS_CANCELLED)) {
+                        reservation.setStatus(getStatus(reservationDto.getStatus()));
+                    } else {
+                        throw new IncorrectStatusException();
+                    }
                 } else {
                     throw new ApplicationOptimisticLockException();
                 }
@@ -116,6 +158,22 @@ public class ReservationService {
         }
     }
 
+    public Page<ReservationDto> getOwnReservations(String username, PagingHelper pagingHelper) throws ApplicationBaseException {
+        try {
+            return ReservationMapper.toReservationDtos(reservationAdapter.getOwnReservations(username, pagingHelper.withSorting()));
+        } catch (PropertyNotFoundException e) {
+            return ReservationMapper.toReservationDtos(reservationAdapter.getOwnReservations(username, pagingHelper.withoutSorting()));
+        }
+    }
+
+    public Page<ReservationDto> filterOwnReservations(String username, String filter, PagingHelper pagingHelper) throws ApplicationBaseException {
+        try {
+            return ReservationMapper.toReservationDtos(reservationAdapter.filterOwnReservations(username, filter, pagingHelper.withSorting()));
+        } catch (PropertyNotFoundException e) {
+            return ReservationMapper.toReservationDtos(reservationAdapter.filterOwnReservations(username, filter, pagingHelper.withoutSorting()));
+        }
+    }
+
     private Status getStatus(String name) throws ApplicationBaseException {
         Optional<Status> statusOptional = statusAdapter.getStatus(name);
         if (statusOptional.isPresent()) {
@@ -123,5 +181,29 @@ public class ReservationService {
         } else {
             throw new StatusNotFoundException();
         }
+    }
+
+    private Client getClient(String username) throws ApplicationBaseException {
+        Optional<Client> clientOptional = accessLevelAdapter.getClient(username);
+        if (clientOptional.isPresent() && clientOptional.get().isActive()) {
+            return clientOptional.get();
+        } else {
+            throw new AccountNotFoundException();
+        }
+    }
+
+    private Car getCar(String number) throws ApplicationBaseException {
+        Optional<Car> carOptional = carAdapter.getCar(number);
+        if (carOptional.isPresent()) {
+            return carOptional.get();
+        } else {
+            throw new CarNotFoundException();
+        }
+    }
+
+    private BigDecimal calculateReservationPrice(Reservation reservation) {
+        long minutes = MINUTES.between(reservation.getStartDate(), reservation.getEndDate());
+        long hours = (long) Math.ceil(minutes/60.0);
+        return BigDecimal.valueOf(hours).multiply(reservation.getCar().getPrice());
     }
 }

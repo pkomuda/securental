@@ -6,7 +6,7 @@ import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormCheck, For
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
-import { bool, object, string } from "yup";
+import { array, bool, object, string } from "yup";
 import { MONEY_REGEX, STRING_REGEX, validate, YEAR_REGEX } from "../../utils/Validation";
 import { EditFormGroup } from "../EditFormGroup";
 import { Spinner } from "../Spinner";
@@ -15,12 +15,15 @@ export const EditCar = props => {
 
     const {t} = useTranslation();
     const schema = object().shape({
+        number: string(),
         make: string().required("car.make.required").min(1, "car.make.min").max(32, "car.make.max").matches(STRING_REGEX, "car.make.invalid"),
         model: string().required("car.model.required").min(1, "car.model.min").max(32, "car.model.max").matches(STRING_REGEX, "car.model.invalid"),
         description: string().required("car.description.required").min(1, "car.description.min").max(255, "car.description.max").matches(STRING_REGEX, "car.description.invalid"),
         productionYear: string().required("car.productionYear.required").matches(YEAR_REGEX, "car.productionYear.invalid"),
         price: string().required("car.price.required").matches(MONEY_REGEX, "car.price.invalid"),
-        active: bool()
+        active: bool(),
+        reservations: array(),
+        signature: string()
     });
     const [car, setCar] = useState({
         make: "",
@@ -73,6 +76,8 @@ export const EditCar = props => {
                     t("errors:common.text"),
                     "error");
             });
+        } else {
+            console.log(errors);
         }
     };
 

@@ -39,6 +39,14 @@ public class ReservationAdapter {
         }
     }
 
+    public Optional<Reservation> getOwnReservation(String username, String number) throws ApplicationBaseException {
+        try {
+            return reservationRepository.findByNumberAndClientAccountOtpCredentialsUsername(number, username);
+        } catch (PersistenceException | DataAccessException e) {
+            throw new DatabaseConnectionException(e);
+        }
+    }
+
     public Page<Reservation> getAllReservations(Pageable pageable) throws ApplicationBaseException {
         try {
             return reservationRepository.findAll(pageable);
@@ -52,6 +60,30 @@ public class ReservationAdapter {
     public Page<Reservation> filterReservations(String filter, Pageable pageable) throws ApplicationBaseException {
         try {
             return reservationRepository.findAllByNumberContainsIgnoreCaseOrClientAccountOtpCredentialsUsernameContainsIgnoreCaseOrCarMakeContainsIgnoreCaseOrCarModelContainsIgnoreCase(filter,
+                    filter,
+                    filter,
+                    filter,
+                    pageable);
+        } catch (PropertyReferenceException e) {
+            throw new PropertyNotFoundException(e);
+        } catch (PersistenceException | DataAccessException e) {
+            throw new DatabaseConnectionException(e);
+        }
+    }
+
+    public Page<Reservation> getOwnReservations(String username, Pageable pageable) throws ApplicationBaseException {
+        try {
+            return reservationRepository.findAllByClientAccountOtpCredentialsUsername(username, pageable);
+        } catch (PropertyReferenceException e) {
+            throw new PropertyNotFoundException(e);
+        } catch (PersistenceException | DataAccessException e) {
+            throw new DatabaseConnectionException(e);
+        }
+    }
+
+    public Page<Reservation> filterOwnReservations(String username, String filter, Pageable pageable) throws ApplicationBaseException {
+        try {
+            return reservationRepository.findAllByClientAccountOtpCredentialsUsernameAndNumberContainsIgnoreCaseOrCarMakeContainsIgnoreCaseOrCarModelContainsIgnoreCase(username,
                     filter,
                     filter,
                     filter,

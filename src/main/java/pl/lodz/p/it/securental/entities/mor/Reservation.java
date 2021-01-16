@@ -30,10 +30,10 @@ public @Data class Reservation extends BaseEntity {
     private Status status;
 
     @ManyToOne
-    private Car car;
+    private Client client;
 
     @ManyToOne
-    private Client client;
+    private Car car;
 
     public String toSignString() {
         return String.join(",", number, Long.toString(getVersion()));

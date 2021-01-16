@@ -15,7 +15,10 @@ import { CarDetails } from "./components/mop/CarDetails";
 import { EditCar } from "./components/mop/EditCar";
 import { ListCars } from "./components/mop/ListCars";
 import { AddReservation } from "./components/mor/AddReservation";
+import { EditOwnReservation } from "./components/mor/EditOwnReservation";
+import { ListOwnReservations } from "./components/mor/ListOwnReservations";
 import { ListReservations } from "./components/mor/ListReservations";
+import { OwnReservationDetails } from "./components/mor/OwnReservationDetails";
 import { ReservationDetails } from "./components/mor/ReservationDetails";
 import { NavigationBar } from "./components/NavigationBar";
 import { NoAccess } from "./components/NoAccess";
@@ -67,13 +70,17 @@ export const App = () => {
                         <Route exact path="/accountDetails/:username" component={AccountDetails}/>
                         <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN]} exact path="/addAccount" component={AddAccount}/>
                         <Route exact path="/editAccount/:username" component={EditAccount}/>
-                        <PrivateRoute accessLevels={[ACCESS_LEVEL_EMPLOYEE]} exact path="/addCar" component={AddCar}/>
+                        {/*<PrivateRoute accessLevels={[ACCESS_LEVEL_EMPLOYEE]} exact path="/addCar" component={AddCar}/>*/}
+                        <Route exact path="/addCar" component={AddCar}/>
                         <Route exact path="/listCars" component={ListCars}/>
                         <Route exact path="/carDetails/:number" component={CarDetails}/>
                         <Route exact path="/editCar/:number" component={EditCar}/>
                         <Route exact path="/addReservation/:number" component={AddReservation}/>
                         <Route exact path="/listReservations" component={ListReservations}/>
                         <Route exact path="/reservationDetails/:number" component={ReservationDetails}/>
+                        <Route exact path="/ownReservationDetails/:number" component={OwnReservationDetails}/>
+                        <Route exact path="/editOwnReservation/:number" component={EditOwnReservation}/>
+                        <Route exact path="/listOwnReservations" component={ListOwnReservations}/>
                         <Route exact path="/noAccess" component={NoAccess}/>
                         <Route component={NotFound}/>
                     </Switch>

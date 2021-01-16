@@ -15,7 +15,7 @@ public @Data class ReservationDto {
     private LocalDateTime endDate;
     private String price;
     private String status;
-    private CarDto carDto;
     private ClientDto clientDto;
+    private CarDto carDto;
     private String signature;
 }
