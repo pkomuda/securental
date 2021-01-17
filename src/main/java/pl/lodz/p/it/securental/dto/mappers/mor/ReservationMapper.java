@@ -10,6 +10,8 @@ import pl.lodz.p.it.securental.entities.mor.Reservation;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.utils.SignatureUtils;
 
+import java.time.LocalDateTime;
+
 import static pl.lodz.p.it.securental.utils.StringUtils.bigDecimalToString;
 import static pl.lodz.p.it.securental.utils.StringUtils.stringToBigDecimal;
 
@@ -21,8 +23,8 @@ public class ReservationMapper {
 
     public static Reservation toReservation(ReservationDto reservationDto) {
         return Reservation.builder()
-                .startDate(reservationDto.getStartDate())
-                .endDate(reservationDto.getEndDate())
+                .startDate(LocalDateTime.parse(reservationDto.getStartDate()))
+                .endDate(LocalDateTime.parse(reservationDto.getEndDate()))
                 .price(stringToBigDecimal(reservationDto.getPrice()))
                 .build();
     }
@@ -30,8 +32,8 @@ public class ReservationMapper {
     public ReservationDto toReservationDtoWithSignature(Reservation reservation) throws ApplicationBaseException {
         return ReservationDto.builder()
                 .number(reservation.getNumber())
-                .startDate(reservation.getStartDate())
-                .endDate(reservation.getEndDate())
+                .startDate(reservation.getStartDate().toString())
+                .endDate(reservation.getEndDate().toString())
                 .price(bigDecimalToString(reservation.getPrice()))
                 .status(reservation.getStatus().getName())
                 .clientDto(ClientMapper.toClientDto(reservation.getClient()))
@@ -43,8 +45,8 @@ public class ReservationMapper {
     public static ReservationDto toReservationDtoWithoutSignature(Reservation reservation) {
         return ReservationDto.builder()
                 .number(reservation.getNumber())
-                .startDate(reservation.getStartDate())
-                .endDate(reservation.getEndDate())
+                .startDate(reservation.getStartDate().toString())
+                .endDate(reservation.getEndDate().toString())
                 .price(reservation.getPrice().toString())
                 .status(reservation.getStatus().getName())
                 .clientDto(ClientMapper.toClientDto(reservation.getClient()))

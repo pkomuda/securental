@@ -1,9 +1,21 @@
-export const formatDate = (date) => {
+export const humanDate = date => {
     return date.slice(0, -3).replaceAll("-", ".").replace("T", " ");
+}
+
+export const isoDate = date => {
+    return `${date.toISOString().split("T")[0]}T${date.toLocaleTimeString()}`;
 }
 
 export const hoursBetween = (start, end) => {
     return Math.ceil((end.getTime() - start.getTime())/1000/60/60);
+};
+
+export const getTimeFormat = () => {
+    return "HH:mm";
+};
+
+export const getDateFormat = () => {
+    return "yyyy.MM.dd HH:mm";
 };
 
 export const nearestFullHour = () => {

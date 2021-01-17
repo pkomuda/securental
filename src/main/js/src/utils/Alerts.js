@@ -1,7 +1,7 @@
 import Swal from "sweetalert2";
 import i18n from "../utils/i18n";
 
-export const error = (title, text) => {
+const error = (title, text) => {
     Swal.fire({
         titleText: i18n.t(`errors:${title}`),
         text: i18n.t(`errors:${text}`),
@@ -17,7 +17,7 @@ export const handleError = e => {
     }
 }
 
-export const info = (title, text) => {
+export const handleInfo = (title, text) => {
     Swal.fire({
         titleText: i18n.t(title),
         text: i18n.t(text),
@@ -25,7 +25,7 @@ export const info = (title, text) => {
     }).then(() => {});
 };
 
-export const success = (title, text) => {
+export const handleSuccess = (title, text) => {
     Swal.fire({
         titleText: i18n.t(title),
         text: i18n.t(text),

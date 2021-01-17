@@ -7,6 +7,10 @@ export const isLanguagePolish = () => {
     return window.navigator.language === "pl";
 };
 
+export const getLocale = () => {
+    return isLanguagePolish() ? "pl" : "en";
+}
+
 i18n.use(initReactI18next)
     .use(Backend)
     .use(LanguageDetector)

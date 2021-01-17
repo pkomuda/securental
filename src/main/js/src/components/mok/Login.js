@@ -190,8 +190,8 @@ export const Login = props => {
                     <ButtonToolbar className="justify-content-center">
                         <Button id="back3"
                                 onClick={() => setStage(2)}>{t("navigation.back")}</Button>
-                            <Button id="submit3"
-                                    onClick={handleThirdStage}>{t("login.sign.in")}</Button>
+                        <Button id="submit3"
+                                onClick={handleThirdStage}>{t("login.sign.in")}</Button>
                     </ButtonToolbar>
                 </Col>
             );

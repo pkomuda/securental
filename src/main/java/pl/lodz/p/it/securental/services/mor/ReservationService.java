@@ -87,8 +87,9 @@ public class ReservationService {
             if (reservationOptional.isPresent()) {
                 Reservation reservation = reservationOptional.get();
                 if (signatureUtils.verify(reservation.toSignString(), reservationDto.getSignature())) {
-                    reservation.setStartDate(reservationDto.getStartDate());
-                    reservation.setEndDate(reservationDto.getEndDate());
+                    Reservation temp = ReservationMapper.toReservation(reservationDto);
+                    reservation.setStartDate(temp.getStartDate());
+                    reservation.setEndDate(temp.getEndDate());
                     reservation.setPrice(calculateReservationPrice(reservation));
                 } else {
                     throw new ApplicationOptimisticLockException();

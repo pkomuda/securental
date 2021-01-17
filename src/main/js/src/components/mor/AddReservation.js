@@ -3,15 +3,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import en from 'date-fns/locale/en-GB';
 import pl from 'date-fns/locale/pl';
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormControl, FormGroup, FormLabel, Row } from "react-bootstrap";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
-import { date, object } from "yup";
+import { date, mixed, object, string } from "yup";
+import { handleError, handleSuccess } from "../../utils/Alerts";
+import { AuthenticationContext } from "../../utils/AuthenticationContext";
 import { isLanguagePolish } from "../../utils/i18n";
-import { hoursBetween, nearestFullHour } from "../../utils/DateTime";
+import { hoursBetween, isoDate, nearestFullHour } from "../../utils/DateTime";
 import { validate } from "../../utils/Validation";
 import { EditFormGroup } from "../EditFormGroup";
 import { Spinner } from "../Spinner";
@@ -25,23 +27,26 @@ export const AddReservation = props => {
     }
 
     const {t} = useTranslation();
+    const [userInfo] = useContext(AuthenticationContext);
     const schema = object().shape({
         startDate: date().required("reservation.startDate.required"),
-        endDate: date().required("reservation.endDate.required")
+        endDate: date().required("reservation.endDate.required"),
+        price: string(),
+        clientDto: mixed(),
+        carDto: mixed()
     });
     const [reservation, setReservation] = useState({
         startDate: nearestFullHour(),
         endDate: nearestFullHour(),
-        price: "0"
+        price: "0",
+        clientDto: {},
+        carDto: {}
     });
     const [car, setCar] = useState({
+        number: "",
         make: "",
         model: "",
-        description: "",
-        productionYear: "",
-        price: "",
-        active: false,
-        reservations: []
+        price: ""
     })
     const [loaded, setLoaded] = useState(false);
     const [errors, setErrors] = useState({});
@@ -77,28 +82,26 @@ export const AddReservation = props => {
             tempReservation.price = "0";
         }
 
-        setReservation(tempReservation)
+        setReservation(tempReservation);
     }
 
     const handleSubmit = () => {
         console.log(reservation);
         if (validate(reservation, errors, setErrors, schema)) {
-            // console.log(reservation);
-            // axios.post(`/reservation`, reservation, {withCredentials: true})
-            //     .then(() => {
-            //         const alerts = [];
-            //         alerts.push({
-            //             title: t("register.password.header"),
-            //             html: t("register.password.text1"),
-            //             icon: "success"
-            //         });
-            //         Swal.queue(alerts);
-            //         props.history.push(`/carDetails/${tempCar.number}`);
-            //     }).catch(() => {
-            //     Swal.fire(t("errors:common.header"),
-            //         t("errors:common.text"),
-            //         "error");
-            // });
+            const tempReservation = {...reservation};
+            tempReservation.startDate = isoDate(tempReservation.startDate);
+            tempReservation.endDate = isoDate(tempReservation.endDate);
+            tempReservation.price = tempReservation.price.replaceAll(",", ".");
+            tempReservation.clientDto.username = userInfo.username;
+            tempReservation.carDto.number = car.number;
+            console.log(tempReservation);
+            axios.post(`/reservation/${userInfo.username}`, tempReservation, {withCredentials: true})
+                .then(() => {
+                    handleSuccess("addReservation.success", "");
+                    props.history.push(`/carDetails/${car.number}`);
+                }).catch(err => {
+                    handleError(err);
+            });
         }
     };
 
@@ -129,6 +132,7 @@ export const AddReservation = props => {
                                                  value={`${car.make} ${car.model}`}
                                                  disabled
                                                  plaintext/>
+                                    <hr/>
                                 </FormGroup>
                                 <FormGroup>
                                     <FormLabel className="font-weight-bold">{t("reservation.price")}</FormLabel>
@@ -136,6 +140,7 @@ export const AddReservation = props => {
                                                  value={`${reservation.price} PLN`}
                                                  disabled
                                                  plaintext/>
+                                    <hr/>
                                 </FormGroup>
                                 <FormGroup>
                                     <FormLabel className="font-weight-bold">{t("reservation.startDate")}</FormLabel>
@@ -149,6 +154,7 @@ export const AddReservation = props => {
                                                     timeIntervals={60}
                                                     showTimeSelect/>
                                     </div>
+                                    <hr/>
                                 </FormGroup>
                                 <FormGroup>
                                     <FormLabel className="font-weight-bold">{t("reservation.endDate")}</FormLabel>
@@ -167,7 +173,7 @@ export const AddReservation = props => {
                             <ButtonToolbar className="justify-content-center">
                                 <Button id="back"
                                         onClick={() => props.history.goBack()}>{t("navigation.back")}</Button>
-                                <Button id="edit"
+                                <Button id="submit"
                                         onClick={handleSubmit}>{t("navigation.submit")}</Button>
                             </ButtonToolbar>
                         </Col>

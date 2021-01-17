@@ -5,14 +5,12 @@ import lombok.Data;
 import pl.lodz.p.it.securental.dto.mok.ClientDto;
 import pl.lodz.p.it.securental.dto.mop.CarDto;
 
-import java.time.LocalDateTime;
-
 @Builder
 public @Data class ReservationDto {
 
     private String number;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private String startDate;
+    private String endDate;
     private String price;
     private String status;
     private ClientDto clientDto;

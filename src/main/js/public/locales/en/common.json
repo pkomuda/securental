@@ -80,5 +80,8 @@
   "reservation.time": "Time",
   "reservation.clientName": "Client name",
   "reservation.carMake": "Car make",
-  "reservation.carModel": "Car model"
+  "reservation.carModel": "Car model",
+
+  "addReservation.success": "Reservation added successfully",
+  "editReservation.success": "Reservation edited successfully"
 }

@@ -80,5 +80,8 @@
   "reservation.time": "Czas",
   "reservation.clientName": "Imię i nazwisko klienta",
   "reservation.carMake": "Marka samochodu",
-  "reservation.carModel": "Model samochodu"
+  "reservation.carModel": "Model samochodu",
+
+  "addReservation.success": "Rezerwacja dodana pomyślnie",
+  "editReservation.success": "Rezerwacja edytowana pomyślnie"
 }

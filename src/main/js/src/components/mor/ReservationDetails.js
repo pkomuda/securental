@@ -6,7 +6,7 @@ import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormControl, F
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
-import { formatDate } from "../../utils/DateTime";
+import { humanDate } from "../../utils/DateTime";
 import { FlatFormGroup } from "../FlatFormGroup";
 import { Spinner } from "../Spinner";
 
@@ -83,7 +83,7 @@ export const ReservationDetails = props => {
                                 <FormGroup>
                                     <FormLabel className="flat-form-label">{t("reservation.startDate")}</FormLabel>
                                     <FormControl id="car"
-                                                 value={formatDate(reservation.startDate)}
+                                                 value={humanDate(reservation.startDate)}
                                                  disabled
                                                  plaintext/>
                                     <hr/>
@@ -91,7 +91,7 @@ export const ReservationDetails = props => {
                                 <FormGroup>
                                     <FormLabel className="flat-form-label">{t("reservation.endDate")}</FormLabel>
                                     <FormControl id="car"
-                                                 value={formatDate(reservation.endDate)}
+                                                 value={humanDate(reservation.endDate)}
                                                  disabled
                                                  plaintext/>
                                     <hr/>
