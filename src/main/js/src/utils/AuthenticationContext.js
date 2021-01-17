@@ -7,5 +7,5 @@ export const isAuthenticated = userInfo => {
 };
 
 export const hasAccessLevel = (userInfo, accessLevels) => {
-    return isAuthenticated(userInfo) && accessLevels.includes(userInfo.currentAccessLevel);
+    return isAuthenticated(userInfo) && accessLevels.some(accessLevel => userInfo.accessLevels.includes(accessLevel));
 };

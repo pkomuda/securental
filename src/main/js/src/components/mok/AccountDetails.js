@@ -71,6 +71,7 @@ export const AccountDetails = props => {
                                                  value={account.accessLevels.map(a => t(a)).join(", ")}
                                                  disabled
                                                  plaintext/>
+                                    <hr/>
                                 </FormGroup>
                                 <FormGroup>
                                     <FormLabel className="flat-form-label">{t("account.activity")}</FormLabel>
@@ -78,6 +79,7 @@ export const AccountDetails = props => {
                                                  value={account.active ? t("account.active") : t("account.inactive")}
                                                  disabled
                                                  plaintext/>
+                                    <hr/>
                                 </FormGroup>
                                 <FormGroup>
                                     <FormLabel className="flat-form-label">{t("account.confirmation")}</FormLabel>

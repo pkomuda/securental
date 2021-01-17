@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 import { AuthenticationContext, isAuthenticated } from "../utils/AuthenticationContext";
+import { Spinner } from "./Spinner";
 
 export const NavigationBar = () => {
 
@@ -73,6 +74,10 @@ export const NavigationBar = () => {
                         <LinkContainer to="/listCars">
                             <NavDropdown.Item>Car list</NavDropdown.Item>
                         </LinkContainer>
+
+                        <LinkContainer to="/addAccount">
+                            <NavDropdown.Item>Add account</NavDropdown.Item>
+                        </LinkContainer>
                     </NavDropdown>
                 </Nav>
             );
@@ -99,13 +104,17 @@ export const NavigationBar = () => {
         }
     };
 
-    return (
-        <Navbar expand="lg" className="navbar-dark">
-            <Navbar.Brand id="home" as={Link} to="/">Securental</Navbar.Brand>
-            {/*<Navbar.Toggle id="toggle" aria-controls="basic-navbar-nav"/>*/}
-            {/*<Navbar.Collapse id="basic-navbar-nav">*/}
+    if (!isAuthenticated(userInfo) && userInfo.tokenPresent) {
+        return <Spinner/>;
+    } else {
+        return (
+            <Navbar expand="lg" className="navbar-dark">
+                <Navbar.Brand id="home" as={Link} to="/">Securental</Navbar.Brand>
+                {/*<Navbar.Toggle id="toggle" aria-controls="basic-navbar-nav"/>*/}
+                {/*<Navbar.Collapse id="basic-navbar-nav">*/}
                 {renderNav()}
-            {/*</Navbar.Collapse>*/}
-        </Navbar>
-    );
+                {/*</Navbar.Collapse>*/}
+            </Navbar>
+        );
+    }
 };

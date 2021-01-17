@@ -31,25 +31,29 @@ import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_EMPLOYEE } from "./utils/Constants";
 
 export const App = () => {
 
-    const [tokenPresent, setTokenPresent] = useState(true);
     const [userInfo, setUserInfo] = useState({
         username: "",
         accessLevels: [],
         currentAccessLevel: "",
+        tokenPresent: true,
         tokenExpiration: 0
     });
     const value = [userInfo, setUserInfo];
 
     useEffect(() => {
-        if (!isAuthenticated(userInfo) && tokenPresent) {
+        if (!isAuthenticated(userInfo) && userInfo.tokenPresent) {
             axios.get("/currentUser", {withCredentials: true})
                 .then(response => {
-                    setUserInfo(response.data);
+                    const tempUserInfo = response.data;
+                    tempUserInfo.tokenPresent = true;
+                    setUserInfo(tempUserInfo);
                 }).catch(() => {
-                    setTokenPresent(false);
+                    const tempUserInfo = {...userInfo};
+                    tempUserInfo.tokenPresent = false;
+                    setUserInfo(tempUserInfo);
             });
         }
-    }, [tokenPresent, userInfo]);
+    }, [userInfo]);
 
     Button.defaultProps = {
         variant: "dark",
@@ -70,8 +74,7 @@ export const App = () => {
                         <Route exact path="/accountDetails/:username" component={AccountDetails}/>
                         <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN]} exact path="/addAccount" component={AddAccount}/>
                         <Route exact path="/editAccount/:username" component={EditAccount}/>
-                        {/*<PrivateRoute accessLevels={[ACCESS_LEVEL_EMPLOYEE]} exact path="/addCar" component={AddCar}/>*/}
-                        <Route exact path="/addCar" component={AddCar}/>
+                        <PrivateRoute accessLevels={[ACCESS_LEVEL_EMPLOYEE]} exact path="/addCar" component={AddCar}/>
                         <Route exact path="/listCars" component={ListCars}/>
                         <Route exact path="/carDetails/:number" component={CarDetails}/>
                         <Route exact path="/editCar/:number" component={EditCar}/>
