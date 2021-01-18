@@ -19,7 +19,7 @@ public class CarControllerImpl implements CarController {
     private final CarService carService;
 
     @Override
-    @PostMapping("/car")
+    @PostMapping("/addCar")
     @PreAuthorize("hasAuthority('addCar')")
     public void addCar(@RequestBody CarDto carDto) throws ApplicationBaseException {
         carService.addCar(carDto);
@@ -33,7 +33,7 @@ public class CarControllerImpl implements CarController {
     }
 
     @Override
-    @PutMapping("/car/{number}")
+    @PutMapping("/editCar/{number}")
     @PreAuthorize("hasAuthority('editCar')")
     public void editCar(@PathVariable String number,
                         @RequestBody CarDto carDto) throws ApplicationBaseException {
