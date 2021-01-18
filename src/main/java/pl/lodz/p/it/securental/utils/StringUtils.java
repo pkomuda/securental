@@ -86,6 +86,10 @@ public final class StringUtils {
         return combination;
     }
 
+    public static char randomChar(String str) {
+        return str.charAt(random(0, str.length() - 1));
+    }
+
     public static boolean isNullOrEmpty(String str) {
         return Objects.isNull(str) || "".equals(str);
     }

@@ -8,7 +8,7 @@ import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { bool, object, string } from "yup";
-import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_CLIENT, ACCESS_LEVEL_EMPLOYEE, LAST_PASSWORD_CHARACTERS } from "../../utils/Constants";
+import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_CLIENT, ACCESS_LEVEL_EMPLOYEE } from "../../utils/Constants";
 import { EMAIL_REGEX, validate } from "../../utils/Validation";
 import { EditFormGroup } from "../EditFormGroup";
 
@@ -49,18 +49,16 @@ export const AddAccount = props => {
     const handleSubmit = () => {
         if (!!(validate(account, errors, setErrors, schema) & validateAccessLevels(accessLevels))) {
             const tempAccount = {...account};
-            const lastPasswordCharacters = generateLastPasswordCharacters(process.env.REACT_APP_LAST_PASSWORD_CHARACTERS);
-            tempAccount.password += lastPasswordCharacters;
             tempAccount.accessLevels = Object.keys(accessLevels).filter(key => accessLevels[key]);
             console.log(tempAccount);
             axios.post("/account", tempAccount, {withCredentials: true, headers: {"Accept-Language": window.navigator.language}})
-                .then(() => {
+                .then(response => {
                     const alerts = [];
                     alerts.push({
                         title: t("register.password.header"),
                         html:
                             <div>
-                                <p>{t("register.password.text1") + lastPasswordCharacters}</p>
+                                <p>{t("register.password.text1") + response.data.lastPasswordCharacters}</p>
                                 <p>{t("register.password.text2")}</p>
                             </div>,
                         icon: "info"
@@ -74,14 +72,6 @@ export const AddAccount = props => {
             });
         }
     };
-
-    const generateLastPasswordCharacters = length => {
-        let characters = "";
-        for (let i = 0; i < length; i++) {
-            characters += LAST_PASSWORD_CHARACTERS.charAt(Math.floor(Math.random() * LAST_PASSWORD_CHARACTERS.length));
-        }
-        return characters;
-    }
 
     const handleChangeAccessLevel = event => {
         const temp = {...accessLevels, [event.target.id]: !accessLevels[event.target.id]};

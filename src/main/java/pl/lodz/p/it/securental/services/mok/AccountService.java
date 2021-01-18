@@ -18,6 +18,7 @@ import pl.lodz.p.it.securental.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.dto.mappers.mok.AccountMapper;
 import pl.lodz.p.it.securental.dto.mok.AccountDto;
 import pl.lodz.p.it.securental.dto.mok.AuthenticationResponse;
+import pl.lodz.p.it.securental.dto.mok.RegistrationResponse;
 import pl.lodz.p.it.securental.entities.mok.*;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.ApplicationOptimisticLockException;
@@ -77,12 +78,13 @@ public class AccountService {
         return maskedPasswords;
     }
 
-    public void addAccount(AccountDto accountDto, String language) throws ApplicationBaseException {
+    public RegistrationResponse addAccount(AccountDto accountDto, String language) throws ApplicationBaseException {
         GoogleAuthenticatorKey key = googleAuthenticator.createCredentials(accountDto.getUsername());
-        if (accountAdapter.getAccount(accountDto.getUsername()).isEmpty()) {
+//        if (accountAdapter.getAccount(accountDto.getUsername()).isEmpty()) {
+        String lastPasswordCharacters = generateLastPasswordCharacters();
             Account account = AccountMapper.toAccount(accountDto);
             account.setConfirmed(true);
-            account.setCredentials(new Credentials(generateMaskedPasswords(accountDto.getPassword())));
+            account.setCredentials(new Credentials(generateMaskedPasswords(accountDto.getPassword() + lastPasswordCharacters)));
             account.setAuthenticationToken(new AuthenticationToken(new ArrayList<>(), LocalDateTime.now()));
             if (otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).isPresent()) {
                 account.setOtpCredentials(otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).get());
@@ -93,19 +95,23 @@ public class AccountService {
                 throw new AccountNotFoundException();
             }
             accountAdapter.addAccount(account);
-        } else {
-            throw new AccountAlreadyExistsException();
-        }
+            return RegistrationResponse.builder()
+                    .lastPasswordCharacters(lastPasswordCharacters)
+                    .build();
+//        } else {
+//            throw new AccountAlreadyExistsException();
+//        }
     }
 
-    public String register(AccountDto accountDto, String language) throws ApplicationBaseException {
+    public RegistrationResponse register(AccountDto accountDto, String language) throws ApplicationBaseException {
         GoogleAuthenticatorKey key = googleAuthenticator.createCredentials(accountDto.getUsername());
 //        if (accountAdapter.getAccount(accountDto.getUsername()).isEmpty()) {
+            String lastPasswordCharacters = generateLastPasswordCharacters();
             Account account = AccountMapper.toAccount(accountDto);
             account.setActive(true);
             account.setConfirmed(false);
             account.setConfirmationToken(randomBase64Url());
-            account.setCredentials(new Credentials(generateMaskedPasswords(accountDto.getPassword())));
+            account.setCredentials(new Credentials(generateMaskedPasswords(accountDto.getPassword() + lastPasswordCharacters)));
             account.setAuthenticationToken(new AuthenticationToken(new ArrayList<>(), LocalDateTime.now()));
             account.setAccessLevels(generateClientAccessLevels(account));
             if (otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).isPresent()) {
@@ -121,7 +127,18 @@ public class AccountService {
 //        } else {
 //            throw new AccountAlreadyExistsException();
 //        }
-        return generateQrCode(accountDto.getUsername(), key);
+        return RegistrationResponse.builder()
+                .qrCode(generateQrCode(accountDto.getUsername(), key))
+                .lastPasswordCharacters(lastPasswordCharacters)
+                .build();
+    }
+
+    private String generateLastPasswordCharacters() {
+        StringBuilder characters = new StringBuilder();
+        for (int i = 0; i < LAST_PASSWORD_CHARACTERS_LENGTH; i++) {
+            characters.append(randomChar(LAST_PASSWORD_CHARACTERS));
+        }
+        return characters.toString();
     }
 
     private List<AccessLevel> generateClientAccessLevels(Account account) {

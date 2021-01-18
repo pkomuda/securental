@@ -3,12 +3,13 @@ package pl.lodz.p.it.securental.controllers.mok;
 import org.springframework.data.domain.Page;
 import pl.lodz.p.it.securental.dto.mok.AccountDto;
 import pl.lodz.p.it.securental.dto.mok.ConfirmAccountRequest;
+import pl.lodz.p.it.securental.dto.mok.RegistrationResponse;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 
 public interface AccountController {
 
-    void addAccount(AccountDto accountDto, String language) throws ApplicationBaseException;
-    String register(AccountDto accountDto, String language) throws ApplicationBaseException;
+    RegistrationResponse addAccount(AccountDto accountDto, String language) throws ApplicationBaseException;
+    RegistrationResponse register(AccountDto accountDto, String language) throws ApplicationBaseException;
     void confirmAccount(ConfirmAccountRequest confirmAccountRequest) throws ApplicationBaseException;
     AccountDto getAccount(String username) throws ApplicationBaseException;
     AccountDto getOwnAccount(String username) throws ApplicationBaseException;

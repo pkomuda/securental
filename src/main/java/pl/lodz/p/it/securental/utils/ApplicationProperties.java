@@ -30,6 +30,8 @@ public class ApplicationProperties {
     public static Integer JWT_EXPIRATION_TIME;
     public static String JWT_KEY;
     public static char[] KEYSTORE_PASSWORD;
+    public static String LAST_PASSWORD_CHARACTERS;
+    public static Integer LAST_PASSWORD_CHARACTERS_LENGTH;
     public static Integer MASKED_PASSWORD_MAX_LENGTH;
     public static Integer MASKED_PASSWORD_MIN_LENGTH;
     public static String PASSWORD_HASHING_ALGORITHM;
@@ -43,6 +45,7 @@ public class ApplicationProperties {
                                  @Value("${jwt.expiration.time}") Integer jwtExpirationTime,
                                  @Value("${jwt.key}") String jwtKey,
                                  @Value("${keystore.password}") String keystorePassword,
+                                 @Value("${last.password.characters}") String lastPasswordCharacters,
                                  @Value("${masked.password.max.length}") Integer maskedPasswordMaxLength,
                                  @Value("${masked.password.min.length}") Integer maskedPasswordMinLength,
                                  @Value("${password.hashing.algorithm}") String passwordHashingAlgorithm) {
@@ -55,6 +58,8 @@ public class ApplicationProperties {
         JWT_EXPIRATION_TIME = jwtExpirationTime;
         JWT_KEY = jwtKey;
         KEYSTORE_PASSWORD = keystorePassword.toCharArray();
+        LAST_PASSWORD_CHARACTERS = lastPasswordCharacters;
+        LAST_PASSWORD_CHARACTERS_LENGTH = fullPasswordLength - 8;
         MASKED_PASSWORD_MAX_LENGTH = maskedPasswordMaxLength;
         MASKED_PASSWORD_MIN_LENGTH = maskedPasswordMinLength;
         PASSWORD_HASHING_ALGORITHM = passwordHashingAlgorithm;

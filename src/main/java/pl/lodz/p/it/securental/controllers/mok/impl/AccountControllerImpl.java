@@ -8,6 +8,7 @@ import pl.lodz.p.it.securental.annotations.NeverTransaction;
 import pl.lodz.p.it.securental.controllers.mok.AccountController;
 import pl.lodz.p.it.securental.dto.mok.AccountDto;
 import pl.lodz.p.it.securental.dto.mok.ConfirmAccountRequest;
+import pl.lodz.p.it.securental.dto.mok.RegistrationResponse;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.services.mok.AccountService;
 import pl.lodz.p.it.securental.utils.PagingHelper;
@@ -22,16 +23,16 @@ public class AccountControllerImpl implements AccountController {
     @Override
     @PostMapping("/account")
     @PreAuthorize("hasAuthority('addAccount')")
-    public void addAccount(@RequestBody AccountDto accountDto,
+    public RegistrationResponse addAccount(@RequestBody AccountDto accountDto,
                            @RequestHeader("Accept-Language") String language) throws ApplicationBaseException {
-        accountService.addAccount(accountDto, language);
+        return accountService.addAccount(accountDto, language);
     }
 
     @Override
     @PostMapping("/register")
     @PreAuthorize("permitAll()")
-    public String register(@RequestBody AccountDto accountDto,
-                           @RequestHeader("Accept-Language") String language) throws ApplicationBaseException {
+    public RegistrationResponse register(@RequestBody AccountDto accountDto,
+                                         @RequestHeader("Accept-Language") String language) throws ApplicationBaseException {
         return accountService.register(accountDto, language);
     }
 
