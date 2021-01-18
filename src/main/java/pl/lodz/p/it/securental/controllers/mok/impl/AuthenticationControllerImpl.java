@@ -72,7 +72,7 @@ public class AuthenticationControllerImpl implements AuthenticationController {
         cookie.setMaxAge(60 * JWT_EXPIRATION_TIME);
         response.addCookie(cookie);
         if (isProduction()) {
-            response.setHeader("Set-Cookie", response.getHeader("Set-Cookie") + "; SameSite=None; Secure");
+            response.setHeader("Set-Cookie", response.getHeader("Set-Cookie") + "; SameSite=Strict; Secure");
         }
 
         List<String> accessLevels = getAccessLevels(userDetails);
@@ -103,18 +103,10 @@ public class AuthenticationControllerImpl implements AuthenticationController {
                         .tokenExpiration(extractExpiration(cookie.getValue()).getTime())
                         .build();
             } else {
-                return AuthenticationResponse.builder()
-                        .username("")
-                        .accessLevels(Collections.emptyList())
-                        .tokenExpiration(0)
-                        .build();
+                return new AuthenticationResponse().unauthenticated();
             }
         } else {
-            return AuthenticationResponse.builder()
-                    .username("")
-                    .accessLevels(Collections.emptyList())
-                    .tokenExpiration(0)
-                    .build();
+            return new AuthenticationResponse().unauthenticated();
         }
     }
 

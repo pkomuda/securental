@@ -24,8 +24,7 @@ import pl.lodz.p.it.securental.security.JwtRequestFilter;
 
 import java.util.Collections;
 
-import static pl.lodz.p.it.securental.utils.ApplicationProperties.FRONTEND_ORIGIN;
-import static pl.lodz.p.it.securental.utils.ApplicationProperties.isProduction;
+import static pl.lodz.p.it.securental.utils.ApplicationProperties.*;
 
 @Slf4j
 @Configuration
@@ -48,7 +47,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
 //                .authorizeRequests().anyRequest().permitAll()
-                .authorizeRequests().antMatchers("/**", "/api/register", "/api/confirm", "/api/initializeLogin/*", "/api/login", "/api/car/*", "/api/cars/**").permitAll()
+                .authorizeRequests().antMatchers(PUBLIC_ROUTES).permitAll()
+//                .antMatchers("/api/**").authenticated()
                 .anyRequest().authenticated()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);

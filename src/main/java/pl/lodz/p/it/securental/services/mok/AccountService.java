@@ -203,6 +203,25 @@ public class AccountService {
         }
     }
 
+    public void editOwnAccount(String username, AccountDto accountDto) throws ApplicationBaseException {
+        if (username.equals(accountDto.getUsername())) {
+            Optional<Account> accountOptional = accountAdapter.getAccount(username);
+            if (accountOptional.isPresent()) {
+                Account account = accountOptional.get();
+                if (signatureUtils.verify(account.toSignString(), accountDto.getSignature())) {
+                    account.setFirstName(accountDto.getFirstName());
+                    account.setLastName(accountDto.getLastName());
+                } else {
+                    throw new ApplicationOptimisticLockException();
+                }
+            } else {
+                throw new AccountNotFoundException();
+            }
+        } else {
+            throw new UsernameNotMatchingException();
+        }
+    }
+
     public AuthenticationResponse.AuthenticationResponseBuilder currentUser(String username) throws ApplicationBaseException {
         Optional<Account> accountOptional = accountAdapter.getAccount(username);
         if (accountOptional.isPresent()) {

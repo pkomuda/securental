@@ -7,8 +7,10 @@ import { AccountDetails } from "./components/mok/AccountDetails";
 import { AddAccount } from "./components/mok/AddAccount";
 import { Confirm } from "./components/mok/Confirm";
 import { EditAccount } from "./components/mok/EditAccount";
+import { EditOwnAccount } from "./components/mok/EditOwnAccount";
 import { ListAccounts } from "./components/mok/ListAccounts";
 import { Login } from "./components/mok/Login";
+import { OwnAccountDetails } from "./components/mok/OwnAccountDetails";
 import { Register } from "./components/mok/Register";
 import { AddCar } from "./components/mop/AddCar";
 import { CarDetails } from "./components/mop/CarDetails";
@@ -27,7 +29,7 @@ import { PrivateRoute } from "./components/PrivateRoute";
 import { RestrictedRoute } from "./components/RestrictedRoute";
 import { Spinner } from "./components/Spinner";
 import { AuthenticationContext, isAuthenticated } from "./utils/AuthenticationContext";
-import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_EMPLOYEE } from "./utils/Constants";
+import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_CLIENT, ACCESS_LEVEL_EMPLOYEE } from "./utils/Constants";
 
 export const App = () => {
 
@@ -72,8 +74,10 @@ export const App = () => {
                         <Route exact path="/confirm/:token" component={Confirm}/>
                         <Route exact path="/listAccounts" component={ListAccounts}/>
                         <Route exact path="/accountDetails/:username" component={AccountDetails}/>
+                        <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_EMPLOYEE, ACCESS_LEVEL_CLIENT]} exact path="/ownAccountDetails" component={OwnAccountDetails}/>
                         <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN]} exact path="/addAccount" component={AddAccount}/>
                         <Route exact path="/editAccount/:username" component={EditAccount}/>
+                        <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_EMPLOYEE, ACCESS_LEVEL_CLIENT]} exact path="/editOwnAccount" component={EditOwnAccount}/>
                         <PrivateRoute accessLevels={[ACCESS_LEVEL_EMPLOYEE]} exact path="/addCar" component={AddCar}/>
                         <Route exact path="/listCars" component={ListCars}/>
                         <Route exact path="/carDetails/:number" component={CarDetails}/>

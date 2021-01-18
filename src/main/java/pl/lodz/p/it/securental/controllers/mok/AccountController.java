@@ -11,9 +11,11 @@ public interface AccountController {
     String register(AccountDto accountDto, String language) throws ApplicationBaseException;
     void confirmAccount(ConfirmAccountRequest confirmAccountRequest) throws ApplicationBaseException;
     AccountDto getAccount(String username) throws ApplicationBaseException;
+    AccountDto getOwnAccount(String username) throws ApplicationBaseException;
+    void editAccount(String username, AccountDto accountDto) throws ApplicationBaseException;
+    void editOwnAccount(String username, AccountDto accountDto) throws ApplicationBaseException;
     Page<AccountDto> getAllAccounts(int page, int size) throws ApplicationBaseException;
     Page<AccountDto> getSortedAccounts(int page, int size, String property, String order) throws ApplicationBaseException;
     Page<AccountDto> filterAccounts(String filter, int page, int size) throws ApplicationBaseException;
     Page<AccountDto> filterSortedAccounts(String filter, int page, int size, String property, String order) throws ApplicationBaseException;
-    void editAccount(String username, AccountDto accountDto) throws ApplicationBaseException;
 }

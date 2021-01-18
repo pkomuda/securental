@@ -2,6 +2,7 @@ package pl.lodz.p.it.securental.controllers.mok.impl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.securental.annotations.NeverTransaction;
 import pl.lodz.p.it.securental.controllers.mok.AccountController;
@@ -10,7 +11,6 @@ import pl.lodz.p.it.securental.dto.mok.ConfirmAccountRequest;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.services.mok.AccountService;
 import pl.lodz.p.it.securental.utils.PagingHelper;
-import pl.lodz.p.it.securental.utils.SignatureUtils;
 
 @RestController
 @AllArgsConstructor
@@ -18,10 +18,10 @@ import pl.lodz.p.it.securental.utils.SignatureUtils;
 public class AccountControllerImpl implements AccountController {
 
     private final AccountService accountService;
-    private final SignatureUtils signatureUtils;
 
     @Override
     @PostMapping("/account")
+    @PreAuthorize("hasAuthority('addAccount')")
     public void addAccount(@RequestBody AccountDto accountDto,
                            @RequestHeader("Accept-Language") String language) throws ApplicationBaseException {
         accountService.addAccount(accountDto, language);
@@ -29,6 +29,7 @@ public class AccountControllerImpl implements AccountController {
 
     @Override
     @PostMapping("/register")
+    @PreAuthorize("permitAll()")
     public String register(@RequestBody AccountDto accountDto,
                            @RequestHeader("Accept-Language") String language) throws ApplicationBaseException {
         return accountService.register(accountDto, language);
@@ -36,18 +37,44 @@ public class AccountControllerImpl implements AccountController {
 
     @Override
     @PutMapping("/confirm")
+    @PreAuthorize("permitAll()")
     public void confirmAccount(@RequestBody ConfirmAccountRequest confirmAccountRequest) throws ApplicationBaseException {
         accountService.confirmAccount(confirmAccountRequest.getToken());
     }
 
     @Override
     @GetMapping("/account/{username}")
+    @PreAuthorize("hasAuthority('getAccount')")
     public AccountDto getAccount(@PathVariable String username) throws ApplicationBaseException {
         return accountService.getAccount(username);
     }
 
     @Override
+    @GetMapping("/ownAccount/{username}")
+    @PreAuthorize("hasAuthority('getOwnAccount') and #username == authentication.principal.username")
+    public AccountDto getOwnAccount(@PathVariable String username) throws ApplicationBaseException {
+        return accountService.getAccount(username);
+    }
+
+    @Override
+    @PutMapping("/account/{username}")
+    @PreAuthorize("hasAuthority('editAccount')")
+    public void editAccount(@PathVariable String username,
+                            @RequestBody AccountDto accountDto) throws ApplicationBaseException {
+        accountService.editAccount(username, accountDto);
+    }
+
+    @Override
+    @PutMapping("/ownAccount/{username}")
+    @PreAuthorize("hasAuthority('editOwnAccount') and #username == authentication.principal.username")
+    public void editOwnAccount(@PathVariable String username,
+                               @RequestBody AccountDto accountDto) throws ApplicationBaseException {
+        accountService.editOwnAccount(username, accountDto);
+    }
+
+    @Override
     @GetMapping("/accounts/{page}/{size}")
+    @PreAuthorize("hasAuthority('getAllAccounts')")
     public Page<AccountDto> getAllAccounts(@PathVariable int page,
                                            @PathVariable int size) throws ApplicationBaseException {
         return accountService.getAllAccounts(new PagingHelper(page, size));
@@ -55,6 +82,7 @@ public class AccountControllerImpl implements AccountController {
 
     @Override
     @GetMapping("/accounts/{page}/{size}/{property}/{order}")
+    @PreAuthorize("hasAuthority('getSortedAccounts')")
     public Page<AccountDto> getSortedAccounts(@PathVariable int page,
                                               @PathVariable int size,
                                               @PathVariable String property,
@@ -64,6 +92,7 @@ public class AccountControllerImpl implements AccountController {
 
     @Override
     @GetMapping("/accounts/{filter}/{page}/{size}")
+    @PreAuthorize("hasAuthority('filterAccounts')")
     public Page<AccountDto> filterAccounts(@PathVariable String filter,
                                            @PathVariable int page,
                                            @PathVariable int size) throws ApplicationBaseException {
@@ -72,29 +101,13 @@ public class AccountControllerImpl implements AccountController {
 
     @Override
     @GetMapping("/accounts/{filter}/{page}/{size}/{property}/{order}")
+    @PreAuthorize("hasAuthority('filterSortedAccounts')")
     public Page<AccountDto> filterSortedAccounts(@PathVariable String filter,
                                                  @PathVariable int page,
                                                  @PathVariable int size,
                                                  @PathVariable String property,
                                                  @PathVariable String order) throws ApplicationBaseException {
         return accountService.filterAccounts(filter, new PagingHelper(page, size, resolvePropertyName(property), order));
-    }
-
-    @Override
-    @PutMapping("/account/{username}")
-    public void editAccount(@PathVariable String username,
-                            @RequestBody AccountDto accountDto) throws ApplicationBaseException {
-        accountService.editAccount(username, accountDto);
-    }
-
-    @GetMapping("/sign/{message}")
-    public String sign(@PathVariable String message) throws ApplicationBaseException {
-        return signatureUtils.sign(message);
-    }
-
-    @GetMapping("/verify/{message}/{received}")
-    public boolean verify(@PathVariable String message, @PathVariable String received) throws ApplicationBaseException {
-        return signatureUtils.verify(message, received);
     }
 
     private String resolvePropertyName(String property) {

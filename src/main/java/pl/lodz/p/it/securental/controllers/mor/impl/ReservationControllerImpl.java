@@ -35,7 +35,7 @@ public class ReservationControllerImpl implements ReservationController {
 
     @Override
     @GetMapping("/reservation/{username}/{number}")
-//    @PreAuthorize("hasAuthority('getOwnReservation') and #username == authentication.principal.username")
+    @PreAuthorize("hasAuthority('getOwnReservation') and #username == authentication.principal.username")
     public ReservationDto getOwnReservation(@PathVariable String username,
                                             @PathVariable String number) throws ApplicationBaseException {
         return reservationService.getOwnReservation(username, number);
@@ -50,7 +50,7 @@ public class ReservationControllerImpl implements ReservationController {
 
     @Override
     @PutMapping("/reservation/{username}/{number}")
-//    @PreAuthorize("hasAuthority('editOwnReservation') and #username == authentication.principal.username")
+    @PreAuthorize("hasAuthority('editOwnReservation') and #username == authentication.principal.username")
     public void editOwnReservation(@PathVariable String username,
                                    @PathVariable String number,
                                    @RequestBody ReservationDto reservationDto) throws ApplicationBaseException {
