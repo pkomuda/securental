@@ -1,17 +1,20 @@
 import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormControl, FormGroup, FormLabel, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
+import { AuthenticationContext } from "../../utils/AuthenticationContext";
+import { ACCESS_LEVEL_CLIENT, ACCESS_LEVEL_EMPLOYEE } from "../../utils/Constants";
 import { FlatFormGroup } from "../FlatFormGroup";
 import { Spinner } from "../Spinner";
 
 export const CarDetails = props => {
 
     const {t} = useTranslation();
+    const [userInfo] = useContext(AuthenticationContext);
     const [car, setCar] = useState({
         number: "",
         make: "",
@@ -38,6 +41,20 @@ export const CarDetails = props => {
     FlatFormGroup.defaultProps = {
         values: car
     };
+
+    const clientButtons = () => {
+        if (userInfo.currentAccessLevel === ACCESS_LEVEL_CLIENT) {
+            return <Button id="reserve"
+                           onClick={() => props.history.push(`/addReservation/${car.number}`)}>{t("reservation.reserve")}</Button>;
+        }
+    };
+
+    const employeeButtons = () => {
+        if (userInfo.currentAccessLevel === ACCESS_LEVEL_EMPLOYEE) {
+            return <Button id="edit"
+                           onClick={() => props.history.push(`/editCar/${car.number}`)}>{t("navigation.edit")}</Button>;
+        }
+    }
 
     if (loaded) {
         return (
@@ -81,10 +98,8 @@ export const CarDetails = props => {
                             <ButtonToolbar className="justify-content-center">
                                 <Button id="back"
                                         onClick={() => props.history.push("/listCars")}>{t("navigation.back")}</Button>
-                                <Button id="edit"
-                                        onClick={() => props.history.push(`/editCar/${car.number}`)}>{t("navigation.edit")}</Button>
-                                <Button id="reserve"
-                                        onClick={() => props.history.push(`/addReservation/${car.number}`)}>{t("reservation.reserve")}</Button>
+                                {employeeButtons()}
+                                {clientButtons()}
                             </ButtonToolbar>
                         </Col>
                     </Row>

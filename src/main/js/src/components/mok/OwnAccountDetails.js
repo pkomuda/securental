@@ -42,11 +42,27 @@ export const OwnAccountDetails = props => {
         values: account
     };
 
+    const renderAccessLevels = () => {
+        if (userInfo.accessLevels.length > 1) {
+            return (
+                <FormGroup>
+                    <hr/>
+                    <FormLabel className="flat-form-label">{t("account.accessLevels")}</FormLabel>
+                    <FormControl id="accessLevels"
+                                 value={account.accessLevels.map(a => t(a)).join(", ")}
+                                 disabled
+                                 plaintext/>
+                </FormGroup>
+            );
+        }
+    }
+
     const renderAdminInfo = () => {
         if (userInfo.currentAccessLevel === ACCESS_LEVEL_ADMIN) {
             return (
                 <React.Fragment>
                     <FormGroup>
+                        <hr/>
                         <FormLabel className="flat-form-label">{t("account.activity")}</FormLabel>
                         <FormControl id="active"
                                      value={account.active ? t("account.active") : t("account.inactive")}
@@ -66,14 +82,6 @@ export const OwnAccountDetails = props => {
         }
     };
 
-    const renderClientInfo = () => {
-        if (userInfo.currentAccessLevel === ACCESS_LEVEL_CLIENT) {
-            return (
-                <div/>
-            );
-        }
-    };
-
     if (loaded) {
         return (
             <React.Fragment>
@@ -82,9 +90,6 @@ export const OwnAccountDetails = props => {
                         <Breadcrumb.Item>
                             <FontAwesomeIcon icon={faHome}/>
                         </Breadcrumb.Item>
-                    </LinkContainer>
-                    <LinkContainer to="/listAccounts" exact>
-                        <Breadcrumb.Item>{t("breadcrumbs.listAccounts")}</Breadcrumb.Item>
                     </LinkContainer>
                     <Breadcrumb.Item active>{t("breadcrumbs.accountDetails")}</Breadcrumb.Item>
                 </Breadcrumb>
@@ -99,23 +104,18 @@ export const OwnAccountDetails = props => {
                                 <FlatFormGroup id="firstName"
                                                label="account.firstName"/>
                                 <FlatFormGroup id="lastName"
-                                               label="account.lastName"/>
-                                <FormGroup>
-                                    <FormLabel className="flat-form-label">{t("account.accessLevels")}</FormLabel>
-                                    <FormControl id="accessLevels"
-                                                 value={account.accessLevels.map(a => t(a)).join(", ")}
-                                                 disabled
-                                                 plaintext/>
-                                    <hr/>
-                                </FormGroup>
+                                               label="account.lastName"
+                                               last/>
+                                {renderAccessLevels()}
                                 {renderAdminInfo()}
-                                {renderClientInfo()}
                             </Form>
                             <ButtonToolbar className="justify-content-center">
                                 <Button id="back"
                                         onClick={() => props.history.push("/")}>{t("navigation.back")}</Button>
                                 <Button id="edit"
                                         onClick={() => props.history.push(`/editOwnAccount/${account.username}`)}>{t("navigation.edit")}</Button>
+                                <Button id="reservations"
+                                        onClick={() => props.history.push("/listOwnReservations")}>{t("account.reservations")}</Button>
                             </ButtonToolbar>
                         </Col>
                     </Row>

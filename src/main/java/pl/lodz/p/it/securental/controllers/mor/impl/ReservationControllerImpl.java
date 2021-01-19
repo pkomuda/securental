@@ -113,7 +113,7 @@ public class ReservationControllerImpl implements ReservationController {
     }
 
     @Override
-    @GetMapping("/reservations/{username}/{page}/{size}")
+    @GetMapping("/ownReservations/{username}/{page}/{size}")
     @PreAuthorize("hasAuthority('getOwnReservations') and #username == authentication.principal.username")
     public Page<ReservationDto> getOwnReservations(@PathVariable String username,
                                                    @PathVariable int page,
@@ -122,7 +122,7 @@ public class ReservationControllerImpl implements ReservationController {
     }
 
     @Override
-    @GetMapping("/reservations/{username}/{page}/{size}/{property}/{order}")
+    @GetMapping("/ownReservations/{username}/{page}/{size}/{property}/{order}")
     @PreAuthorize("hasAuthority('getOwnSortedReservations') and #username == authentication.principal.username")
     public Page<ReservationDto> getOwnSortedReservations(@PathVariable String username,
                                                          @PathVariable int page,
@@ -133,7 +133,7 @@ public class ReservationControllerImpl implements ReservationController {
     }
 
     @Override
-    @GetMapping("/reservations/{username}/{filter}/{page}/{size}")
+    @GetMapping("/ownReservations/{username}/{filter}/{page}/{size}")
     @PreAuthorize("hasAuthority('filterOwnReservations') and #username == authentication.principal.username")
     public Page<ReservationDto> filterOwnReservations(@PathVariable String username,
                                                       @PathVariable String filter,
@@ -143,7 +143,7 @@ public class ReservationControllerImpl implements ReservationController {
     }
 
     @Override
-    @GetMapping("/reservations/{username}/{filter}/{page}/{size}/{property}/{order}")
+    @GetMapping("/ownReservations/{username}/{filter}/{page}/{size}/{property}/{order}")
     @PreAuthorize("hasAuthority('filterOwnSortedReservations') and #username == authentication.principal.username")
     public Page<ReservationDto> filterOwnSortedReservations(@PathVariable String username,
                                                             @PathVariable String filter,

@@ -7,8 +7,11 @@
   "navigation.details": "Details",
   "navigation.search": "Search",
 
+  "home.cars": "Cars",
+
   "navbar.login": "Sign in",
   "navbar.register": "Register",
+  "navbar.logout": "Log out",
 
   "breadcrumbs.login": "Login",
   "breadcrumbs.register": "Register",
@@ -38,6 +41,7 @@
   "account.confirmation": "Confirmation",
   "account.confirmed": "Confirmed",
   "account.notConfirmed": "Not confirmed",
+  "account.reservations": "Reservations",
 
   "car.number": "Car number",
   "car.make": "Make",

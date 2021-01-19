@@ -31,6 +31,10 @@ export const NavigationBar = () => {
         }, userInfo.tokenExpiration - new Date().getTime());
     }
 
+    const handleLogout = () => {
+        console.log("logout");
+    };
+
     const authenticatedDropdownTitle = () => {
         return (
             <div className="d-inline">
@@ -67,6 +71,10 @@ export const NavigationBar = () => {
                 <Nav className="ml-auto">
                     {accessLevelsDropdown()}
                     <NavDropdown id="profile" title={authenticatedDropdownTitle()} alignRight onClick={() => console.log(userInfo)}>
+                        <LinkContainer to="/ownAccountDetails">
+                            <NavDropdown.Item>{t("breadcrumbs.accountDetails")}</NavDropdown.Item>
+                        </LinkContainer>
+
                         <LinkContainer to="/addCar">
                             <NavDropdown.Item>Add car</NavDropdown.Item>
                         </LinkContainer>
@@ -77,6 +85,10 @@ export const NavigationBar = () => {
 
                         <LinkContainer to="/addAccount">
                             <NavDropdown.Item>Add account</NavDropdown.Item>
+                        </LinkContainer>
+
+                        <LinkContainer to="/">
+                            <NavDropdown.Item onClick={handleLogout}>{t("navbar.logout")}</NavDropdown.Item>
                         </LinkContainer>
                     </NavDropdown>
                 </Nav>

@@ -52,15 +52,15 @@ export const ListOwnReservations = props => {
         const url = () => {
             if (filter) {
                 if (sortField) {
-                    return `/reservations/${userInfo.username}/${filter}/${page - 1}/${sizePerPage}/${sortField}/${sortOrder}`;
+                    return `/ownReservations/${userInfo.username}/${filter}/${page - 1}/${sizePerPage}/${sortField}/${sortOrder}`;
                 } else {
-                    return `/reservations/${userInfo.username}/${filter}/${page - 1}/${sizePerPage}`;
+                    return `/ownReservations/${userInfo.username}/${filter}/${page - 1}/${sizePerPage}`;
                 }
             } else {
                 if (sortField) {
-                    return `/reservations/${userInfo.username}/${page - 1}/${sizePerPage}/${sortField}/${sortOrder}`;
+                    return `/ownReservations/${userInfo.username}/${page - 1}/${sizePerPage}/${sortField}/${sortOrder}`;
                 } else {
-                    return `/reservations/${userInfo.username}/${page - 1}/${sizePerPage}`;
+                    return `/ownReservations/${userInfo.username}/${page - 1}/${sizePerPage}`;
                 }
             }
         };
@@ -99,6 +99,9 @@ export const ListOwnReservations = props => {
                         <Breadcrumb.Item>
                             <FontAwesomeIcon icon={faHome}/>
                         </Breadcrumb.Item>
+                    </LinkContainer>
+                    <LinkContainer to="/ownAccountDetails" exact>
+                        <Breadcrumb.Item>{t("breadcrumbs.accountDetails")}</Breadcrumb.Item>
                     </LinkContainer>
                     <Breadcrumb.Item active>{t("breadcrumbs.listReservations")}</Breadcrumb.Item>
                 </Breadcrumb>

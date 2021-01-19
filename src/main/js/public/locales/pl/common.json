@@ -7,8 +7,11 @@
   "navigation.details": "Szczegóły",
   "navigation.search": "Szukaj",
 
+  "home.cars": "Samochody",
+
   "navbar.login": "Zaloguj się",
   "navbar.register": "Zarejestruj",
+  "navbar.logout": "Wyloguj się",
 
   "breadcrumbs.login": "Logowanie",
   "breadcrumbs.register": "Rejestracja",
@@ -38,6 +41,7 @@
   "account.confirmation": "Potwierdzenie",
   "account.confirmed": "Potwierdzony",
   "account.notConfirmed": "Niepotwierdzony",
+  "account.reservations": "Rezerwacje",
 
   "car.number": "Numer samochodu",
   "car.make": "Marka",

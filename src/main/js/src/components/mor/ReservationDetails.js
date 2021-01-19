@@ -25,7 +25,7 @@ export const ReservationDetails = props => {
     const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
-        axios.get(`/reservation/${props.match.params.number}`)
+        axios.get(`/reservation/${props.match.params.number}`, {withCredentials: true})
             .then(response => {
                 setReservation(response.data);
                 setLoaded(true);

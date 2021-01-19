@@ -34,10 +34,7 @@ import pl.lodz.p.it.securental.utils.SignatureUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -257,6 +254,7 @@ public class AccountService {
         return account.getAccessLevels().stream()
                 .filter(AccessLevel::isActive)
                 .map(AccessLevel::getName)
+                .sorted(Comparator.comparing(ACCESS_LEVEL_ORDER::indexOf))
                 .collect(Collectors.toList());
     }
 

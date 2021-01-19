@@ -69,25 +69,25 @@ export const App = () => {
                     <NavigationBar/>
                     <Switch>
                         <Route exact path="/" component={Home}/>
-                        <RestrictedRoute exact path="/login/:session?" component={Login}/>
-                        <Route exact path="/register" component={Register}/>
-                        <Route exact path="/confirm/:token" component={Confirm}/>
-                        <Route exact path="/listAccounts" component={ListAccounts}/>
-                        <Route exact path="/accountDetails/:username" component={AccountDetails}/>
-                        <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_EMPLOYEE, ACCESS_LEVEL_CLIENT]} exact path="/ownAccountDetails" component={OwnAccountDetails}/>
-                        <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN]} exact path="/addAccount" component={AddAccount}/>
-                        <Route exact path="/editAccount/:username" component={EditAccount}/>
-                        <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_EMPLOYEE, ACCESS_LEVEL_CLIENT]} exact path="/editOwnAccount" component={EditOwnAccount}/>
-                        <PrivateRoute accessLevels={[ACCESS_LEVEL_EMPLOYEE]} exact path="/addCar" component={AddCar}/>
                         <Route exact path="/listCars" component={ListCars}/>
                         <Route exact path="/carDetails/:number" component={CarDetails}/>
-                        <Route exact path="/editCar/:number" component={EditCar}/>
-                        <Route exact path="/addReservation/:number" component={AddReservation}/>
-                        <Route exact path="/listReservations" component={ListReservations}/>
-                        <Route exact path="/reservationDetails/:number" component={ReservationDetails}/>
-                        <Route exact path="/ownReservationDetails/:number" component={OwnReservationDetails}/>
-                        <Route exact path="/editOwnReservation/:number" component={EditOwnReservation}/>
-                        <Route exact path="/listOwnReservations" component={ListOwnReservations}/>
+                        <RestrictedRoute exact path="/login/:session?" component={Login}/>
+                        <RestrictedRoute exact path="/register" component={Register}/>
+                        <RestrictedRoute exact path="/confirm/:token" component={Confirm}/>
+                        <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_EMPLOYEE, ACCESS_LEVEL_CLIENT]} exact path="/ownAccountDetails" component={OwnAccountDetails}/>
+                        <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_EMPLOYEE, ACCESS_LEVEL_CLIENT]} exact path="/editOwnAccount" component={EditOwnAccount}/>
+                        <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN]} exact path="/addAccount" component={AddAccount}/>
+                        <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN]} exact path="/listAccounts" component={ListAccounts}/>
+                        <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN]} exact path="/accountDetails/:username" component={AccountDetails}/>
+                        <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN]} exact path="/editAccount/:username" component={EditAccount}/>
+                        <PrivateRoute accessLevels={[ACCESS_LEVEL_EMPLOYEE]} exact path="/addCar" component={AddCar}/>
+                        <PrivateRoute accessLevels={[ACCESS_LEVEL_EMPLOYEE]} exact path="/editCar/:number" component={EditCar}/>
+                        <PrivateRoute accessLevels={[ACCESS_LEVEL_EMPLOYEE]} exact path="/listReservations" component={ListReservations}/>
+                        <PrivateRoute accessLevels={[ACCESS_LEVEL_EMPLOYEE]} exact path="/reservationDetails/:number" component={ReservationDetails}/>
+                        <PrivateRoute accessLevels={[ACCESS_LEVEL_CLIENT]} exact path="/addReservation/:number" component={AddReservation}/>
+                        <PrivateRoute accessLevels={[ACCESS_LEVEL_CLIENT]} exact path="/listOwnReservations" component={ListOwnReservations}/>
+                        <PrivateRoute accessLevels={[ACCESS_LEVEL_CLIENT]} exact path="/ownReservationDetails/:number" component={OwnReservationDetails}/>
+                        <PrivateRoute accessLevels={[ACCESS_LEVEL_CLIENT]} exact path="/editOwnReservation/:number" component={EditOwnReservation}/>
                         <Route exact path="/noAccess" component={NoAccess}/>
                         <Route component={NotFound}/>
                     </Switch>

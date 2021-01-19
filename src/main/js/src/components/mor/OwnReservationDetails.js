@@ -27,7 +27,7 @@ export const OwnReservationDetails = props => {
     const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
-        axios.get(`/reservation/${userInfo.username}/${props.match.params.number}`)
+        axios.get(`/reservation/${userInfo.username}/${props.match.params.number}`, {withCredentials: true})
             .then(response => {
                 setReservation(response.data);
                 setLoaded(true);
@@ -51,7 +51,10 @@ export const OwnReservationDetails = props => {
                             <FontAwesomeIcon icon={faHome}/>
                         </Breadcrumb.Item>
                     </LinkContainer>
-                    <LinkContainer to="/listReservations" exact>
+                    <LinkContainer to="/ownAccountDetails" exact>
+                        <Breadcrumb.Item>{t("breadcrumbs.accountDetails")}</Breadcrumb.Item>
+                    </LinkContainer>
+                    <LinkContainer to="/listOwnReservations" exact>
                         <Breadcrumb.Item>{t("breadcrumbs.listReservations")}</Breadcrumb.Item>
                     </LinkContainer>
                     <Breadcrumb.Item active>{t("breadcrumbs.reservationDetails")}</Breadcrumb.Item>
@@ -62,16 +65,6 @@ export const OwnReservationDetails = props => {
                             <Form>
                                 <FlatFormGroup id="number"
                                                label="reservation.number"/>
-                                <FlatFormGroup id="clientDto.username"
-                                               label="account.username"/>
-                                <FormGroup>
-                                    <FormLabel className="flat-form-label">{t("reservation.clientName")}</FormLabel>
-                                    <FormControl id="clientName"
-                                                 value={`${reservation.clientDto.firstName} ${reservation.clientDto.lastName}`}
-                                                 disabled
-                                                 plaintext/>
-                                    <hr/>
-                                </FormGroup>
                                 <FlatFormGroup id="carDto.number"
                                                label="car.number"/>
                                 <FormGroup>

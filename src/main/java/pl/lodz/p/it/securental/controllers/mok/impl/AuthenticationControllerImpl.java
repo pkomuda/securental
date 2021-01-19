@@ -21,10 +21,7 @@ import pl.lodz.p.it.securental.utils.JwtUtils;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static pl.lodz.p.it.securental.utils.ApplicationProperties.*;
@@ -113,6 +110,7 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     private List<String> getAccessLevels(UserDetails userDetails) {
         return userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
+                .sorted(Comparator.comparing(ACCESS_LEVEL_ORDER::indexOf))
                 .collect(Collectors.toList());
     }
 

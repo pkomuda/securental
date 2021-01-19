@@ -1,5 +1,5 @@
 export const humanDate = date => {
-    return date.slice(0, -3).replaceAll("-", ".").replace("T", " ");
+    return date.replaceAll("-", ".").replace("T", " ");
 }
 
 export const isoDate = date => {

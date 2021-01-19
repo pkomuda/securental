@@ -3,6 +3,8 @@ package pl.lodz.p.it.securental.utils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component(ApplicationProperties.APPLICATION_PROPERTIES_BEAN)
 public class ApplicationProperties {
 
@@ -11,6 +13,7 @@ public class ApplicationProperties {
     public static final String ACCESS_LEVEL_ADMIN = "ADMIN";
     public static final String ACCESS_LEVEL_EMPLOYEE = "EMPLOYEE";
     public static final String ACCESS_LEVEL_CLIENT = "CLIENT";
+    public static final List<String> ACCESS_LEVEL_ORDER = List.of(ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_EMPLOYEE, ACCESS_LEVEL_CLIENT);
 
     public static final String RESERVATION_STATUS_NEW = "NEW";
     public static final String RESERVATION_STATUS_CANCELLED = "CANCELLED";
