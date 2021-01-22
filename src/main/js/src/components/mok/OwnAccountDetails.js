@@ -7,9 +7,9 @@ import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
-import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_CLIENT } from "../../utils/Constants";
-import { FlatFormGroup } from "../FlatFormGroup";
-import { Spinner } from "../Spinner";
+import { ACCESS_LEVEL_ADMIN } from "../../utils/Constants";
+import { FlatFormGroup } from "../common/FlatFormGroup";
+import { Spinner } from "../common/Spinner";
 
 export const OwnAccountDetails = props => {
 
@@ -82,12 +82,12 @@ export const OwnAccountDetails = props => {
         }
     };
 
-    const clientButtons = () => {
-        if (userInfo.currentAccessLevel === ACCESS_LEVEL_CLIENT) {
-            return <Button id="reservations"
-                           onClick={() => props.history.push("/listOwnReservations")}>{t("account.reservations")}</Button>;
-        }
-    }
+    // const clientButtons = () => {
+    //     if (userInfo.currentAccessLevel === ACCESS_LEVEL_CLIENT) {
+    //         return <Button id="reservations"
+    //                        onClick={() => props.history.push("/listOwnReservations")}>{t("account.reservations")}</Button>;
+    //     }
+    // }
 
     if (loaded) {
         return (
@@ -121,7 +121,7 @@ export const OwnAccountDetails = props => {
                                         onClick={() => props.history.push("/")}>{t("navigation.back")}</Button>
                                 <Button id="edit"
                                         onClick={() => props.history.push("/editOwnAccount")}>{t("navigation.edit")}</Button>
-                                {clientButtons()}
+                                {/*{clientButtons()}*/}
                             </ButtonToolbar>
                         </Col>
                     </Row>

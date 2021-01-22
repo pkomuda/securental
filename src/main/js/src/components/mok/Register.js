@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { array, object, string } from "yup";
 import { EMAIL_REGEX, validate } from "../../utils/Validation";
-import { EditFormGroup } from "../EditFormGroup";
+import { EditFormGroup } from "../common/EditFormGroup";
 
 export const Register = props => {
 

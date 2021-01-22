@@ -8,10 +8,9 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import pl.lodz.p.it.securental.utils.ApplicationProperties;
 
 import java.time.LocalDateTime;
-
-import static pl.lodz.p.it.securental.utils.ApplicationProperties.UNAUTHENTICATED_PRINCIPAL;
 
 @Slf4j
 @Aspect
@@ -31,7 +30,7 @@ public class LoggingAspect {
         message.append(" Interception time: ").append(interceptionTime);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
-            message.append(" User: ").append(UNAUTHENTICATED_PRINCIPAL);
+            message.append(" User: ").append(ApplicationProperties.UNAUTHENTICATED_PRINCIPAL);
         } else {
             message.append(" User: ").append(authentication.getName());
         }

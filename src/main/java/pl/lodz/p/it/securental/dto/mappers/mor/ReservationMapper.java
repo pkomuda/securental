@@ -9,11 +9,9 @@ import pl.lodz.p.it.securental.dto.mor.ReservationDto;
 import pl.lodz.p.it.securental.entities.mor.Reservation;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.utils.SignatureUtils;
+import pl.lodz.p.it.securental.utils.StringUtils;
 
 import java.time.LocalDateTime;
-
-import static pl.lodz.p.it.securental.utils.StringUtils.bigDecimalToString;
-import static pl.lodz.p.it.securental.utils.StringUtils.stringToBigDecimal;
 
 @Component
 @AllArgsConstructor
@@ -25,7 +23,7 @@ public class ReservationMapper {
         return Reservation.builder()
                 .startDate(LocalDateTime.parse(reservationDto.getStartDate()))
                 .endDate(LocalDateTime.parse(reservationDto.getEndDate()))
-                .price(stringToBigDecimal(reservationDto.getPrice()))
+                .price(StringUtils.stringToBigDecimal(reservationDto.getPrice()))
                 .build();
     }
 
@@ -34,7 +32,7 @@ public class ReservationMapper {
                 .number(reservation.getNumber())
                 .startDate(reservation.getStartDate().toString())
                 .endDate(reservation.getEndDate().toString())
-                .price(bigDecimalToString(reservation.getPrice()))
+                .price(StringUtils.bigDecimalToString(reservation.getPrice()))
                 .status(reservation.getStatus().getName())
                 .clientDto(ClientMapper.toClientDto(reservation.getClient()))
                 .carDto(CarMapper.toCarDtoWithoutSignature(reservation.getCar()))

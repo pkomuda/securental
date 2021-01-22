@@ -2,6 +2,7 @@ package pl.lodz.p.it.securental.security;
 
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,7 +13,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
+import pl.lodz.p.it.securental.adapters.mok.AccountAdapter;
 import pl.lodz.p.it.securental.annotations.RequiresNewTransaction;
+import pl.lodz.p.it.securental.entities.mok.Account;
+import pl.lodz.p.it.securental.utils.ApplicationProperties;
+
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -24,13 +30,16 @@ public class CustomAuthenticationProvider extends AbstractUserDetailsAuthenticat
     private final PasswordEncoder passwordEncoder;
     private final CustomUserDetailsService userDetailsService;
     private final GoogleAuthenticator googleAuthenticator;
+    private final AccountAdapter accountAdapter;
 
     private String userNotFoundEncodedPassword;
 
     @Override
+    @SneakyThrows
     protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication)
             throws AuthenticationException {
         CustomAuthenticationToken auth = (CustomAuthenticationToken) authentication;
+        String principal = auth.getPrincipal().toString();
 
         if (authentication.getCredentials() == null) {
             logger.debug("Authentication failed: no credentials provided");
@@ -38,10 +47,29 @@ public class CustomAuthenticationProvider extends AbstractUserDetailsAuthenticat
                     messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
         }
 
-//        if (!googleAuthenticator.authorizeUser(auth.getPrincipal().toString(), auth.getOtpCode())) {
-//            throw new BadCredentialsException(
-//                    messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
-//        }
+        /*
+        //TODO
+        dane inicjujace:
+        admin, secret jakis tam
+        pierwsze logowanie kodem na sztywno ADMIN_OTP_CODE
+        przejscie do szczegolow konta, generate qr code
+        kolejne logowania kodami z telefonu
+         */
+        if (principal.equals(ApplicationProperties.ADMIN_PRINCIPAL)) {
+            Optional<Account> accountOptional = accountAdapter.getAccount(principal);
+            if (accountOptional.isPresent()) {
+                Account account = accountOptional.get();
+                if (account.getLastSuccessfulAuthentication() == null
+                        && !auth.getOtpCode().equals(ApplicationProperties.ADMIN_OTP_CODE)) {
+                    throw new BadCredentialsException(messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
+                }
+            }
+        }
+
+        if (!googleAuthenticator.authorizeUser(principal, auth.getOtpCode())) {
+            throw new BadCredentialsException(
+                    messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
+        }
 
         String presentedPassword = authentication.getCredentials()
                 .toString();

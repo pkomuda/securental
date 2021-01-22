@@ -24,15 +24,14 @@ import pl.lodz.p.it.securental.exceptions.mor.IncorrectStatusException;
 import pl.lodz.p.it.securental.exceptions.mor.ReservationNotFoundException;
 import pl.lodz.p.it.securental.exceptions.mor.ReservationNumberNotMatchingException;
 import pl.lodz.p.it.securental.exceptions.mor.StatusNotFoundException;
+import pl.lodz.p.it.securental.utils.ApplicationProperties;
 import pl.lodz.p.it.securental.utils.PagingHelper;
 import pl.lodz.p.it.securental.utils.SignatureUtils;
+import pl.lodz.p.it.securental.utils.StringUtils;
 
 import java.math.BigDecimal;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
-
-import static java.time.temporal.ChronoUnit.MINUTES;
-import static pl.lodz.p.it.securental.utils.ApplicationProperties.*;
-import static pl.lodz.p.it.securental.utils.StringUtils.randomBase64Url;
 
 @Service
 @AllArgsConstructor
@@ -55,8 +54,8 @@ public class ReservationService {
             throw new UsernameNotMatchingException();
         }
 
-        reservation.setNumber(randomBase64Url());
-        reservation.setStatus(getStatus(RESERVATION_STATUS_NEW));
+        reservation.setNumber(StringUtils.randomBase64Url());
+        reservation.setStatus(getStatus(ApplicationProperties.RESERVATION_STATUS_NEW));
         reservation.setCar(getCar(reservationDto.getCarDto().getNumber()));
         reservation.setPrice(calculateReservationPrice(reservation));
 
@@ -126,8 +125,8 @@ public class ReservationService {
             if (reservationOptional.isPresent()) {
                 Reservation reservation = reservationOptional.get();
                 if (signatureUtils.verify(reservation.toSignString(), reservationDto.getSignature())) {
-                    if (reservation.getStatus().getName().equals(RESERVATION_STATUS_NEW)
-                            && reservationDto.getStatus().equals(RESERVATION_STATUS_CANCELLED)) {
+                    if (reservation.getStatus().getName().equals(ApplicationProperties.RESERVATION_STATUS_NEW)
+                            && reservationDto.getStatus().equals(ApplicationProperties.RESERVATION_STATUS_CANCELLED)) {
                         reservation.setStatus(getStatus(reservationDto.getStatus()));
                     } else {
                         throw new IncorrectStatusException();
@@ -203,7 +202,7 @@ public class ReservationService {
     }
 
     private BigDecimal calculateReservationPrice(Reservation reservation) {
-        long minutes = MINUTES.between(reservation.getStartDate(), reservation.getEndDate());
+        long minutes = ChronoUnit.MINUTES.between(reservation.getStartDate(), reservation.getEndDate());
         long hours = (long) Math.ceil(minutes/60.0);
         return BigDecimal.valueOf(hours).multiply(reservation.getCar().getPrice());
     }

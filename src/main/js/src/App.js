@@ -2,10 +2,10 @@ import axios from "axios";
 import React, { Suspense, useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { Home } from "./components/Home";
+import { Home } from "./components/common/Home";
 import { AccountDetails } from "./components/mok/AccountDetails";
 import { AddAccount } from "./components/mok/AddAccount";
-import { Confirm } from "./components/mok/Confirm";
+import { ConfirmAccount } from "./components/mok/ConfirmAccount";
 import { EditAccount } from "./components/mok/EditAccount";
 import { EditOwnAccount } from "./components/mok/EditOwnAccount";
 import { ListAccounts } from "./components/mok/ListAccounts";
@@ -22,12 +22,12 @@ import { ListOwnReservations } from "./components/mor/ListOwnReservations";
 import { ListReservations } from "./components/mor/ListReservations";
 import { OwnReservationDetails } from "./components/mor/OwnReservationDetails";
 import { ReservationDetails } from "./components/mor/ReservationDetails";
-import { NavigationBar } from "./components/NavigationBar";
-import { NoAccess } from "./components/NoAccess";
-import { NotFound } from "./components/NotFound";
-import { PrivateRoute } from "./components/PrivateRoute";
-import { RestrictedRoute } from "./components/RestrictedRoute";
-import { Spinner } from "./components/Spinner";
+import { NavigationBar } from "./components/common/NavigationBar";
+import { NoAccess } from "./components/common/NoAccess";
+import { NotFound } from "./components/common/NotFound";
+import { PrivateRoute } from "./components/common/PrivateRoute";
+import { RestrictedRoute } from "./components/common/RestrictedRoute";
+import { Spinner } from "./components/common/Spinner";
 import { AuthenticationContext, isAuthenticated } from "./utils/AuthenticationContext";
 import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_CLIENT, ACCESS_LEVEL_EMPLOYEE } from "./utils/Constants";
 
@@ -73,7 +73,7 @@ export const App = () => {
                         <Route exact path="/carDetails/:number" component={CarDetails}/>
                         <RestrictedRoute exact path="/login/:session?" component={Login}/>
                         <RestrictedRoute exact path="/register" component={Register}/>
-                        <RestrictedRoute exact path="/confirm/:token" component={Confirm}/>
+                        <RestrictedRoute exact path="/confirmAccount/:token" component={ConfirmAccount}/>
                         <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_EMPLOYEE, ACCESS_LEVEL_CLIENT]} exact path="/ownAccountDetails" component={OwnAccountDetails}/>
                         <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_EMPLOYEE, ACCESS_LEVEL_CLIENT]} exact path="/editOwnAccount" component={EditOwnAccount}/>
                         <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN]} exact path="/addAccount" component={AddAccount}/>

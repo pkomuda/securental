@@ -8,8 +8,8 @@ import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
 import { array, bool, object, string } from "yup";
 import { MONEY_REGEX, STRING_REGEX, validate, YEAR_REGEX } from "../../utils/Validation";
-import { EditFormGroup } from "../EditFormGroup";
-import { Spinner } from "../Spinner";
+import { EditFormGroup } from "../common/EditFormGroup";
+import { Spinner } from "../common/Spinner";
 
 export const EditCar = props => {
 

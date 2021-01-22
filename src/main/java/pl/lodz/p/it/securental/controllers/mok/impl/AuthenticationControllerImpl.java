@@ -16,17 +16,18 @@ import pl.lodz.p.it.securental.exceptions.mok.IncorrectCredentialsException;
 import pl.lodz.p.it.securental.security.CustomAuthenticationToken;
 import pl.lodz.p.it.securental.security.CustomUserDetailsService;
 import pl.lodz.p.it.securental.services.mok.AccountService;
+import pl.lodz.p.it.securental.utils.ApplicationProperties;
 import pl.lodz.p.it.securental.utils.JwtUtils;
+import pl.lodz.p.it.securental.utils.StringUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static pl.lodz.p.it.securental.utils.ApplicationProperties.*;
-import static pl.lodz.p.it.securental.utils.JwtUtils.*;
-import static pl.lodz.p.it.securental.utils.StringUtils.integerArrayToString;
 
 @RestController
 @AllArgsConstructor
@@ -51,24 +52,24 @@ public class AuthenticationControllerImpl implements AuthenticationController {
         try {
             authManager.authenticate(new CustomAuthenticationToken(
                     authRequest.getUsername(),
-                    integerArrayToString(authRequest.getCombination()),
+                    StringUtils.integerArrayToString(authRequest.getCombination()),
                     authRequest.getOtpCode(),
                     authRequest.getCharacters())
             );
             userDetails = userDetailsService.loadUserByUsernameAndCombination(
                     authRequest.getUsername(),
-                    integerArrayToString(authRequest.getCombination())
+                    StringUtils.integerArrayToString(authRequest.getCombination())
             );
         } catch (AuthenticationException e) {
             throw new IncorrectCredentialsException(e);
         }
 
-        String jwt = generateToken(userDetails);
+        String jwt = JwtUtils.generateToken(userDetails);
         Cookie cookie = new Cookie("jwt", jwt);
         cookie.setHttpOnly(true);
-        cookie.setMaxAge(60 * JWT_EXPIRATION_TIME);
+        cookie.setMaxAge(60 * ApplicationProperties.JWT_EXPIRATION_TIME);
         response.addCookie(cookie);
-        if (isProduction()) {
+        if (ApplicationProperties.isProduction()) {
             response.setHeader("Set-Cookie", response.getHeader("Set-Cookie") + "; SameSite=Strict; Secure");
         }
 
@@ -96,8 +97,8 @@ public class AuthenticationControllerImpl implements AuthenticationController {
                     .findFirst();
             if (cookieOptional.isPresent()) {
                 Cookie cookie = cookieOptional.get();
-                return accountService.currentUser(extractUsername(cookie.getValue()))
-                        .tokenExpiration(extractExpiration(cookie.getValue()).getTime())
+                return accountService.currentUser(JwtUtils.extractUsername(cookie.getValue()))
+                        .tokenExpiration(JwtUtils.extractExpiration(cookie.getValue()).getTime())
                         .build();
             } else {
                 return new AuthenticationResponse().unauthenticated();
@@ -110,17 +111,17 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     private List<String> getAccessLevels(UserDetails userDetails) {
         return userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .sorted(Comparator.comparing(ACCESS_LEVEL_ORDER::indexOf))
+                .sorted(Comparator.comparing(ApplicationProperties.ACCESS_LEVEL_ORDER::indexOf))
                 .collect(Collectors.toList());
     }
 
     private String getHighestAccessLevel(List<String> accessLevels) {
-        if (accessLevels.contains(ACCESS_LEVEL_ADMIN)) {
-            return ACCESS_LEVEL_ADMIN;
-        } else if (accessLevels.contains(ACCESS_LEVEL_EMPLOYEE)) {
-            return ACCESS_LEVEL_EMPLOYEE;
+        if (accessLevels.contains(ApplicationProperties.ACCESS_LEVEL_ADMIN)) {
+            return ApplicationProperties.ACCESS_LEVEL_ADMIN;
+        } else if (accessLevels.contains(ApplicationProperties.ACCESS_LEVEL_EMPLOYEE)) {
+            return ApplicationProperties.ACCESS_LEVEL_EMPLOYEE;
         } else {
-            return ACCESS_LEVEL_CLIENT;
+            return ApplicationProperties.ACCESS_LEVEL_CLIENT;
         }
     }
 }

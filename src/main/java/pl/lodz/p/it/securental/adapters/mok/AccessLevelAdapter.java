@@ -11,11 +11,10 @@ import pl.lodz.p.it.securental.entities.mok.Employee;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.db.DatabaseConnectionException;
 import pl.lodz.p.it.securental.repositories.mok.AccessLevelRepository;
+import pl.lodz.p.it.securental.utils.ApplicationProperties;
 
 import javax.persistence.PersistenceException;
 import java.util.Optional;
-
-import static pl.lodz.p.it.securental.utils.ApplicationProperties.*;
 
 @Service
 @AllArgsConstructor
@@ -26,7 +25,7 @@ public class AccessLevelAdapter {
     
     public Optional<Admin> getAdmin(String username) throws ApplicationBaseException {
         try {
-            Optional<AccessLevel> accessLevelOptional = accessLevelRepository.findByAccountOtpCredentialsUsernameAndName(username, ACCESS_LEVEL_ADMIN);
+            Optional<AccessLevel> accessLevelOptional = accessLevelRepository.findByAccountOtpCredentialsUsernameAndName(username, ApplicationProperties.ACCESS_LEVEL_ADMIN);
             if (accessLevelOptional.isPresent()) {
                 AccessLevel accessLevel = accessLevelOptional.get();
                 return Optional.of((Admin) accessLevel);
@@ -40,7 +39,7 @@ public class AccessLevelAdapter {
 
     public Optional<Client> getClient(String username) throws ApplicationBaseException {
         try {
-            Optional<AccessLevel> accessLevelOptional = accessLevelRepository.findByAccountOtpCredentialsUsernameAndName(username, ACCESS_LEVEL_CLIENT);
+            Optional<AccessLevel> accessLevelOptional = accessLevelRepository.findByAccountOtpCredentialsUsernameAndName(username, ApplicationProperties.ACCESS_LEVEL_CLIENT);
             if (accessLevelOptional.isPresent()) {
                 AccessLevel accessLevel = accessLevelOptional.get();
                 return Optional.of((Client) accessLevel);
@@ -54,7 +53,7 @@ public class AccessLevelAdapter {
 
     public Optional<Employee> getEmployee(String username) throws ApplicationBaseException {
         try {
-            Optional<AccessLevel> accessLevelOptional = accessLevelRepository.findByAccountOtpCredentialsUsernameAndName(username, ACCESS_LEVEL_EMPLOYEE);
+            Optional<AccessLevel> accessLevelOptional = accessLevelRepository.findByAccountOtpCredentialsUsernameAndName(username, ApplicationProperties.ACCESS_LEVEL_EMPLOYEE);
             if (accessLevelOptional.isPresent()) {
                 AccessLevel accessLevel = accessLevelOptional.get();
                 return Optional.of((Employee) accessLevel);

@@ -1,5 +1,7 @@
 package pl.lodz.p.it.securental.utils;
 
+import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -9,12 +11,10 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static pl.lodz.p.it.securental.exceptions.ApplicationBaseException.KEY_DEFAULT;
-
 public final class StringUtils {
 
     private StringUtils() {
-        throw new UnsupportedOperationException(KEY_DEFAULT);
+        throw new UnsupportedOperationException(ApplicationBaseException.KEY_DEFAULT);
     }
 
     private static int random(int min, int max) {

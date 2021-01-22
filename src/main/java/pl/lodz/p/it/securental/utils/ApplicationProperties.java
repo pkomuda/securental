@@ -22,8 +22,10 @@ public class ApplicationProperties {
     public static final String STRING_REGEX = "^[a-zA-Z0-9!@#$%^ąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+$";
     public static final String EMAIL_REGEX = "^[a-zA-Z0-9-_]+(\\.[a-zA-Z0-9-_]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9]+)*(\\.[a-zA-Z]{2,})$";
 
-    public static final String[] PUBLIC_ROUTES = {"/api/register", "/api/confirm", "/api/initializeLogin/*", "/api/login", "/api/car/*", "/api/cars/**"};
+    public static final String[] PUBLIC_ROUTES = {"/api/register", "/api/confirmAccount", "/api/initializeLogin/*", "/api/login", "/api/car/*", "/api/cars/**"};
 
+    public static Integer ADMIN_OTP_CODE;
+    public static String ADMIN_PRINCIPAL;
     public static String[] ADMIN_ROLES;
     public static Integer AUTHENTICATION_TOKEN_EXPIRATION;
     public static String[] CLIENT_ROLES;
@@ -40,7 +42,9 @@ public class ApplicationProperties {
     public static String PASSWORD_HASHING_ALGORITHM;
     public static String UNAUTHENTICATED_PRINCIPAL;
 
-    public ApplicationProperties(@Value("${admin.roles}") String adminRoles,
+    public ApplicationProperties(@Value("${admin.otp.code}") Integer adminOtpCode,
+                                 @Value("${admin.principal}") String adminPrincipal,
+                                 @Value("${admin.roles}") String adminRoles,
                                  @Value("${authentication.token.expiration}") Integer authenticationTokenExpiration,
                                  @Value("${client.roles}") String clientRoles,
                                  @Value("${employee.roles}") String employeeRoles,
@@ -54,6 +58,8 @@ public class ApplicationProperties {
                                  @Value("${masked.password.min.length}") Integer maskedPasswordMinLength,
                                  @Value("${password.hashing.algorithm}") String passwordHashingAlgorithm,
                                  @Value("${unauthenticated.principal}") String unauthenticatedPrincipal) {
+        ADMIN_OTP_CODE = adminOtpCode;
+        ADMIN_PRINCIPAL = adminPrincipal;
         ADMIN_ROLES = adminRoles.split(",");
         AUTHENTICATION_TOKEN_EXPIRATION = authenticationTokenExpiration;
         CLIENT_ROLES = clientRoles.split(",");

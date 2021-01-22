@@ -12,11 +12,11 @@ import Swal from "sweetalert2";
 import { date, mixed, object, string } from "yup";
 import { handleError, handleSuccess } from "../../utils/Alerts";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
-import { isLanguagePolish } from "../../utils/i18n";
 import { hoursBetween, isoDate, nearestFullHour } from "../../utils/DateTime";
+import { isLanguagePolish } from "../../utils/i18n";
 import { validate } from "../../utils/Validation";
-import { EditFormGroup } from "../EditFormGroup";
-import { Spinner } from "../Spinner";
+import { EditFormGroup } from "../common/EditFormGroup";
+import { Spinner } from "../common/Spinner";
 
 export const AddReservation = props => {
 

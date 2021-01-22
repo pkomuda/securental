@@ -2,7 +2,7 @@ import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
-import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormCheck, FormControl, FormGroup, FormLabel, Row } from "react-bootstrap";
+import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormControl, FormGroup, FormLabel, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
@@ -10,9 +10,9 @@ import { array, bool, mixed, object, string } from "yup";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
 import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_CLIENT, ACCESS_LEVEL_EMPLOYEE } from "../../utils/Constants";
 import { EMAIL_REGEX, validate } from "../../utils/Validation";
-import { EditFormGroup } from "../EditFormGroup";
-import { FlatFormGroup } from "../FlatFormGroup";
-import { Spinner } from "../Spinner";
+import { EditFormGroup } from "../common/EditFormGroup";
+import { FlatFormGroup } from "../common/FlatFormGroup";
+import { Spinner } from "../common/Spinner";
 
 export const EditOwnAccount = props => {
 
@@ -75,12 +75,6 @@ export const EditOwnAccount = props => {
         });
     }, [t, userInfo.username]);
 
-    const handleChangeAccessLevel = event => {
-        const temp = {...accessLevels, [event.target.id]: !accessLevels[event.target.id]};
-        setAccessLevels(temp);
-        validateAccessLevels(temp);
-    };
-
     const validateAccessLevels = (object) => {
         if (!Object.values(object).includes(true)) {
             document.getElementById("accessLevelsFeedback").style.display = "block";
@@ -89,10 +83,6 @@ export const EditOwnAccount = props => {
             document.getElementById("accessLevelsFeedback").style.display = "none";
             return true;
         }
-    };
-
-    const handleChangeActive = event => {
-        setAccount({...account, [event.target.id]: !account[event.target.id]});
     };
 
     const handleSubmit = () => {

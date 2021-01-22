@@ -8,8 +8,8 @@ import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
 import { humanDate } from "../../utils/DateTime";
-import { FlatFormGroup } from "../FlatFormGroup";
-import { Spinner } from "../Spinner";
+import { FlatFormGroup } from "../common/FlatFormGroup";
+import { Spinner } from "../common/Spinner";
 
 export const OwnReservationDetails = props => {
 
@@ -50,9 +50,6 @@ export const OwnReservationDetails = props => {
                         <Breadcrumb.Item>
                             <FontAwesomeIcon icon={faHome}/>
                         </Breadcrumb.Item>
-                    </LinkContainer>
-                    <LinkContainer to="/ownAccountDetails" exact>
-                        <Breadcrumb.Item>{t("breadcrumbs.accountDetails")}</Breadcrumb.Item>
                     </LinkContainer>
                     <LinkContainer to="/listOwnReservations" exact>
                         <Breadcrumb.Item>{t("breadcrumbs.listReservations")}</Breadcrumb.Item>

@@ -3,14 +3,13 @@ package pl.lodz.p.it.securental.entities.mok;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import pl.lodz.p.it.securental.utils.ApplicationProperties;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
-import static pl.lodz.p.it.securental.utils.ApplicationProperties.ACCESS_LEVEL_CLIENT;
-
 @Entity
-@DiscriminatorValue(ACCESS_LEVEL_CLIENT)
+@DiscriminatorValue(ApplicationProperties.ACCESS_LEVEL_CLIENT)
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public @Data class Client extends AccessLevel {

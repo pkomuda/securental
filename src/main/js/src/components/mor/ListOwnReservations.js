@@ -10,7 +10,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import Swal from "sweetalert2";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
 import { PAGINATION_SIZES } from "../../utils/Constants";
-import { Spinner } from "../Spinner";
+import { Spinner } from "../common/Spinner";
 
 export const ListOwnReservations = props => {
 
@@ -99,9 +99,6 @@ export const ListOwnReservations = props => {
                         <Breadcrumb.Item>
                             <FontAwesomeIcon icon={faHome}/>
                         </Breadcrumb.Item>
-                    </LinkContainer>
-                    <LinkContainer to="/ownAccountDetails" exact>
-                        <Breadcrumb.Item>{t("breadcrumbs.accountDetails")}</Breadcrumb.Item>
                     </LinkContainer>
                     <Breadcrumb.Item active>{t("breadcrumbs.listReservations")}</Breadcrumb.Item>
                 </Breadcrumb>

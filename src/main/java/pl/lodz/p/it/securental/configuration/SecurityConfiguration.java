@@ -18,13 +18,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import pl.lodz.p.it.securental.adapters.mok.AccountAdapter;
 import pl.lodz.p.it.securental.security.CustomAuthenticationProvider;
 import pl.lodz.p.it.securental.security.CustomUserDetailsService;
 import pl.lodz.p.it.securental.security.JwtRequestFilter;
+import pl.lodz.p.it.securental.utils.ApplicationProperties;
 
 import java.util.Collections;
-
-import static pl.lodz.p.it.securental.utils.ApplicationProperties.*;
 
 @Slf4j
 @Configuration
@@ -37,16 +37,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final PasswordEncoder passwordEncoder;
     private final JwtRequestFilter jwtRequestFilter;
     private final GoogleAuthenticator googleAuthenticator;
+    private final AccountAdapter accountAdapter;
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(new CustomAuthenticationProvider(passwordEncoder, userDetailsService, googleAuthenticator));
+        auth.authenticationProvider(new CustomAuthenticationProvider(passwordEncoder, userDetailsService, googleAuthenticator, accountAdapter));
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
-                .authorizeRequests().antMatchers(PUBLIC_ROUTES).permitAll()
+                .authorizeRequests().antMatchers(ApplicationProperties.PUBLIC_ROUTES).permitAll()
                 .antMatchers("/api/**").authenticated()
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -67,12 +68,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        if (!isProduction()) {
+        if (!ApplicationProperties.isProduction()) {
             configuration.applyPermitDefaultValues();
             configuration.setAllowCredentials(true);
             configuration.setAllowedHeaders(Collections.singletonList("*"));
             configuration.setAllowedMethods(Collections.singletonList("*"));
-            configuration.setAllowedOrigins(Collections.singletonList(FRONTEND_ORIGIN));
+            configuration.setAllowedOrigins(Collections.singletonList(ApplicationProperties.FRONTEND_ORIGIN));
             configuration.setExposedHeaders(Collections.singletonList("*"));
         }
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

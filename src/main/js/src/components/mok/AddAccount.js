@@ -10,7 +10,7 @@ import withReactContent from "sweetalert2-react-content";
 import { bool, object, string } from "yup";
 import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_CLIENT, ACCESS_LEVEL_EMPLOYEE } from "../../utils/Constants";
 import { EMAIL_REGEX, validate } from "../../utils/Validation";
-import { EditFormGroup } from "../EditFormGroup";
+import { EditFormGroup } from "../common/EditFormGroup";
 
 export const AddAccount = props => {
 

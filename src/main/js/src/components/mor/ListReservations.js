@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 import { LinkContainer } from 'react-router-bootstrap';
 import Swal from "sweetalert2";
 import { PAGINATION_SIZES } from "../../utils/Constants";
-import { Spinner } from "../Spinner";
+import { Spinner } from "../common/Spinner";
 
 export const ListReservations = props => {
 

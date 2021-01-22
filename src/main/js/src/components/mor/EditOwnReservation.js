@@ -15,8 +15,8 @@ import { AuthenticationContext } from "../../utils/AuthenticationContext";
 import { getDateFormat, getTimeFormat, hoursBetween, isoDate, nearestFullHour } from "../../utils/DateTime";
 import { getLocale, isLanguagePolish } from "../../utils/i18n";
 import { validate } from "../../utils/Validation";
-import { FlatFormGroup } from "../FlatFormGroup";
-import { Spinner } from "../Spinner";
+import { FlatFormGroup } from "../common/FlatFormGroup";
+import { Spinner } from "../common/Spinner";
 
 export const EditOwnReservation = props => {
 
@@ -109,9 +109,6 @@ export const EditOwnReservation = props => {
                         <Breadcrumb.Item>
                             <FontAwesomeIcon icon={faHome}/>
                         </Breadcrumb.Item>
-                    </LinkContainer>
-                    <LinkContainer to="/ownAccountDetails" exact>
-                        <Breadcrumb.Item>{t("breadcrumbs.accountDetails")}</Breadcrumb.Item>
                     </LinkContainer>
                     <LinkContainer to={"/listOwnReservations"} exact>
                         <Breadcrumb.Item>{t("breadcrumbs.listReservations")}</Breadcrumb.Item>

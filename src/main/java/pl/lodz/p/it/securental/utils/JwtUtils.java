@@ -4,20 +4,17 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.userdetails.UserDetails;
+import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import static pl.lodz.p.it.securental.exceptions.ApplicationBaseException.KEY_DEFAULT;
-import static pl.lodz.p.it.securental.utils.ApplicationProperties.JWT_EXPIRATION_TIME;
-import static pl.lodz.p.it.securental.utils.ApplicationProperties.JWT_KEY;
-
 public final class JwtUtils {
 
     private JwtUtils() {
-        throw new UnsupportedOperationException(KEY_DEFAULT);
+        throw new UnsupportedOperationException(ApplicationBaseException.KEY_DEFAULT);
     }
 
     public static String extractUsername(String token) {
@@ -39,7 +36,7 @@ public final class JwtUtils {
     }
 
     private static Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(JWT_KEY).parseClaimsJws(token).getBody();
+        return Jwts.parser().setSigningKey(ApplicationProperties.JWT_KEY).parseClaimsJws(token).getBody();
     }
 
     private static Boolean isTokenExpired(String token) {
@@ -53,8 +50,8 @@ public final class JwtUtils {
 
     private static String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * JWT_EXPIRATION_TIME))
-                .signWith(SignatureAlgorithm.HS256, JWT_KEY).compact();
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * ApplicationProperties.JWT_EXPIRATION_TIME))
+                .signWith(SignatureAlgorithm.HS256, ApplicationProperties.JWT_KEY).compact();
     }
 
     public static Boolean validateToken(String token, UserDetails userDetails) {

@@ -7,8 +7,8 @@ import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
 import { humanDate } from "../../utils/DateTime";
-import { FlatFormGroup } from "../FlatFormGroup";
-import { Spinner } from "../Spinner";
+import { FlatFormGroup } from "../common/FlatFormGroup";
+import { Spinner } from "../common/Spinner";
 
 export const ReservationDetails = props => {
 

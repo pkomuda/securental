@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { object, string } from "yup";
 import { handleError } from "../../utils/Alerts";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
-import { EditFormGroup } from "../EditFormGroup";
+import { EditFormGroup } from "../common/EditFormGroup";
 
 export const Login = props => {
 
@@ -91,8 +91,8 @@ export const Login = props => {
             .then(response => {
                 setUserInfo(response.data);
                 props.history.push("/");
-            }).catch(error => {
-                console.log(error);
+            }).catch(err => {
+                handleError(err);
         });
     };
 

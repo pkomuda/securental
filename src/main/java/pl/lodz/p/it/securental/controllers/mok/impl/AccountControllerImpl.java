@@ -37,7 +37,7 @@ public class AccountControllerImpl implements AccountController {
     }
 
     @Override
-    @PutMapping("/confirm")
+    @PutMapping("/confirmAccount")
     @PreAuthorize("permitAll()")
     public void confirmAccount(@RequestBody ConfirmAccountRequest confirmAccountRequest) throws ApplicationBaseException {
         accountService.confirmAccount(confirmAccountRequest.getToken());

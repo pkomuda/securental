@@ -8,7 +8,7 @@ import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
 import { bool, object, string } from "yup";
 import { MONEY_REGEX, STRING_REGEX, validate, YEAR_REGEX } from "../../utils/Validation";
-import { EditFormGroup } from "../EditFormGroup";
+import { EditFormGroup } from "../common/EditFormGroup";
 
 export const AddCar = props => {
 

@@ -9,6 +9,7 @@ import com.warrenstrange.googleauth.GoogleAuthenticator;
 import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 import com.warrenstrange.googleauth.GoogleAuthenticatorQRGenerator;
 import lombok.AllArgsConstructor;
+import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,9 +27,7 @@ import pl.lodz.p.it.securental.exceptions.db.PropertyNotFoundException;
 import pl.lodz.p.it.securental.exceptions.mok.AccountNotFoundException;
 import pl.lodz.p.it.securental.exceptions.mok.QrCodeGenerationException;
 import pl.lodz.p.it.securental.exceptions.mok.UsernameNotMatchingException;
-import pl.lodz.p.it.securental.utils.EmailSender;
-import pl.lodz.p.it.securental.utils.PagingHelper;
-import pl.lodz.p.it.securental.utils.SignatureUtils;
+import pl.lodz.p.it.securental.utils.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -36,10 +35,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import static org.apache.commons.math3.util.CombinatoricsUtils.combinationsIterator;
-import static pl.lodz.p.it.securental.utils.ApplicationProperties.*;
-import static pl.lodz.p.it.securental.utils.StringUtils.*;
 
 @Service
 @AllArgsConstructor
@@ -57,17 +52,17 @@ public class AccountService {
     private List<MaskedPassword> generateMaskedPasswords(String fullPassword) {
         List<MaskedPassword> maskedPasswords = new ArrayList<>();
         int[] maskedPasswordLengthRange = IntStream.rangeClosed(
-                MASKED_PASSWORD_MIN_LENGTH,
-                MASKED_PASSWORD_MAX_LENGTH)
+                ApplicationProperties.MASKED_PASSWORD_MIN_LENGTH,
+                ApplicationProperties.MASKED_PASSWORD_MAX_LENGTH)
                 .toArray();
 
         for (int maskedPasswordLength : maskedPasswordLengthRange) {
-            Iterator<int[]> iterator = combinationsIterator(FULL_PASSWORD_LENGTH, maskedPasswordLength);
+            Iterator<int[]> iterator = CombinatoricsUtils.combinationsIterator(ApplicationProperties.FULL_PASSWORD_LENGTH, maskedPasswordLength);
             while (iterator.hasNext()) {
                 int[] combination = iterator.next();
                 MaskedPassword maskedPassword = new MaskedPassword();
-                maskedPassword.setCombination(passwordEncoder.encode(integerArrayToString(combination)));
-                maskedPassword.setHash(passwordEncoder.encode(selectCharacters(fullPassword, combination)));
+                maskedPassword.setCombination(passwordEncoder.encode(StringUtils.integerArrayToString(combination)));
+                maskedPassword.setHash(passwordEncoder.encode(StringUtils.selectCharacters(fullPassword, combination)));
                 maskedPasswords.add(maskedPassword);
             }
         }
@@ -83,8 +78,8 @@ public class AccountService {
         account.setAuthenticationToken(new AuthenticationToken(new ArrayList<>(), LocalDateTime.now()));
         if (otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).isPresent()) {
             account.setOtpCredentials(otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).get());
-            String subject = getTranslatedText("created.subject", language);
-            String text = getTranslatedText("confirm.text", language) + "<img src='data:image/png;base64," + generateQrCode(accountDto.getUsername(), key) + "'/>";
+            String subject = StringUtils.getTranslatedText("created.subject", language);
+            String text = StringUtils.getTranslatedText("confirm.text", language) + "<img src='data:image/png;base64," + generateQrCode(accountDto.getUsername(), key) + "'/>";
             emailSender.sendMessage(account.getEmail(), subject, text);
         } else {
             throw new AccountNotFoundException();
@@ -101,15 +96,15 @@ public class AccountService {
         Account account = AccountMapper.toAccount(accountDto);
         account.setActive(true);
         account.setConfirmed(false);
-        account.setConfirmationToken(randomBase64Url());
+        account.setConfirmationToken(StringUtils.randomBase64Url());
         account.setCredentials(new Credentials(generateMaskedPasswords(accountDto.getPassword() + lastPasswordCharacters)));
         account.setAuthenticationToken(new AuthenticationToken(new ArrayList<>(), LocalDateTime.now()));
         account.setAccessLevels(generateClientAccessLevels(account));
         if (otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).isPresent()) {
             account.setOtpCredentials(otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).get());
-            String subject = getTranslatedText("confirm.subject", language);
-            String text = "<a href=\"" + FRONTEND_ORIGIN + "/confirm/" + account.getConfirmationToken() + "\">"
-                    + getTranslatedText("confirm.link", language) + "</a>" + getTranslatedText("confirm.text", language);
+            String subject = StringUtils.getTranslatedText("confirm.subject", language);
+            String text = "<a href=\"" + ApplicationProperties.FRONTEND_ORIGIN + "/confirmAccount/" + account.getConfirmationToken() + "\">"
+                    + StringUtils.getTranslatedText("confirm.link", language) + "</a>" + StringUtils.getTranslatedText("confirm.text", language);
             emailSender.sendMessage(account.getEmail(), subject, text);
         } else {
             throw new AccountNotFoundException();
@@ -123,17 +118,17 @@ public class AccountService {
 
     private String generateLastPasswordCharacters() {
         StringBuilder characters = new StringBuilder();
-        for (int i = 0; i < LAST_PASSWORD_CHARACTERS_LENGTH; i++) {
-            characters.append(randomChar(LAST_PASSWORD_CHARACTERS));
+        for (int i = 0; i < ApplicationProperties.LAST_PASSWORD_CHARACTERS_LENGTH; i++) {
+            characters.append(StringUtils.randomChar(ApplicationProperties.LAST_PASSWORD_CHARACTERS));
         }
         return characters.toString();
     }
 
     private List<AccessLevel> generateClientAccessLevels(Account account) {
         List<AccessLevel> accessLevels = new ArrayList<>();
-        accessLevels.add((new Admin(ACCESS_LEVEL_ADMIN, false, account)));
-        accessLevels.add((new Employee(ACCESS_LEVEL_EMPLOYEE, false, account)));
-        accessLevels.add((new Client(ACCESS_LEVEL_CLIENT, true, account)));
+        accessLevels.add((new Admin(ApplicationProperties.ACCESS_LEVEL_ADMIN, false, account)));
+        accessLevels.add((new Employee(ApplicationProperties.ACCESS_LEVEL_EMPLOYEE, false, account)));
+        accessLevels.add((new Client(ApplicationProperties.ACCESS_LEVEL_CLIENT, true, account)));
         return accessLevels;
     }
 
@@ -157,16 +152,16 @@ public class AccountService {
     }
 
     public List<Integer> initializeLogin(String username) throws ApplicationBaseException {
-        List<Integer> randomCombination = randomCombination(
-                FULL_PASSWORD_LENGTH,
-                MASKED_PASSWORD_MIN_LENGTH,
-                MASKED_PASSWORD_MAX_LENGTH);
+        List<Integer> randomCombination = StringUtils.randomCombination(
+                ApplicationProperties.FULL_PASSWORD_LENGTH,
+                ApplicationProperties.MASKED_PASSWORD_MIN_LENGTH,
+                ApplicationProperties.MASKED_PASSWORD_MAX_LENGTH);
         Optional<Account> accountOptional = accountAdapter.getAccount(username);
         if (accountOptional.isPresent()) {
             Account account = accountOptional.get();
             AuthenticationToken authenticationToken = account.getAuthenticationToken();
             authenticationToken.setCombination(randomCombination);
-            authenticationToken.setExpiration(LocalDateTime.now().plusMinutes(AUTHENTICATION_TOKEN_EXPIRATION));
+            authenticationToken.setExpiration(LocalDateTime.now().plusMinutes(ApplicationProperties.AUTHENTICATION_TOKEN_EXPIRATION));
         }
         return randomCombination;
     }
@@ -245,17 +240,17 @@ public class AccountService {
         return account.getAccessLevels().stream()
                 .filter(AccessLevel::isActive)
                 .map(AccessLevel::getName)
-                .sorted(Comparator.comparing(ACCESS_LEVEL_ORDER::indexOf))
+                .sorted(Comparator.comparing(ApplicationProperties.ACCESS_LEVEL_ORDER::indexOf))
                 .collect(Collectors.toList());
     }
 
     private String getHighestFrontendRole(List<String> roles) {
-        if (roles.contains(ACCESS_LEVEL_ADMIN)) {
-            return ACCESS_LEVEL_ADMIN;
-        } else if (roles.contains(ACCESS_LEVEL_EMPLOYEE)) {
-            return ACCESS_LEVEL_EMPLOYEE;
+        if (roles.contains(ApplicationProperties.ACCESS_LEVEL_ADMIN)) {
+            return ApplicationProperties.ACCESS_LEVEL_ADMIN;
+        } else if (roles.contains(ApplicationProperties.ACCESS_LEVEL_EMPLOYEE)) {
+            return ApplicationProperties.ACCESS_LEVEL_EMPLOYEE;
         } else {
-            return ACCESS_LEVEL_CLIENT;
+            return ApplicationProperties.ACCESS_LEVEL_CLIENT;
         }
     }
 
@@ -269,6 +264,6 @@ public class AccountService {
         } catch (WriterException | IOException e) {
             throw new QrCodeGenerationException(e);
         }
-        return encodeBase64(qrCode);
+        return StringUtils.encodeBase64(qrCode);
     }
 }

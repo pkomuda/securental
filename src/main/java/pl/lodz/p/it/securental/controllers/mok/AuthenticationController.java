@@ -1,6 +1,5 @@
 package pl.lodz.p.it.securental.controllers.mok;
 
-import org.springframework.http.ResponseEntity;
 import pl.lodz.p.it.securental.dto.mok.AuthenticationRequest;
 import pl.lodz.p.it.securental.dto.mok.AuthenticationResponse;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;

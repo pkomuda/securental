@@ -4,12 +4,12 @@ import { Button, ButtonToolbar } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import Swal from "sweetalert2";
 
-export const Confirm = props => {
+export const ConfirmAccount = props => {
 
     const {t} = useTranslation();
 
     const handleSubmit = () => {
-        axios.put("/confirm", {token: window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1)})
+        axios.put("/confirmAccount", {token: window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1)})
             .then(() => {
                 Swal.fire(t("confirm.success"), "", "success");
                 props.history.push("/");

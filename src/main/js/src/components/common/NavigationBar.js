@@ -1,11 +1,12 @@
-import { faSignInAlt, faUser, faUserPlus } from "@fortawesome/free-solid-svg-icons";
+import { faCar, faSignInAlt, faUser, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useContext, useEffect, useState } from "react";
 import { Nav, Navbar, NavDropdown } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import { Link, useHistory } from "react-router-dom";
-import { AuthenticationContext, isAuthenticated } from "../utils/AuthenticationContext";
+import { AuthenticationContext, isAuthenticated } from "../../utils/AuthenticationContext";
+import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_CLIENT, ACCESS_LEVEL_EMPLOYEE } from "../../utils/Constants";
 import { Spinner } from "./Spinner";
 
 export const NavigationBar = () => {
@@ -35,11 +36,15 @@ export const NavigationBar = () => {
         console.log("logout");
     };
 
-    const authenticatedDropdownTitle = () => {
+    const carList = () => {
         return (
-            <div className="d-inline">
-                <FontAwesomeIcon icon={faUser}/> {userInfo.username}
-            </div>
+            <Nav.Item>
+                <LinkContainer to="/listCars">
+                    <div className="nav-icon-item">
+                        <FontAwesomeIcon icon={faCar}/> {t("navbar.cars")}
+                    </div>
+                </LinkContainer>
+            </Nav.Item>
         );
     };
 
@@ -58,9 +63,59 @@ export const NavigationBar = () => {
                 );
             }
             return (
-                <NavDropdown id="accessLevels" title={t(currentAccessLevel)} alignRight>
+                <NavDropdown id="accessLevels" title={t(currentAccessLevel)} alignRight style={{marginLeft: "1em"}}>
                     {accessLevels}
                 </NavDropdown>
+            );
+        }
+    };
+
+    const authenticatedDropdownTitle = () => {
+        return (
+            <div className="d-inline">
+                <FontAwesomeIcon icon={faUser}/> {userInfo.username}
+            </div>
+        );
+    };
+
+    const adminDropdown = () => {
+        if (userInfo.currentAccessLevel === ACCESS_LEVEL_ADMIN) {
+            return (
+                <React.Fragment>
+                    <LinkContainer to="/listAccounts">
+                        <NavDropdown.Item>{t("breadcrumbs.listAccounts")}</NavDropdown.Item>
+                    </LinkContainer>
+                    <LinkContainer to="/addAccount">
+                        <NavDropdown.Item>{t("breadcrumbs.addAccount")}</NavDropdown.Item>
+                    </LinkContainer>
+                </React.Fragment>
+            );
+        }
+    };
+
+    const employeeDropdown = () => {
+        if (userInfo.currentAccessLevel === ACCESS_LEVEL_EMPLOYEE) {
+            return (
+                <React.Fragment>
+                    <LinkContainer to="/addCar">
+                        <NavDropdown.Item>{t("breadcrumbs.addCar")}</NavDropdown.Item>
+                    </LinkContainer>
+                    <LinkContainer to="/listReservations">
+                        <NavDropdown.Item>{t("breadcrumbs.listReservations")}</NavDropdown.Item>
+                    </LinkContainer>
+                </React.Fragment>
+            );
+        }
+    };
+
+    const clientDropdown = () => {
+        if (userInfo.currentAccessLevel === ACCESS_LEVEL_CLIENT) {
+            return (
+                <React.Fragment>
+                    <LinkContainer to="/listOwnReservations">
+                        <NavDropdown.Item>{t("breadcrumbs.listReservations")}</NavDropdown.Item>
+                    </LinkContainer>
+                </React.Fragment>
             );
         }
     };
@@ -69,24 +124,15 @@ export const NavigationBar = () => {
         if (isAuthenticated(userInfo)) {
             return (
                 <Nav className="ml-auto">
+                    {carList()}
                     {accessLevelsDropdown()}
-                    <NavDropdown id="profile" title={authenticatedDropdownTitle()} alignRight onClick={() => console.log(userInfo)}>
+                    <NavDropdown id="profile" title={authenticatedDropdownTitle()} alignRight style={{marginLeft: "1em"}}>
                         <LinkContainer to="/ownAccountDetails">
                             <NavDropdown.Item>{t("breadcrumbs.accountDetails")}</NavDropdown.Item>
                         </LinkContainer>
-
-                        <LinkContainer to="/addCar">
-                            <NavDropdown.Item>Add car</NavDropdown.Item>
-                        </LinkContainer>
-
-                        <LinkContainer to="/listCars">
-                            <NavDropdown.Item>Car list</NavDropdown.Item>
-                        </LinkContainer>
-
-                        <LinkContainer to="/addAccount">
-                            <NavDropdown.Item>Add account</NavDropdown.Item>
-                        </LinkContainer>
-
+                        {adminDropdown()}
+                        {employeeDropdown()}
+                        {clientDropdown()}
                         <LinkContainer to="/">
                             <NavDropdown.Item onClick={handleLogout}>{t("navbar.logout")}</NavDropdown.Item>
                         </LinkContainer>
@@ -96,6 +142,7 @@ export const NavigationBar = () => {
         } else {
             return (
                 <Nav className="ml-auto">
+                    {carList()}
                     <Nav.Item>
                         <LinkContainer to="/login">
                             <div className="nav-icon-item">

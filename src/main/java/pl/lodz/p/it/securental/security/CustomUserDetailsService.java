@@ -11,14 +11,15 @@ import pl.lodz.p.it.securental.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.entities.mok.AccessLevel;
 import pl.lodz.p.it.securental.entities.mok.Account;
 import pl.lodz.p.it.securental.entities.mok.MaskedPassword;
+import pl.lodz.p.it.securental.exceptions.mok.AccountNotFoundException;
 import pl.lodz.p.it.securental.repositories.mok.AccountRepository;
+import pl.lodz.p.it.securental.utils.ApplicationProperties;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
-
-import static pl.lodz.p.it.securental.exceptions.mok.AccountNotFoundException.KEY_ACCOUNT_NOT_FOUND;
-import static pl.lodz.p.it.securental.utils.ApplicationProperties.*;
-import static pl.lodz.p.it.securental.utils.StringUtils.integerArrayToString;
 
 @Slf4j
 @Service
@@ -32,7 +33,7 @@ public class CustomUserDetailsService {
     public UserDetails loadUserByUsernameAndCombination(String username, String combination) throws UsernameNotFoundException {
         Optional<Account> accountOptional = accountRepository.findByOtpCredentialsUsername(username);
         if (accountOptional.isEmpty()) {
-             throw new UsernameNotFoundException(KEY_ACCOUNT_NOT_FOUND);
+             throw new UsernameNotFoundException(AccountNotFoundException.KEY_ACCOUNT_NOT_FOUND);
         } else {
             Account account = accountOptional.get();
             for (MaskedPassword maskedPassword : account.getCredentials().getMaskedPasswords()) {
@@ -59,7 +60,7 @@ public class CustomUserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Account> accountOptional = accountRepository.findByOtpCredentialsUsername(username);
         if (accountOptional.isEmpty()) {
-            throw new UsernameNotFoundException(KEY_ACCOUNT_NOT_FOUND);
+            throw new UsernameNotFoundException(AccountNotFoundException.KEY_ACCOUNT_NOT_FOUND);
         } else {
             Account account = accountOptional.get();
             return new CustomUserDetails(
@@ -76,12 +77,12 @@ public class CustomUserDetailsService {
 
     private String[] getRolesForGroup(String groupName) {
         switch (groupName) {
-            case ACCESS_LEVEL_ADMIN:
-                return ADMIN_ROLES;
-            case ACCESS_LEVEL_CLIENT:
-                return CLIENT_ROLES;
-            case ACCESS_LEVEL_EMPLOYEE:
-                return EMPLOYEE_ROLES;
+            case ApplicationProperties.ACCESS_LEVEL_ADMIN:
+                return ApplicationProperties.ADMIN_ROLES;
+            case ApplicationProperties.ACCESS_LEVEL_CLIENT:
+                return ApplicationProperties.CLIENT_ROLES;
+            case ApplicationProperties.ACCESS_LEVEL_EMPLOYEE:
+                return ApplicationProperties.EMPLOYEE_ROLES;
             default:
                 return new String[0];
         }

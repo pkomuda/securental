@@ -2,16 +2,16 @@ package pl.lodz.p.it.securental.entities.mok;
 
 import lombok.*;
 import pl.lodz.p.it.securental.entities.BaseEntity;
+import pl.lodz.p.it.securental.utils.ApplicationProperties;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import static pl.lodz.p.it.securental.utils.ApplicationProperties.EMAIL_REGEX;
 
 @Entity
 @Builder
@@ -19,7 +19,7 @@ import static pl.lodz.p.it.securental.utils.ApplicationProperties.EMAIL_REGEX;
 @AllArgsConstructor
 public @Data class Account extends BaseEntity {
 
-    @Pattern(regexp = EMAIL_REGEX)
+    @Pattern(regexp = ApplicationProperties.EMAIL_REGEX)
     @NotNull
     @Size(min = 1, max = 32)
     @Column(nullable = false, length = 32, unique = true, updatable = false)
@@ -48,6 +48,10 @@ public @Data class Account extends BaseEntity {
     private boolean confirmed;
 
     private String confirmationToken;
+
+    private LocalDateTime lastSuccessfulAuthentication;
+
+    private LocalDateTime lastFailedAuthentication;
 
     @ToString.Exclude
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)

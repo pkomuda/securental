@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Redirect, Route } from "react-router-dom";
-import { AuthenticationContext, isAuthenticated } from "../utils/AuthenticationContext";
+import { AuthenticationContext, isAuthenticated } from "../../utils/AuthenticationContext";
 
 export const RestrictedRoute = ({component: Component, ...rest}) => {
 

@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Redirect, Route } from "react-router-dom";
-import { AuthenticationContext, hasAccessLevel, isAuthenticated } from "../utils/AuthenticationContext";
+import { AuthenticationContext, hasAccessLevel, isAuthenticated } from "../../utils/AuthenticationContext";
 import { Spinner } from "./Spinner";
 
 export const PrivateRoute = ({component: Component, accessLevels, ...rest}) => {

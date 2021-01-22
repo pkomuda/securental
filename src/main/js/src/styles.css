@@ -67,6 +67,7 @@ th {
 }
 
 .nav-link {
+    display: inline;
     color: white !important;
 }
 

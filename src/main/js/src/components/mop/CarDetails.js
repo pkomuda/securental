@@ -8,8 +8,8 @@ import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
 import { ACCESS_LEVEL_CLIENT, ACCESS_LEVEL_EMPLOYEE } from "../../utils/Constants";
-import { FlatFormGroup } from "../FlatFormGroup";
-import { Spinner } from "../Spinner";
+import { FlatFormGroup } from "../common/FlatFormGroup";
+import { Spinner } from "../common/Spinner";
 
 export const CarDetails = props => {
 

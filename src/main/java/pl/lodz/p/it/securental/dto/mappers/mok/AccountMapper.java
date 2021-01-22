@@ -6,13 +6,12 @@ import org.springframework.stereotype.Component;
 import pl.lodz.p.it.securental.dto.mok.AccountDto;
 import pl.lodz.p.it.securental.entities.mok.*;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
+import pl.lodz.p.it.securental.utils.ApplicationProperties;
 import pl.lodz.p.it.securental.utils.SignatureUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static pl.lodz.p.it.securental.utils.ApplicationProperties.*;
 
 @Component
 @AllArgsConstructor
@@ -64,22 +63,22 @@ public class AccountMapper {
 
     private static List<AccessLevel> toAccessLevels(Account account, List<String> accessLevelStrings) {
         List<AccessLevel> accessLevels = new ArrayList<>();
-        if (accessLevelStrings.contains(ACCESS_LEVEL_ADMIN)) {
-            accessLevels.add(new Admin(ACCESS_LEVEL_ADMIN, true, account));
+        if (accessLevelStrings.contains(ApplicationProperties.ACCESS_LEVEL_ADMIN)) {
+            accessLevels.add(new Admin(ApplicationProperties.ACCESS_LEVEL_ADMIN, true, account));
         } else {
-            accessLevels.add(new Admin(ACCESS_LEVEL_ADMIN, false, account));
+            accessLevels.add(new Admin(ApplicationProperties.ACCESS_LEVEL_ADMIN, false, account));
         }
 
-        if (accessLevelStrings.contains(ACCESS_LEVEL_EMPLOYEE)) {
-            accessLevels.add(new Employee(ACCESS_LEVEL_EMPLOYEE, true, account));
+        if (accessLevelStrings.contains(ApplicationProperties.ACCESS_LEVEL_EMPLOYEE)) {
+            accessLevels.add(new Employee(ApplicationProperties.ACCESS_LEVEL_EMPLOYEE, true, account));
         } else {
-            accessLevels.add(new Employee(ACCESS_LEVEL_EMPLOYEE, false, account));
+            accessLevels.add(new Employee(ApplicationProperties.ACCESS_LEVEL_EMPLOYEE, false, account));
         }
 
-        if (accessLevelStrings.contains(ACCESS_LEVEL_CLIENT)) {
-            accessLevels.add(new Client(ACCESS_LEVEL_CLIENT, true, account));
+        if (accessLevelStrings.contains(ApplicationProperties.ACCESS_LEVEL_CLIENT)) {
+            accessLevels.add(new Client(ApplicationProperties.ACCESS_LEVEL_CLIENT, true, account));
         } else {
-            accessLevels.add(new Client(ACCESS_LEVEL_CLIENT, false, account));
+            accessLevels.add(new Client(ApplicationProperties.ACCESS_LEVEL_CLIENT, false, account));
         }
         return accessLevels;
     }
@@ -87,11 +86,11 @@ public class AccountMapper {
     public static void updateAccessLevels(List<AccessLevel> accessLevels, List<String> accessLevelStrings) {
         for (AccessLevel accessLevel : accessLevels) {
             if (accessLevel instanceof Admin) {
-                accessLevel.setActive(accessLevelStrings.contains(ACCESS_LEVEL_ADMIN));
+                accessLevel.setActive(accessLevelStrings.contains(ApplicationProperties.ACCESS_LEVEL_ADMIN));
             } else if (accessLevel instanceof Employee) {
-                accessLevel.setActive(accessLevelStrings.contains(ACCESS_LEVEL_EMPLOYEE));
+                accessLevel.setActive(accessLevelStrings.contains(ApplicationProperties.ACCESS_LEVEL_EMPLOYEE));
             } else if (accessLevel instanceof Client) {
-                accessLevel.setActive(accessLevelStrings.contains(ACCESS_LEVEL_CLIENT));
+                accessLevel.setActive(accessLevelStrings.contains(ApplicationProperties.ACCESS_LEVEL_CLIENT));
             }
         }
     }

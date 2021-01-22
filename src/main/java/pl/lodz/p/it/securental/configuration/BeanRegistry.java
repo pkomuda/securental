@@ -8,9 +8,7 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.lodz.p.it.securental.adapters.mok.OtpCredentialsAdapter;
-
-import static pl.lodz.p.it.securental.utils.ApplicationProperties.APPLICATION_PROPERTIES_BEAN;
-import static pl.lodz.p.it.securental.utils.ApplicationProperties.PASSWORD_HASHING_ALGORITHM;
+import pl.lodz.p.it.securental.utils.ApplicationProperties;
 
 @Configuration
 @AllArgsConstructor
@@ -19,9 +17,9 @@ public class BeanRegistry {
     private final OtpCredentialsAdapter otpCredentialsAdapter;
 
     @Bean
-    @DependsOn(APPLICATION_PROPERTIES_BEAN)
+    @DependsOn(ApplicationProperties.APPLICATION_PROPERTIES_BEAN)
     public PasswordEncoder passwordEncoderBean() {
-        return new MessageDigestPasswordEncoder(PASSWORD_HASHING_ALGORITHM);
+        return new MessageDigestPasswordEncoder(ApplicationProperties.PASSWORD_HASHING_ALGORITHM);
     }
 
     @Bean
