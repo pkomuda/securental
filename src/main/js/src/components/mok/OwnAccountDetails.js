@@ -27,7 +27,7 @@ export const OwnAccountDetails = props => {
     const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
-        axios.get(`/ownAccount/${userInfo.username}`, {withCredentials: true})
+        axios.get(`/ownAccount/${userInfo.username}`)
             .then(response => {
                 setAccount(response.data);
                 setLoaded(true);
@@ -82,6 +82,13 @@ export const OwnAccountDetails = props => {
         }
     };
 
+    const clientButtons = () => {
+        if (userInfo.currentAccessLevel === ACCESS_LEVEL_CLIENT) {
+            return <Button id="reservations"
+                           onClick={() => props.history.push("/listOwnReservations")}>{t("account.reservations")}</Button>;
+        }
+    }
+
     if (loaded) {
         return (
             <React.Fragment>
@@ -113,9 +120,8 @@ export const OwnAccountDetails = props => {
                                 <Button id="back"
                                         onClick={() => props.history.push("/")}>{t("navigation.back")}</Button>
                                 <Button id="edit"
-                                        onClick={() => props.history.push(`/editOwnAccount/${account.username}`)}>{t("navigation.edit")}</Button>
-                                <Button id="reservations"
-                                        onClick={() => props.history.push("/listOwnReservations")}>{t("account.reservations")}</Button>
+                                        onClick={() => props.history.push("/editOwnAccount")}>{t("navigation.edit")}</Button>
+                                {clientButtons()}
                             </ButtonToolbar>
                         </Col>
                     </Row>

@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import en from 'date-fns/locale/en-GB';
 import pl from 'date-fns/locale/pl';
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormControl, FormGroup, FormLabel, Row } from "react-bootstrap";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { useTranslation } from "react-i18next";
@@ -11,6 +11,7 @@ import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
 import { date, mixed, object, string } from "yup";
 import { handleSuccess } from "../../utils/Alerts";
+import { AuthenticationContext } from "../../utils/AuthenticationContext";
 import { getDateFormat, getTimeFormat, hoursBetween, isoDate, nearestFullHour } from "../../utils/DateTime";
 import { getLocale, isLanguagePolish } from "../../utils/i18n";
 import { validate } from "../../utils/Validation";
@@ -26,7 +27,7 @@ export const EditOwnReservation = props => {
     }
 
     const {t} = useTranslation();
-    // const [userInfo] = useContext(AuthenticationContext);
+    const [userInfo] = useContext(AuthenticationContext);
     const schema = object().shape({
         number: string(),
         startDate: date().required("reservation.startDate.required"),
@@ -48,7 +49,7 @@ export const EditOwnReservation = props => {
     };
 
     useEffect(() => {
-        axios.get(`/reservation/herbson/${props.match.params.number}`)
+        axios.get(`/reservation/${userInfo.username}/${props.match.params.number}`)
             .then(response => {
                 const tempReservation = response.data;
                 tempReservation.startDate = new Date(tempReservation.startDate);
@@ -60,7 +61,7 @@ export const EditOwnReservation = props => {
                 t(`errors:${error.response.data}`),
                 "error");
         });
-    }, [props.match.params.number, t]);
+    }, [props.match.params.number, t, userInfo.username]);
 
     const handleSubmit = () => {
         // const tempReservation = {...reservation};
@@ -74,7 +75,7 @@ export const EditOwnReservation = props => {
             tempReservation.price = tempReservation.price.replaceAll(",", ".");
             console.log(tempReservation);
 
-            axios.put(`/reservation/herbson/${tempReservation.number}`, tempReservation, {withCredentials: true})
+            axios.put(`/reservation/${userInfo.username}/${tempReservation.number}`, tempReservation)
                 .then(() => {
                     handleSuccess("editReservation.success", "");
                     // props.history.push(`/ownReservationDetails/${tempReservation.number}`);
@@ -109,10 +110,13 @@ export const EditOwnReservation = props => {
                             <FontAwesomeIcon icon={faHome}/>
                         </Breadcrumb.Item>
                     </LinkContainer>
-                    <LinkContainer to="/listCars" exact>
+                    <LinkContainer to="/ownAccountDetails" exact>
+                        <Breadcrumb.Item>{t("breadcrumbs.accountDetails")}</Breadcrumb.Item>
+                    </LinkContainer>
+                    <LinkContainer to={"/listOwnReservations"} exact>
                         <Breadcrumb.Item>{t("breadcrumbs.listReservations")}</Breadcrumb.Item>
                     </LinkContainer>
-                    <LinkContainer to={`/carDetails/${reservation.number}`} exact>
+                    <LinkContainer to={`/ownReservationDetails/${reservation.number}`} exact>
                         <Breadcrumb.Item>{t("breadcrumbs.reservationDetails")}</Breadcrumb.Item>
                     </LinkContainer>
                     <Breadcrumb.Item active>{t("breadcrumbs.editReservation")}</Breadcrumb.Item>
@@ -166,7 +170,7 @@ export const EditOwnReservation = props => {
                             </Form>
                             <ButtonToolbar className="justify-content-center">
                                 <Button id="back"
-                                        onClick={() => props.history.goBack()}>{t("navigation.back")}</Button>
+                                        onClick={() => props.history.push(`/ownReservationDetails/${reservation.number}`)}>{t("navigation.back")}</Button>
                                 <Button id="edit"
                                         onClick={handleSubmit}>{t("navigation.submit")}</Button>
                             </ButtonToolbar>

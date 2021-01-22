@@ -2,7 +2,7 @@ import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
-import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormCheck, FormGroup, FormLabel, Row } from "react-bootstrap";
+import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormCheck, FormControl, FormGroup, FormLabel, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
@@ -11,6 +11,7 @@ import { AuthenticationContext } from "../../utils/AuthenticationContext";
 import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_CLIENT, ACCESS_LEVEL_EMPLOYEE } from "../../utils/Constants";
 import { EMAIL_REGEX, validate } from "../../utils/Validation";
 import { EditFormGroup } from "../EditFormGroup";
+import { FlatFormGroup } from "../FlatFormGroup";
 import { Spinner } from "../Spinner";
 
 export const EditOwnAccount = props => {
@@ -45,6 +46,9 @@ export const EditOwnAccount = props => {
         setValues: newAccount => setAccount(newAccount),
         setErrors: newErrors => setErrors(newErrors)
     };
+    FlatFormGroup.defaultProps = {
+        values: account
+    };
 
     const setAccessLevelValue = (object, array, name) => {
         object[name] = array.includes(name);
@@ -58,7 +62,7 @@ export const EditOwnAccount = props => {
             setAccessLevelValue(object, accessLevelsArray, ACCESS_LEVEL_CLIENT);
             return object;
         };
-        axios.get(`/ownAccount/${userInfo.username}`, {withCredentials: true})
+        axios.get(`/ownAccount/${userInfo.username}`)
             .then(response => {
                 console.log(response.data);
                 setAccount(response.data);
@@ -96,7 +100,7 @@ export const EditOwnAccount = props => {
             const tempAccount = {...account};
             tempAccount.accessLevels = Object.keys(accessLevels).filter(key => accessLevels[key]);
             console.log(tempAccount);
-            axios.put(`/ownAccount/${tempAccount.username}`, tempAccount, {withCredentials: true})
+            axios.put(`/ownAccount/${tempAccount.username}`, tempAccount)
                 .then(() => {
                     const alerts = [];
                     alerts.push({
@@ -105,12 +109,52 @@ export const EditOwnAccount = props => {
                         icon: "success"
                     });
                     Swal.queue(alerts);
-                    props.history.push(`/accountDetails/${tempAccount.username}`);
+                    props.history.push("/ownAccountDetails");
                 }).catch(() => {
                 Swal.fire(t("errors:common.header"),
                     t("errors:common.text"),
                     "error");
             });
+        }
+    };
+
+    const renderAccessLevels = () => {
+        if (userInfo.accessLevels.length > 1) {
+            return (
+                <FormGroup>
+                    <hr/>
+                    <FormLabel className="flat-form-label">{t("account.accessLevels")}</FormLabel>
+                    <FormControl id="accessLevels"
+                                 value={account.accessLevels.map(a => t(a)).join(", ")}
+                                 disabled
+                                 plaintext/>
+                </FormGroup>
+            );
+        }
+    }
+
+    const renderAdminInfo = () => {
+        if (userInfo.currentAccessLevel === ACCESS_LEVEL_ADMIN) {
+            return (
+                <React.Fragment>
+                    <FormGroup>
+                        <hr/>
+                        <FormLabel className="flat-form-label">{t("account.activity")}</FormLabel>
+                        <FormControl id="active"
+                                     value={account.active ? t("account.active") : t("account.inactive")}
+                                     disabled
+                                     plaintext/>
+                        <hr/>
+                    </FormGroup>
+                    <FormGroup>
+                        <FormLabel className="flat-form-label">{t("account.confirmation")}</FormLabel>
+                        <FormControl id="active"
+                                     value={account.confirmed ? t("account.confirmed") : t("account.notConfirmed")}
+                                     disabled
+                                     plaintext/>
+                    </FormGroup>
+                </React.Fragment>
+            );
         }
     };
 
@@ -123,10 +167,7 @@ export const EditOwnAccount = props => {
                             <FontAwesomeIcon icon={faHome}/>
                         </Breadcrumb.Item>
                     </LinkContainer>
-                    <LinkContainer to="/listAccounts" exact>
-                        <Breadcrumb.Item>{t("breadcrumbs.listAccounts")}</Breadcrumb.Item>
-                    </LinkContainer>
-                    <LinkContainer to={`/accountDetails/${account.username}`} exact>
+                    <LinkContainer to="/ownAccountDetails" exact>
                         <Breadcrumb.Item>{t("breadcrumbs.accountDetails")}</Breadcrumb.Item>
                     </LinkContainer>
                     <Breadcrumb.Item active>{t("breadcrumbs.editAccount")}</Breadcrumb.Item>
@@ -135,25 +176,18 @@ export const EditOwnAccount = props => {
                     <Row className="justify-content-center">
                         <Col sm={6} className="form-container">
                             <Form>
+                                <FlatFormGroup id="username"
+                                               label="account.username"/>
+                                <FlatFormGroup id="email"
+                                               label="account.email"/>
                                 <EditFormGroup id="firstName"
                                                label="account.firstName"
                                                required/>
                                 <EditFormGroup id="lastName"
                                                label="account.lastName"
                                                required/>
-                                <FormGroup>
-                                    <FormLabel className="font-weight-bold">{t("account.accessLevels")} *</FormLabel>
-                                    <div>
-                                        <FormCheck id={ACCESS_LEVEL_CLIENT} label={t(ACCESS_LEVEL_CLIENT)} onChange={handleChangeAccessLevel} inline defaultChecked={accessLevels[ACCESS_LEVEL_CLIENT]}/>
-                                        <FormCheck id={ACCESS_LEVEL_EMPLOYEE} label={t(ACCESS_LEVEL_EMPLOYEE)} onChange={handleChangeAccessLevel} inline defaultChecked={accessLevels[ACCESS_LEVEL_EMPLOYEE]}/>
-                                        <FormCheck id={ACCESS_LEVEL_ADMIN} label={t(ACCESS_LEVEL_ADMIN)} onChange={handleChangeAccessLevel} inline defaultChecked={accessLevels[ACCESS_LEVEL_ADMIN]}/>
-                                        <p id="accessLevelsFeedback" className="invalid" style={{display: "none"}}>{t("validation:account.accessLevels.required")}</p>
-                                    </div>
-                                </FormGroup>
-                                <FormGroup>
-                                    <FormLabel className="font-weight-bold">{t("account.activity")}</FormLabel>
-                                    <FormCheck id="active" label={t("account.active")} onChange={handleChangeActive} defaultChecked={account.active}/>
-                                </FormGroup>
+                                {renderAccessLevels()}
+                                {renderAdminInfo()}
                             </Form>
                             <ButtonToolbar className="justify-content-center">
                                 <Button id="back"

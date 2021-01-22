@@ -66,7 +66,7 @@ export const ListAccounts = props => {
                 }
             }
         };
-        axios.get(url(), {withCredentials: true})
+        axios.get(url())
             .then(response => {
                 if (response.data.empty) {
                     if (response.data.totalPages === 0) {

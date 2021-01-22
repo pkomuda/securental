@@ -95,7 +95,7 @@ export const AddReservation = props => {
             tempReservation.clientDto.username = userInfo.username;
             tempReservation.carDto.number = car.number;
             console.log(tempReservation);
-            axios.post(`/reservation/${userInfo.username}`, tempReservation, {withCredentials: true})
+            axios.post(`/reservation/${userInfo.username}`, tempReservation)
                 .then(() => {
                     handleSuccess("addReservation.success", "");
                     props.history.push(`/carDetails/${car.number}`);

@@ -65,7 +65,7 @@ export const EditCar = props => {
             tempCar.productionYear = parseInt(tempCar.productionYear, 10);
             tempCar.price = tempCar.price.replaceAll(",", ".");
             console.log(tempCar);
-            axios.put(`/editCar/${tempCar.number}`, tempCar, {withCredentials: true})
+            axios.put(`/editCar/${tempCar.number}`, tempCar)
                 .then(() => {
                     Swal.fire(t("errors:common.header"),
                         t("errors:common.text"),

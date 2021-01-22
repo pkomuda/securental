@@ -3,7 +3,9 @@ package pl.lodz.p.it.securental.adapters.mok;
 import com.warrenstrange.googleauth.ICredentialRepository;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.entities.mok.OtpCredentials;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
@@ -11,10 +13,12 @@ import pl.lodz.p.it.securental.exceptions.db.DatabaseConnectionException;
 import pl.lodz.p.it.securental.exceptions.mok.AccountNotFoundException;
 import pl.lodz.p.it.securental.repositories.mok.OtpCredentialsRepository;
 
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceException;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 //@MandatoryTransaction

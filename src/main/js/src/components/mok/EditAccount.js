@@ -56,7 +56,7 @@ export const EditAccount = props => {
             setAccessLevelValue(object, accessLevelsArray, ACCESS_LEVEL_CLIENT);
             return object;
         };
-        axios.get(`/account/${props.match.params.username}`, {withCredentials: true})
+        axios.get(`/account/${props.match.params.username}`)
             .then(response => {
                 console.log(response.data);
                 setAccount(response.data);
@@ -94,7 +94,7 @@ export const EditAccount = props => {
             const tempAccount = {...account};
             tempAccount.accessLevels = Object.keys(accessLevels).filter(key => accessLevels[key]);
             console.log(tempAccount);
-            axios.put(`/account/${tempAccount.username}`, tempAccount, {withCredentials: true})
+            axios.put(`/account/${tempAccount.username}`, tempAccount)
                 .then(() => {
                     const alerts = [];
                     alerts.push({

@@ -44,7 +44,7 @@ export const App = () => {
 
     useEffect(() => {
         if (!isAuthenticated(userInfo) && userInfo.tokenPresent) {
-            axios.get("/currentUser", {withCredentials: true})
+            axios.get("/currentUser")
                 .then(response => {
                     const tempUserInfo = response.data;
                     tempUserInfo.tokenPresent = true;

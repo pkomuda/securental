@@ -27,7 +27,7 @@ export const OwnReservationDetails = props => {
     const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
-        axios.get(`/reservation/${userInfo.username}/${props.match.params.number}`, {withCredentials: true})
+        axios.get(`/reservation/${userInfo.username}/${props.match.params.number}`)
             .then(response => {
                 setReservation(response.data);
                 setLoaded(true);
@@ -100,7 +100,7 @@ export const OwnReservationDetails = props => {
                                 <Button id="back"
                                         onClick={() => props.history.push("/listReservations")}>{t("navigation.back")}</Button>
                                 <Button id="edit"
-                                        onClick={() => props.history.push(`/editReservation/${reservation.number}`)}>{t("navigation.edit")}</Button>
+                                        onClick={() => props.history.push(`/editOwnReservation/${reservation.number}`)}>{t("navigation.edit")}</Button>
                             </ButtonToolbar>
                         </Col>
                     </Row>

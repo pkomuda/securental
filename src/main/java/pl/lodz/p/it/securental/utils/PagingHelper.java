@@ -2,12 +2,14 @@ package pl.lodz.p.it.securental.utils;
 
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import static pl.lodz.p.it.securental.utils.StringUtils.isNullOrEmpty;
 
+@ToString
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class PagingHelper {

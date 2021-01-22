@@ -38,6 +38,7 @@ public class ApplicationProperties {
     public static Integer MASKED_PASSWORD_MAX_LENGTH;
     public static Integer MASKED_PASSWORD_MIN_LENGTH;
     public static String PASSWORD_HASHING_ALGORITHM;
+    public static String UNAUTHENTICATED_PRINCIPAL;
 
     public ApplicationProperties(@Value("${admin.roles}") String adminRoles,
                                  @Value("${authentication.token.expiration}") Integer authenticationTokenExpiration,
@@ -51,7 +52,8 @@ public class ApplicationProperties {
                                  @Value("${last.password.characters}") String lastPasswordCharacters,
                                  @Value("${masked.password.max.length}") Integer maskedPasswordMaxLength,
                                  @Value("${masked.password.min.length}") Integer maskedPasswordMinLength,
-                                 @Value("${password.hashing.algorithm}") String passwordHashingAlgorithm) {
+                                 @Value("${password.hashing.algorithm}") String passwordHashingAlgorithm,
+                                 @Value("${unauthenticated.principal}") String unauthenticatedPrincipal) {
         ADMIN_ROLES = adminRoles.split(",");
         AUTHENTICATION_TOKEN_EXPIRATION = authenticationTokenExpiration;
         CLIENT_ROLES = clientRoles.split(",");
@@ -66,6 +68,7 @@ public class ApplicationProperties {
         MASKED_PASSWORD_MAX_LENGTH = maskedPasswordMaxLength;
         MASKED_PASSWORD_MIN_LENGTH = maskedPasswordMinLength;
         PASSWORD_HASHING_ALGORITHM = passwordHashingAlgorithm;
+        UNAUTHENTICATED_PRINCIPAL = unauthenticatedPrincipal;
     }
 
     public static boolean isProduction() {

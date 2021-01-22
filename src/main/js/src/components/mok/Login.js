@@ -87,7 +87,7 @@ export const Login = props => {
         tempAuthRequest.otpCode = parseInt(tempAuthRequest.otpCode);
         tempAuthRequest.characters = tempAuthRequest.characters.join("");
         console.log(tempAuthRequest);
-        axios.post("/login", tempAuthRequest, {withCredentials: true})
+        axios.post("/login", tempAuthRequest)
             .then(response => {
                 setUserInfo(response.data);
                 props.history.push("/");
@@ -115,7 +115,7 @@ export const Login = props => {
                     </Form>
                     <ButtonToolbar className="justify-content-center">
                         <Button id="back1"
-                                onClick={() => props.history.goBack}>{t("navigation.back")}</Button>
+                                onClick={() => props.history.push("/")}>{t("navigation.back")}</Button>
                         <Button id="submit1"
                                 onClick={handleFirstStage}>{t("navigation.next")}</Button>
                     </ButtonToolbar>

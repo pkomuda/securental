@@ -23,7 +23,6 @@ import pl.lodz.p.it.securental.entities.mok.*;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.ApplicationOptimisticLockException;
 import pl.lodz.p.it.securental.exceptions.db.PropertyNotFoundException;
-import pl.lodz.p.it.securental.exceptions.mok.AccountAlreadyExistsException;
 import pl.lodz.p.it.securental.exceptions.mok.AccountNotFoundException;
 import pl.lodz.p.it.securental.exceptions.mok.QrCodeGenerationException;
 import pl.lodz.p.it.securental.exceptions.mok.UsernameNotMatchingException;
@@ -77,53 +76,45 @@ public class AccountService {
 
     public RegistrationResponse addAccount(AccountDto accountDto, String language) throws ApplicationBaseException {
         GoogleAuthenticatorKey key = googleAuthenticator.createCredentials(accountDto.getUsername());
-//        if (accountAdapter.getAccount(accountDto.getUsername()).isEmpty()) {
         String lastPasswordCharacters = generateLastPasswordCharacters();
-            Account account = AccountMapper.toAccount(accountDto);
-            account.setConfirmed(true);
-            account.setCredentials(new Credentials(generateMaskedPasswords(accountDto.getPassword() + lastPasswordCharacters)));
-            account.setAuthenticationToken(new AuthenticationToken(new ArrayList<>(), LocalDateTime.now()));
-            if (otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).isPresent()) {
-                account.setOtpCredentials(otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).get());
-                String subject = getTranslatedText("created.subject", language);
-                String text = getTranslatedText("confirm.text", language) + "<img src='data:image/png;base64," + generateQrCode(accountDto.getUsername(), key) + "'/>";
-                emailSender.sendMessage(account.getEmail(), subject, text);
-            } else {
-                throw new AccountNotFoundException();
-            }
-            accountAdapter.addAccount(account);
-            return RegistrationResponse.builder()
-                    .lastPasswordCharacters(lastPasswordCharacters)
-                    .build();
-//        } else {
-//            throw new AccountAlreadyExistsException();
-//        }
+        Account account = AccountMapper.toAccount(accountDto);
+        account.setConfirmed(true);
+        account.setCredentials(new Credentials(generateMaskedPasswords(accountDto.getPassword() + lastPasswordCharacters)));
+        account.setAuthenticationToken(new AuthenticationToken(new ArrayList<>(), LocalDateTime.now()));
+        if (otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).isPresent()) {
+            account.setOtpCredentials(otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).get());
+            String subject = getTranslatedText("created.subject", language);
+            String text = getTranslatedText("confirm.text", language) + "<img src='data:image/png;base64," + generateQrCode(accountDto.getUsername(), key) + "'/>";
+            emailSender.sendMessage(account.getEmail(), subject, text);
+        } else {
+            throw new AccountNotFoundException();
+        }
+        accountAdapter.addAccount(account);
+        return RegistrationResponse.builder()
+                .lastPasswordCharacters(lastPasswordCharacters)
+                .build();
     }
 
     public RegistrationResponse register(AccountDto accountDto, String language) throws ApplicationBaseException {
         GoogleAuthenticatorKey key = googleAuthenticator.createCredentials(accountDto.getUsername());
-//        if (accountAdapter.getAccount(accountDto.getUsername()).isEmpty()) {
-            String lastPasswordCharacters = generateLastPasswordCharacters();
-            Account account = AccountMapper.toAccount(accountDto);
-            account.setActive(true);
-            account.setConfirmed(false);
-            account.setConfirmationToken(randomBase64Url());
-            account.setCredentials(new Credentials(generateMaskedPasswords(accountDto.getPassword() + lastPasswordCharacters)));
-            account.setAuthenticationToken(new AuthenticationToken(new ArrayList<>(), LocalDateTime.now()));
-            account.setAccessLevels(generateClientAccessLevels(account));
-            if (otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).isPresent()) {
-                account.setOtpCredentials(otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).get());
-                String subject = getTranslatedText("confirm.subject", language);
-                String text = "<a href=\"" + FRONTEND_ORIGIN + "/confirm/" + account.getConfirmationToken() + "\">"
-                        + getTranslatedText("confirm.link", language) + "</a>" + getTranslatedText("confirm.text", language);
-                emailSender.sendMessage(account.getEmail(), subject, text);
-            } else {
-                throw new AccountNotFoundException();
-            }
-            accountAdapter.addAccount(account);
-//        } else {
-//            throw new AccountAlreadyExistsException();
-//        }
+        String lastPasswordCharacters = generateLastPasswordCharacters();
+        Account account = AccountMapper.toAccount(accountDto);
+        account.setActive(true);
+        account.setConfirmed(false);
+        account.setConfirmationToken(randomBase64Url());
+        account.setCredentials(new Credentials(generateMaskedPasswords(accountDto.getPassword() + lastPasswordCharacters)));
+        account.setAuthenticationToken(new AuthenticationToken(new ArrayList<>(), LocalDateTime.now()));
+        account.setAccessLevels(generateClientAccessLevels(account));
+        if (otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).isPresent()) {
+            account.setOtpCredentials(otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).get());
+            String subject = getTranslatedText("confirm.subject", language);
+            String text = "<a href=\"" + FRONTEND_ORIGIN + "/confirm/" + account.getConfirmationToken() + "\">"
+                    + getTranslatedText("confirm.link", language) + "</a>" + getTranslatedText("confirm.text", language);
+            emailSender.sendMessage(account.getEmail(), subject, text);
+        } else {
+            throw new AccountNotFoundException();
+        }
+        accountAdapter.addAccount(account);
         return RegistrationResponse.builder()
                 .qrCode(generateQrCode(accountDto.getUsername(), key))
                 .lastPasswordCharacters(lastPasswordCharacters)

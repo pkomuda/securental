@@ -10,6 +10,7 @@ import "./styles.css";
 import "./utils/i18n";
 
 axios.defaults.baseURL = process.env.REACT_APP_API;
+axios.defaults.withCredentials = true;
 
 ReactDOM.render(
     <App/>,

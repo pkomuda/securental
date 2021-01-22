@@ -44,7 +44,7 @@ export const AddCar = props => {
             tempCar.productionYear = parseInt(tempCar.productionYear, 10);
             tempCar.price = tempCar.price.replaceAll(",", ".");
             console.log(tempCar);
-            axios.post("/addCar", car, {withCredentials: true})
+            axios.post("/addCar", car)
                 .then(() => {
                     Swal.fire(t("errors:common.header"),
                         t("errors:common.text"),
