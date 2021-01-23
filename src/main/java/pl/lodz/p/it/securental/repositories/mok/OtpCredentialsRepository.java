@@ -7,7 +7,7 @@ import pl.lodz.p.it.securental.entities.mok.OtpCredentials;
 import java.util.Optional;
 
 @Repository
-//@MandatoryTransaction
+//@MandatoryTransaction //TODO check
 public interface OtpCredentialsRepository extends JpaRepository<OtpCredentials, Long> {
 
     Optional<OtpCredentials> findByUsername(String username);

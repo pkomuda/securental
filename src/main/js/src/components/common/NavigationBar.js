@@ -1,5 +1,6 @@
 import { faCar, faSignInAlt, faUser, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { Nav, Navbar, NavDropdown } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
@@ -22,18 +23,36 @@ export const NavigationBar = () => {
 
     if (isAuthenticated(userInfo)) {
         setTimeout(() => {
-            setUserInfo({
-                username: "",
-                accessLevels: [],
-                currentAccessLevel: "",
-                tokenExpiration: 0
-            });
+            clearUserInfo();
             history.push("/login/sessionExpired");
         }, userInfo.tokenExpiration - new Date().getTime());
     }
 
+    const clearUserInfo = () => {
+        setUserInfo({
+            username: "",
+            accessLevels: [],
+            currentAccessLevel: "",
+            tokenPresent: false,
+            tokenExpiration: 0
+        });
+    };
+
     const handleLogout = () => {
-        console.log("logout");
+        axios.post("/logout")
+            .then(() => {
+                axios.get("/currentUser")
+                    .then(() => {
+                        clearUserInfo();
+                        window.location.replace("/");
+                    }).catch(() => {
+                        clearUserInfo();
+                        history.push("/");
+                });
+            }).catch(() => {
+                clearUserInfo();
+                window.location.replace("/");
+        });
     };
 
     const carList = () => {
@@ -133,7 +152,7 @@ export const NavigationBar = () => {
                         {adminDropdown()}
                         {employeeDropdown()}
                         {clientDropdown()}
-                        <LinkContainer to="/">
+                        <LinkContainer to="/#">
                             <NavDropdown.Item onClick={handleLogout}>{t("navbar.logout")}</NavDropdown.Item>
                         </LinkContainer>
                     </NavDropdown>

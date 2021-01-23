@@ -3,7 +3,12 @@ package pl.lodz.p.it.securental.utils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+import pl.lodz.p.it.securental.adapters.mok.BlacklistedJwtAdapter;
+import pl.lodz.p.it.securental.annotations.MandatoryTransaction;
+import pl.lodz.p.it.securental.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 
 import java.util.Date;
@@ -11,11 +16,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-public final class JwtUtils {
+@Component
+@AllArgsConstructor
+public class JwtUtils {
 
-    private JwtUtils() {
-        throw new UnsupportedOperationException(ApplicationBaseException.KEY_DEFAULT);
-    }
+    private final BlacklistedJwtAdapter blacklistedJwtAdapter;
 
     public static String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -54,8 +59,13 @@ public final class JwtUtils {
                 .signWith(SignatureAlgorithm.HS256, ApplicationProperties.JWT_KEY).compact();
     }
 
-    public static Boolean validateToken(String token, UserDetails userDetails) {
+    @RequiresNewTransaction
+    public Boolean validateToken(String token, UserDetails userDetails) throws ApplicationBaseException {
         final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        if (blacklistedJwtAdapter.getBlacklistedJwt(token).isEmpty()) {
+            return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        } else {
+            return false;
+        }
     }
 }

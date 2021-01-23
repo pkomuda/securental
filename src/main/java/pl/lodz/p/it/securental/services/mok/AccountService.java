@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.adapters.mok.AccountAdapter;
+import pl.lodz.p.it.securental.adapters.mok.BlacklistedJwtAdapter;
 import pl.lodz.p.it.securental.adapters.mok.OtpCredentialsAdapter;
 import pl.lodz.p.it.securental.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.dto.mappers.mok.AccountMapper;
@@ -31,7 +32,9 @@ import pl.lodz.p.it.securental.utils.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -45,6 +48,7 @@ public class AccountService {
     private final PasswordEncoder passwordEncoder;
     private final GoogleAuthenticator googleAuthenticator;
     private final OtpCredentialsAdapter otpCredentialsAdapter;
+    private final BlacklistedJwtAdapter blacklistedJwtAdapter;
     private final EmailSender emailSender;
     private final SignatureUtils signatureUtils;
     private final AccountMapper accountMapper;
@@ -234,6 +238,15 @@ public class AccountService {
         } else {
             throw new AccountNotFoundException();
         }
+    }
+
+    public void addJwtToBlacklist(String jwt, long expiration) throws ApplicationBaseException {
+        blacklistedJwtAdapter.addBlacklistedJwt(
+                BlacklistedJwt.builder()
+                        .token(jwt)
+                        .expiration(LocalDateTime.ofInstant(Instant.ofEpochMilli(expiration), ZoneId.systemDefault()))
+                        .build()
+        );
     }
 
     private List<String> getUserFrontendRoles(Account account) {

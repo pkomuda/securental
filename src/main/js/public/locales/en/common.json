@@ -6,6 +6,8 @@
   "navigation.edit": "Edit",
   "navigation.details": "Details",
   "navigation.search": "Search",
+  "navigation.notFound": "Page not found",
+  "navigation.noAccess": "You have no access to this page",
 
   "navbar.login": "Sign in",
   "navbar.register": "Register",

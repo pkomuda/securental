@@ -40,12 +40,14 @@ public class AuthenticationControllerImpl implements AuthenticationController {
 
     @Override
     @GetMapping("/initializeLogin/{username}")
+    @PreAuthorize("permitAll()")
     public List<Integer> initializeLogin(@PathVariable String username) throws ApplicationBaseException {
         return accountService.initializeLogin(username);
     }
 
     @Override
     @PostMapping("/login")
+    @PreAuthorize("permitAll()")
     public AuthenticationResponse login(@RequestBody AuthenticationRequest authRequest,
                                         HttpServletResponse response) throws ApplicationBaseException {
         UserDetails userDetails;
@@ -65,7 +67,7 @@ public class AuthenticationControllerImpl implements AuthenticationController {
         }
 
         String jwt = JwtUtils.generateToken(userDetails);
-        Cookie cookie = new Cookie("jwt", jwt);
+        Cookie cookie = new Cookie("Authentication", jwt);
         cookie.setHttpOnly(true);
         cookie.setMaxAge(60 * ApplicationProperties.JWT_EXPIRATION_TIME);
         response.addCookie(cookie);
@@ -83,17 +85,13 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     }
 
     @Override
-    public void logout() {
-        throw new UnsupportedOperationException();
-    }
-
     @GetMapping("/currentUser")
     @PreAuthorize("hasAuthority('currentUser')")
     public AuthenticationResponse currentUser(HttpServletRequest request) throws ApplicationBaseException {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             Optional<Cookie> cookieOptional = Arrays.stream(cookies)
-                    .filter(cookie -> cookie.getName().equals("jwt"))
+                    .filter(cookie -> cookie.getName().equals("Authentication"))
                     .findFirst();
             if (cookieOptional.isPresent()) {
                 Cookie cookie = cookieOptional.get();
@@ -105,6 +103,29 @@ public class AuthenticationControllerImpl implements AuthenticationController {
             }
         } else {
             return new AuthenticationResponse().unauthenticated();
+        }
+    }
+
+    @Override
+    @PostMapping("/logout")
+    @PreAuthorize("hasAuthority('logout')")
+    public void logout(HttpServletRequest request, HttpServletResponse response) throws ApplicationBaseException {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            Optional<Cookie> cookieOptional = Arrays.stream(cookies)
+                    .filter(cookie -> cookie.getName().equals("Authentication"))
+                    .findFirst();
+            if (cookieOptional.isPresent()) {
+                Cookie cookie = cookieOptional.get();
+                Cookie empty = new Cookie("Authentication", "");
+                empty.setHttpOnly(true);
+                empty.setMaxAge(0);
+                response.addCookie(empty);
+                if (ApplicationProperties.isProduction()) {
+                    response.setHeader("Set-Cookie", response.getHeader("Set-Cookie") + "; SameSite=Strict; Secure");
+                }
+                accountService.addJwtToBlacklist(cookie.getValue(), JwtUtils.extractExpiration(cookie.getValue()).getTime());
+            }
         }
     }
 

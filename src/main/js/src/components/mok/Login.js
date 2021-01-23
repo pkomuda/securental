@@ -46,7 +46,7 @@ export const Login = props => {
     const handleClearCharacters = () => {
         const tempAuthRequest = {...authRequest};
         const tempCharacters = [];
-        for (let i = 0; i < tempAuthRequest.combination; i++) {
+        for (let i = 0; i < tempAuthRequest.combination.length; i++) {
             tempCharacters.push("");
         }
         tempAuthRequest.characters = tempCharacters;
