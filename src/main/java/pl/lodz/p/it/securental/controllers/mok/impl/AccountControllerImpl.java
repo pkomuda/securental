@@ -1,6 +1,8 @@
 package pl.lodz.p.it.securental.controllers.mok.impl;
 
 import lombok.AllArgsConstructor;
+import org.infinispan.Cache;
+import org.infinispan.CacheSet;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -13,12 +15,15 @@ import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.services.mok.AccountService;
 import pl.lodz.p.it.securental.utils.PagingHelper;
 
+import java.util.List;
+
 @RestController
 @AllArgsConstructor
 @NeverTransaction
 public class AccountControllerImpl implements AccountController {
 
     private final AccountService accountService;
+    private final Cache<String, String> logCache;
 
     @Override
     @PostMapping("/account")
@@ -109,6 +114,12 @@ public class AccountControllerImpl implements AccountController {
                                                  @PathVariable String property,
                                                  @PathVariable String order) throws ApplicationBaseException {
         return accountService.filterAccounts(filter, new PagingHelper(page, size, resolvePropertyName(property), order));
+    }
+
+    @GetMapping("/logs")
+    @PreAuthorize("permitAll()")
+    public CacheSet<String> getAllLogs() {
+        return logCache.keySet();
     }
 
     private String resolvePropertyName(String property) {

@@ -10,8 +10,6 @@ import pl.lodz.p.it.securental.exceptions.db.DatabaseConnectionException;
 import pl.lodz.p.it.securental.repositories.mok.BlacklistedJwtRepository;
 
 import javax.persistence.PersistenceException;
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,14 +30,6 @@ public class BlacklistedJwtAdapter {
     public Optional<BlacklistedJwt> getBlacklistedJwt(String token) throws ApplicationBaseException {
         try {
             return blacklistedJwtRepository.findByToken(token);
-        } catch (PersistenceException | DataAccessException e) {
-            throw new DatabaseConnectionException(e);
-        }
-    }
-
-    public List<BlacklistedJwt> getExpiredBlacklistedJwts(LocalDateTime expiration) throws ApplicationBaseException {
-        try {
-            return blacklistedJwtRepository.findAllByExpirationAfter(expiration);
         } catch (PersistenceException | DataAccessException e) {
             throw new DatabaseConnectionException(e);
         }

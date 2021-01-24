@@ -22,7 +22,7 @@
 		<zxing.version>3.4.1</zxing.version>
 		<frontend-maven-plugin.version>1.11.0</frontend-maven-plugin.version>
 		<node.version>v12.20.1</node.version>
-		<react.app.api>${react.app.api}</react.app.api>
+<!--		<react.app.api>${react.app.api}</react.app.api>-->
 	</properties>
 
 	<dependencies>
@@ -64,6 +64,7 @@
 		<dependency>
 			<groupId>org.infinispan</groupId>
 			<artifactId>infinispan-core</artifactId>
+<!--			<version>11.0.9.Final</version>-->
 		</dependency>
 
 		<dependency>
@@ -168,9 +169,9 @@
 						</goals>
 						<configuration>
 							<arguments>run build</arguments>
-							<environmentVariables>
-								<REACT_APP_API>${react.app.api}</REACT_APP_API>
-							</environmentVariables>
+<!--							<environmentVariables>-->
+<!--								<REACT_APP_API>${react.app.api}</REACT_APP_API>-->
+<!--							</environmentVariables>-->
 						</configuration>
 					</execution>
 				</executions>

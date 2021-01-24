@@ -6,7 +6,6 @@ import pl.lodz.p.it.securental.annotations.MandatoryTransaction;
 import pl.lodz.p.it.securental.entities.mok.BlacklistedJwt;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -14,5 +13,5 @@ import java.util.Optional;
 public interface BlacklistedJwtRepository extends JpaRepository<BlacklistedJwt, Long> {
 
     Optional<BlacklistedJwt> findByToken(String token);
-    List<BlacklistedJwt> findAllByExpirationAfter(LocalDateTime expiration);
+    void deleteAllByExpirationBefore(LocalDateTime expiration);
 }
