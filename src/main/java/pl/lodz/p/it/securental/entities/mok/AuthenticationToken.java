@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import pl.lodz.p.it.securental.entities.BaseEntity;
+import pl.lodz.p.it.securental.entities.BaseAuditEntity;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public @Data class AuthenticationToken extends BaseEntity {
+public @Data class AuthenticationToken extends BaseAuditEntity {
 
     @ElementCollection
     private List<Integer> combination = new ArrayList<>();

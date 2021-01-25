@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import pl.lodz.p.it.securental.entities.BaseEntity;
+import pl.lodz.p.it.securental.entities.BaseAuditEntity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -16,7 +16,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @DiscriminatorColumn(discriminatorType = DiscriminatorType.STRING, name="name")
-public @Data class AccessLevel extends BaseEntity {
+public @Data class AccessLevel extends BaseAuditEntity {
 
     @NotNull
     @Size(min = 1, max = 32)

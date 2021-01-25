@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.adapters.mop.CarAdapter;
-import pl.lodz.p.it.securental.annotations.RequiresNewTransaction;
+import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.dto.mappers.mop.CarMapper;
 import pl.lodz.p.it.securental.dto.mop.CarDto;
 import pl.lodz.p.it.securental.entities.mop.Car;

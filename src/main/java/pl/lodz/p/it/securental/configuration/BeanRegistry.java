@@ -15,12 +15,12 @@ import pl.lodz.p.it.securental.utils.ApplicationProperties;
 
 @Configuration
 @AllArgsConstructor
+@DependsOn(ApplicationProperties.APPLICATION_PROPERTIES_BEAN)
 public class BeanRegistry {
 
     private final OtpCredentialsAdapter otpCredentialsAdapter;
 
     @Bean
-    @DependsOn(ApplicationProperties.APPLICATION_PROPERTIES_BEAN)
     public PasswordEncoder passwordEncoderBean() {
         return new MessageDigestPasswordEncoder(ApplicationProperties.PASSWORD_HASHING_ALGORITHM);
     }

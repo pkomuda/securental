@@ -3,7 +3,10 @@ package pl.lodz.p.it.securental.entities;
 import lombok.Data;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -15,8 +18,4 @@ public abstract @Data class BaseEntity implements Serializable {
     @NotNull
     @Setter(lombok.AccessLevel.NONE)
     private Long id;
-
-    @Version
-    @Setter(lombok.AccessLevel.NONE)
-    private Long version;
 }

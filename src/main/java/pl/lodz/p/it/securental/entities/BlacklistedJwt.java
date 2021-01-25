@@ -1,7 +1,6 @@
-package pl.lodz.p.it.securental.entities.mok;
+package pl.lodz.p.it.securental.entities;
 
 import lombok.*;
-import pl.lodz.p.it.securental.entities.BaseEntity;
 
 import javax.persistence.Entity;
 import java.time.LocalDateTime;

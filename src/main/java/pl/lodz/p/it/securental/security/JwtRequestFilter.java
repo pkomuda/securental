@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import pl.lodz.p.it.securental.annotations.RequiresNewTransaction;
+import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.utils.JwtUtils;
 
 import javax.servlet.FilterChain;
@@ -24,7 +24,7 @@ import java.util.Optional;
 @RequiresNewTransaction
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    private final CustomUserDetailsService userDetailsService;
+    private final UserDetailsServiceImpl userDetailsService;
     private final JwtUtils jwtUtils;
 
     @Override

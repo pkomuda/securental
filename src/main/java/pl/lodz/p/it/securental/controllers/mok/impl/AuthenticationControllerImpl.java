@@ -7,14 +7,14 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import pl.lodz.p.it.securental.annotations.NeverTransaction;
+import pl.lodz.p.it.securental.aop.annotations.NeverTransaction;
 import pl.lodz.p.it.securental.controllers.mok.AuthenticationController;
 import pl.lodz.p.it.securental.dto.mok.AuthenticationRequest;
 import pl.lodz.p.it.securental.dto.mok.AuthenticationResponse;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.mok.IncorrectCredentialsException;
-import pl.lodz.p.it.securental.security.CustomAuthenticationToken;
-import pl.lodz.p.it.securental.security.CustomUserDetailsService;
+import pl.lodz.p.it.securental.security.AuthenticationTokenImpl;
+import pl.lodz.p.it.securental.security.UserDetailsServiceImpl;
 import pl.lodz.p.it.securental.services.mok.AccountService;
 import pl.lodz.p.it.securental.utils.ApplicationProperties;
 import pl.lodz.p.it.securental.utils.JwtUtils;
@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 public class AuthenticationControllerImpl implements AuthenticationController {
 
     private final AuthenticationManager authManager;
-    private final CustomUserDetailsService userDetailsService;
+    private final UserDetailsServiceImpl userDetailsService;
     private final AccountService accountService;
 
     @Override
@@ -52,7 +52,7 @@ public class AuthenticationControllerImpl implements AuthenticationController {
                                         HttpServletResponse response) throws ApplicationBaseException {
         UserDetails userDetails;
         try {
-            authManager.authenticate(new CustomAuthenticationToken(
+            authManager.authenticate(new AuthenticationTokenImpl(
                     authRequest.getUsername(),
                     StringUtils.integerArrayToString(authRequest.getCombination()),
                     authRequest.getOtpCode(),

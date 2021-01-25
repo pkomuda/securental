@@ -1,4 +1,4 @@
-package pl.lodz.p.it.securental.annotations;
+package pl.lodz.p.it.securental.aop.annotations;
 
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.data.mapping.PropertyReferenceException;
@@ -16,10 +16,10 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Transactional
-public @interface MandatoryTransaction {
+public @interface RequiresNewTransaction {
 
     @AliasFor(annotation = Transactional.class, attribute = "propagation")
-    Propagation propagation() default Propagation.MANDATORY;
+    Propagation propagation() default Propagation.REQUIRES_NEW;
 
     @AliasFor(annotation = Transactional.class, attribute = "isolation")
     Isolation isolation() default Isolation.READ_COMMITTED;

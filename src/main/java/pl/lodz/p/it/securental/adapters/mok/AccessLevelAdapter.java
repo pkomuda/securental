@@ -3,7 +3,7 @@ package pl.lodz.p.it.securental.adapters.mok;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
-import pl.lodz.p.it.securental.annotations.MandatoryTransaction;
+import pl.lodz.p.it.securental.aop.annotations.MandatoryTransaction;
 import pl.lodz.p.it.securental.entities.mok.AccessLevel;
 import pl.lodz.p.it.securental.entities.mok.Admin;
 import pl.lodz.p.it.securental.entities.mok.Client;

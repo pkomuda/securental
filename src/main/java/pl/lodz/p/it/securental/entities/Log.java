@@ -1,22 +1,19 @@
 package pl.lodz.p.it.securental.entities;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 
 @Entity
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public @Data class Log {
+@EqualsAndHashCode(callSuper = true)
+public @Data class Log extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @NotNull
-    @Setter(lombok.AccessLevel.NONE)
-    private Long id;
-
-    @Lob
+    @Column(length = 1024)
     private String message;
 }

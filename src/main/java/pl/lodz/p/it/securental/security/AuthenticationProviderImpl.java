@@ -14,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import pl.lodz.p.it.securental.adapters.mok.AccountAdapter;
-import pl.lodz.p.it.securental.annotations.RequiresNewTransaction;
+import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.entities.mok.Account;
 import pl.lodz.p.it.securental.utils.ApplicationProperties;
 
@@ -23,12 +23,12 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 @RequiresNewTransaction
-public class CustomAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
+public class AuthenticationProviderImpl extends AbstractUserDetailsAuthenticationProvider {
 
     private static final String USER_NOT_FOUND_PASSWORD = "userNotFoundPassword";
 
     private final PasswordEncoder passwordEncoder;
-    private final CustomUserDetailsService userDetailsService;
+    private final UserDetailsServiceImpl userDetailsService;
     private final GoogleAuthenticator googleAuthenticator;
     private final AccountAdapter accountAdapter;
 
@@ -38,7 +38,7 @@ public class CustomAuthenticationProvider extends AbstractUserDetailsAuthenticat
     @SneakyThrows
     protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication)
             throws AuthenticationException {
-        CustomAuthenticationToken auth = (CustomAuthenticationToken) authentication;
+        AuthenticationTokenImpl auth = (AuthenticationTokenImpl) authentication;
         String principal = auth.getPrincipal().toString();
 
         if (authentication.getCredentials() == null) {
@@ -90,7 +90,7 @@ public class CustomAuthenticationProvider extends AbstractUserDetailsAuthenticat
     @Override
     protected UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken authentication)
             throws AuthenticationException {
-        CustomAuthenticationToken auth = (CustomAuthenticationToken) authentication;
+        AuthenticationTokenImpl auth = (AuthenticationTokenImpl) authentication;
         UserDetails loadedUser;
 
         try {

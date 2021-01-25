@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import pl.lodz.p.it.securental.annotations.NeverTransaction;
+import pl.lodz.p.it.securental.aop.annotations.NeverTransaction;
 import pl.lodz.p.it.securental.controllers.mor.ReservationController;
 import pl.lodz.p.it.securental.dto.mor.ReservationDto;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;

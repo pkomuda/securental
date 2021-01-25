@@ -1,4 +1,4 @@
-package pl.lodz.p.it.securental.annotations;
+package pl.lodz.p.it.securental.aop.annotations;
 
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.transaction.annotation.Propagation;

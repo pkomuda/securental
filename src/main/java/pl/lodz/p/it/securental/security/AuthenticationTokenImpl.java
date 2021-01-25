@@ -4,12 +4,12 @@ import lombok.Getter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 @Getter
-public class CustomAuthenticationToken extends UsernamePasswordAuthenticationToken {
+public class AuthenticationTokenImpl extends UsernamePasswordAuthenticationToken {
 
     private final String combination;
     private final Integer otpCode;
 
-    public CustomAuthenticationToken(Object principal, String combination, Integer otpCode, Object credentials) {
+    public AuthenticationTokenImpl(Object principal, String combination, Integer otpCode, Object credentials) {
         super(principal, credentials);
         this.combination = combination;
         this.otpCode = otpCode;

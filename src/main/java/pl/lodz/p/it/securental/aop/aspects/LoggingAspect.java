@@ -1,15 +1,16 @@
-package pl.lodz.p.it.securental.annotations;
+package pl.lodz.p.it.securental.aop.aspects;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.infinispan.Cache;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.utils.ApplicationProperties;
 
 import java.time.LocalDateTime;
@@ -17,15 +18,11 @@ import java.time.LocalDateTime;
 @Slf4j
 @Aspect
 @Component
+@AllArgsConstructor
 @RequiresNewTransaction
 public class LoggingAspect {
 
     private final Cache<String, String> logCache;
-
-    @Autowired
-    public LoggingAspect(Cache<String, String> logCache) {
-        this.logCache = logCache;
-    }
 
     @Around("execution(public * pl.lodz.p.it.securental.controllers.mo*..*.*(..)) " +
             "|| execution(public * pl.lodz.p.it.securental.services.mo*..*.*(..)) " +

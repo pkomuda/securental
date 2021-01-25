@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.lodz.p.it.securental.annotations.RequiresNewTransaction;
+import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.entities.mok.AccessLevel;
 import pl.lodz.p.it.securental.entities.mok.Account;
 import pl.lodz.p.it.securental.entities.mok.MaskedPassword;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 @RequiresNewTransaction
-public class CustomUserDetailsService {
+public class UserDetailsServiceImpl {
 
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
@@ -41,7 +41,7 @@ public class CustomUserDetailsService {
                     List<Integer> combinationList = account.getAuthenticationToken().getCombination();
                     String combinationString = combination;
 //                    if (integerArrayToString(account.getAuthenticationToken().getCombination().stream().mapToInt(i -> i).toArray()).equals(combination)) {
-                        return new CustomUserDetails(
+                        return new UserDetailsImpl(
                                 username,
                                 combination,
                                 maskedPassword.getHash(),
@@ -63,7 +63,7 @@ public class CustomUserDetailsService {
             throw new UsernameNotFoundException(AccountNotFoundException.KEY_ACCOUNT_NOT_FOUND);
         } else {
             Account account = accountOptional.get();
-            return new CustomUserDetails(
+            return new UserDetailsImpl(
                     username,
                     null,
                     "",

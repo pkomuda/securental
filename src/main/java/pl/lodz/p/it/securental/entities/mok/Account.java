@@ -1,7 +1,7 @@
 package pl.lodz.p.it.securental.entities.mok;
 
 import lombok.*;
-import pl.lodz.p.it.securental.entities.BaseEntity;
+import pl.lodz.p.it.securental.entities.BaseAuditEntity;
 import pl.lodz.p.it.securental.utils.ApplicationProperties;
 
 import javax.persistence.*;
@@ -17,7 +17,7 @@ import java.util.Objects;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public @Data class Account extends BaseEntity {
+public @Data class Account extends BaseAuditEntity {
 
     @Pattern(regexp = ApplicationProperties.EMAIL_REGEX)
     @NotNull

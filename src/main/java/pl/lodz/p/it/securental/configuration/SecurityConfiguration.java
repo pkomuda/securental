@@ -2,7 +2,6 @@ package pl.lodz.p.it.securental.configuration;
 
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,21 +18,20 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import pl.lodz.p.it.securental.adapters.mok.AccountAdapter;
-import pl.lodz.p.it.securental.security.CustomAuthenticationProvider;
-import pl.lodz.p.it.securental.security.CustomUserDetailsService;
+import pl.lodz.p.it.securental.security.AuthenticationProviderImpl;
 import pl.lodz.p.it.securental.security.JwtRequestFilter;
+import pl.lodz.p.it.securental.security.UserDetailsServiceImpl;
 import pl.lodz.p.it.securental.utils.ApplicationProperties;
 
 import java.util.Collections;
 
-@Slf4j
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @AllArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final CustomUserDetailsService userDetailsService;
+    private final UserDetailsServiceImpl userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final JwtRequestFilter jwtRequestFilter;
     private final GoogleAuthenticator googleAuthenticator;
@@ -41,7 +39,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(new CustomAuthenticationProvider(passwordEncoder, userDetailsService, googleAuthenticator, accountAdapter));
+        auth.authenticationProvider(new AuthenticationProviderImpl(passwordEncoder, userDetailsService, googleAuthenticator, accountAdapter));
     }
 
     @Override

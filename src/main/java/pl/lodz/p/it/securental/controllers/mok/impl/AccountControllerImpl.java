@@ -6,7 +6,7 @@ import org.infinispan.CacheSet;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import pl.lodz.p.it.securental.annotations.NeverTransaction;
+import pl.lodz.p.it.securental.aop.annotations.NeverTransaction;
 import pl.lodz.p.it.securental.controllers.mok.AccountController;
 import pl.lodz.p.it.securental.dto.mok.AccountDto;
 import pl.lodz.p.it.securental.dto.mok.ConfirmAccountRequest;
@@ -14,8 +14,6 @@ import pl.lodz.p.it.securental.dto.mok.RegistrationResponse;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.services.mok.AccountService;
 import pl.lodz.p.it.securental.utils.PagingHelper;
-
-import java.util.List;
 
 @RestController
 @AllArgsConstructor

@@ -6,9 +6,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import pl.lodz.p.it.securental.adapters.mok.BlacklistedJwtAdapter;
-import pl.lodz.p.it.securental.annotations.MandatoryTransaction;
-import pl.lodz.p.it.securental.annotations.RequiresNewTransaction;
+import pl.lodz.p.it.securental.adapters.BlacklistedJwtAdapter;
+import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 
 import java.util.Date;

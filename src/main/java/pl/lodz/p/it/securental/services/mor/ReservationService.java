@@ -7,7 +7,7 @@ import pl.lodz.p.it.securental.adapters.mok.AccessLevelAdapter;
 import pl.lodz.p.it.securental.adapters.mop.CarAdapter;
 import pl.lodz.p.it.securental.adapters.mor.ReservationAdapter;
 import pl.lodz.p.it.securental.adapters.mor.StatusAdapter;
-import pl.lodz.p.it.securental.annotations.RequiresNewTransaction;
+import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.dto.mappers.mor.ReservationMapper;
 import pl.lodz.p.it.securental.dto.mor.ReservationDto;
 import pl.lodz.p.it.securental.entities.mok.Client;
