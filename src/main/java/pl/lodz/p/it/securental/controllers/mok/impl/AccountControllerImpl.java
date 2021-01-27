@@ -1,8 +1,6 @@
 package pl.lodz.p.it.securental.controllers.mok.impl;
 
 import lombok.AllArgsConstructor;
-import org.infinispan.Cache;
-import org.infinispan.CacheSet;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -21,13 +19,12 @@ import pl.lodz.p.it.securental.utils.PagingHelper;
 public class AccountControllerImpl implements AccountController {
 
     private final AccountService accountService;
-    private final Cache<String, String> logCache;
 
     @Override
     @PostMapping("/account")
     @PreAuthorize("hasAuthority('addAccount')")
     public RegistrationResponse addAccount(@RequestBody AccountDto accountDto,
-                           @RequestHeader("Accept-Language") String language) throws ApplicationBaseException {
+                                           @RequestHeader("Accept-Language") String language) throws ApplicationBaseException {
         return accountService.addAccount(accountDto, language);
     }
 
@@ -37,6 +34,13 @@ public class AccountControllerImpl implements AccountController {
     public RegistrationResponse register(@RequestBody AccountDto accountDto,
                                          @RequestHeader("Accept-Language") String language) throws ApplicationBaseException {
         return accountService.register(accountDto, language);
+    }
+
+    @Override
+    @GetMapping("/qrCode/{username}")
+    @PreAuthorize("hasAuthority('regenerateOwnQrCode') and #username == authentication.principal.username")
+    public RegistrationResponse regenerateOwnQrCode(@PathVariable String username) throws ApplicationBaseException {
+        return accountService.regenerateOwnQrCode(username);
     }
 
     @Override
@@ -112,12 +116,6 @@ public class AccountControllerImpl implements AccountController {
                                                  @PathVariable String property,
                                                  @PathVariable String order) throws ApplicationBaseException {
         return accountService.filterAccounts(filter, new PagingHelper(page, size, resolvePropertyName(property), order));
-    }
-
-    @GetMapping("/logs")
-    @PreAuthorize("permitAll()")
-    public CacheSet<String> getAllLogs() {
-        return logCache.keySet();
     }
 
     private String resolvePropertyName(String property) {

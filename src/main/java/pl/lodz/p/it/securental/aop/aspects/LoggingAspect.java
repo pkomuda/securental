@@ -30,7 +30,7 @@ public class LoggingAspect {
             "|| execution(public * pl.lodz.p.it.securental.repositories.mo*..*.*(..))")
     public Object logInvocation(ProceedingJoinPoint jp) throws Throwable {
         LocalDateTime interceptionTime = LocalDateTime.now();
-        StringBuilder message = new StringBuilder("Intercepted method invocation: ");
+        StringBuilder message = new StringBuilder("Intercepted business method invocation: ");
         message.append(jp.getSignature().getDeclaringTypeName().substring(jp.getSignature().getDeclaringTypeName().lastIndexOf(".") + 1))
                 .append("::")
                 .append(jp.getSignature().getName());

@@ -17,12 +17,16 @@ public @Data class AuthenticationResponse {
     private List<String> accessLevels;
     private String currentAccessLevel;
     private long tokenExpiration;
+    private String lastSuccessfulAuthentication;
+    private String lastFailedAuthentication;
 
     public AuthenticationResponse unauthenticated() {
         username = "";
         accessLevels = Collections.emptyList();
         currentAccessLevel = "";
         tokenExpiration = 0;
+        lastSuccessfulAuthentication = "";
+        lastFailedAuthentication = "";
         return this;
     }
 }

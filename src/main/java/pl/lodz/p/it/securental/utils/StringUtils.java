@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -100,5 +101,9 @@ public final class StringUtils {
 
     public static String bigDecimalToString(BigDecimal amount) {
         return amount.setScale(2, RoundingMode.HALF_UP).toString();
+    }
+
+    public static String localDateTimeToString(LocalDateTime localDateTime) {
+        return localDateTime != null ? localDateTime.toString() : "";
     }
 }

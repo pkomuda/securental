@@ -50,7 +50,6 @@ public class AuthenticationControllerImpl implements AuthenticationController {
     @PreAuthorize("permitAll()")
     public AuthenticationResponse login(@RequestBody AuthenticationRequest authRequest,
                                         HttpServletResponse response) throws ApplicationBaseException {
-        UserDetails userDetails;
         try {
             authManager.authenticate(new AuthenticationTokenImpl(
                     authRequest.getUsername(),
@@ -58,30 +57,35 @@ public class AuthenticationControllerImpl implements AuthenticationController {
                     authRequest.getOtpCode(),
                     authRequest.getCharacters())
             );
-            userDetails = userDetailsService.loadUserByUsernameAndCombination(
+            UserDetails userDetails = userDetailsService.loadUserByUsernameAndCombination(
                     authRequest.getUsername(),
                     StringUtils.integerArrayToString(authRequest.getCombination())
             );
-        } catch (AuthenticationException e) {
-            throw new IncorrectCredentialsException(e);
-        }
 
-        String jwt = JwtUtils.generateToken(userDetails);
-        Cookie cookie = new Cookie("Authentication", jwt);
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(60 * ApplicationProperties.JWT_EXPIRATION_TIME);
-        response.addCookie(cookie);
-        if (ApplicationProperties.isProduction()) {
-            response.setHeader("Set-Cookie", response.getHeader("Set-Cookie") + "; SameSite=Strict; Secure");
-        }
+            String jwt = JwtUtils.generateToken(userDetails);
+            Cookie cookie = new Cookie("Authentication", jwt);
+            cookie.setHttpOnly(true);
+            cookie.setMaxAge(60 * ApplicationProperties.JWT_EXPIRATION_TIME);
+            response.addCookie(cookie);
+            if (ApplicationProperties.isProduction()) {
+                response.setHeader("Set-Cookie", response.getHeader("Set-Cookie") + "; SameSite=Strict; Secure");
+            }
 
-        List<String> accessLevels = getAccessLevels(userDetails);
-        return AuthenticationResponse.builder()
-                .username(userDetails.getUsername())
-                .accessLevels(accessLevels)
-                .currentAccessLevel(getHighestAccessLevel(accessLevels))
-                .tokenExpiration(JwtUtils.extractExpiration(jwt).getTime())
-                .build();
+            List<String> accessLevels = getAccessLevels(userDetails);
+            return accountService.finalizeLogin(authRequest.getUsername(), true)
+                    .username(authRequest.getUsername())
+                    .accessLevels(accessLevels)
+                    .currentAccessLevel(getHighestAccessLevel(accessLevels))
+                    .tokenExpiration(JwtUtils.extractExpiration(jwt).getTime())
+                    .build();
+        } catch (AuthenticationException e1) {
+            try {
+                accountService.finalizeLogin(authRequest.getUsername(), false);
+            } catch (ApplicationBaseException e2) {
+                throw new IncorrectCredentialsException(e2);
+            }
+            throw new IncorrectCredentialsException(e1);
+        }
     }
 
     @Override

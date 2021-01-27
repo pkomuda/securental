@@ -12,17 +12,19 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.Assert;
 import pl.lodz.p.it.securental.adapters.mok.AccountAdapter;
-import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.entities.mok.Account;
+import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.utils.ApplicationProperties;
 
 import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-@RequiresNewTransaction
 public class AuthenticationProviderImpl extends AbstractUserDetailsAuthenticationProvider {
 
     private static final String USER_NOT_FOUND_PASSWORD = "userNotFoundPassword";
@@ -31,6 +33,7 @@ public class AuthenticationProviderImpl extends AbstractUserDetailsAuthenticatio
     private final UserDetailsServiceImpl userDetailsService;
     private final GoogleAuthenticator googleAuthenticator;
     private final AccountAdapter accountAdapter;
+    private final PlatformTransactionManager transactionManager;
 
     private String userNotFoundEncodedPassword;
 
@@ -47,26 +50,29 @@ public class AuthenticationProviderImpl extends AbstractUserDetailsAuthenticatio
                     messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
         }
 
-        /*
-        //TODO
-        dane inicjujace:
-        admin, secret jakis tam
-        pierwsze logowanie kodem na sztywno ADMIN_OTP_CODE
-        przejscie do szczegolow konta, generate qr code
-        kolejne logowania kodami z telefonu
-         */
         if (principal.equals(ApplicationProperties.ADMIN_PRINCIPAL)) {
-            Optional<Account> accountOptional = accountAdapter.getAccount(principal);
+            TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+            transactionTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+            Optional<Account> accountOptional = transactionTemplate.execute(transactionStatus -> {
+                try {
+                    return accountAdapter.getAccount(principal);
+                } catch (ApplicationBaseException e) {
+                    return Optional.empty();
+                }
+            });
             if (accountOptional.isPresent()) {
                 Account account = accountOptional.get();
-                if (account.getLastSuccessfulAuthentication() == null
-                        && !auth.getOtpCode().equals(ApplicationProperties.ADMIN_OTP_CODE)) {
-                    throw new BadCredentialsException(messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
+                if (account.getLastSuccessfulAuthentication() == null) {
+                    if (!auth.getOtpCode().equals(ApplicationProperties.ADMIN_OTP_CODE)) {
+                        throw new BadCredentialsException(
+                                messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
+                    }
+                } else if (!googleAuthenticator.authorizeUser(principal, auth.getOtpCode())) {
+                    throw new BadCredentialsException(
+                            messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
                 }
             }
-        }
-
-        if (!googleAuthenticator.authorizeUser(principal, auth.getOtpCode())) {
+        } else if (!googleAuthenticator.authorizeUser(principal, auth.getOtpCode())) {
             throw new BadCredentialsException(
                     messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
         }

@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -36,10 +37,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final JwtRequestFilter jwtRequestFilter;
     private final GoogleAuthenticator googleAuthenticator;
     private final AccountAdapter accountAdapter;
+    private final PlatformTransactionManager transactionManager;
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(new AuthenticationProviderImpl(passwordEncoder, userDetailsService, googleAuthenticator, accountAdapter));
+        auth.authenticationProvider(new AuthenticationProviderImpl(passwordEncoder, userDetailsService, googleAuthenticator, accountAdapter, transactionManager));
     }
 
     @Override

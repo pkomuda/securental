@@ -20,7 +20,7 @@ export const handleError = e => {
 export const handleInfo = (title, text) => {
     Swal.fire({
         titleText: i18n.t(title),
-        text: i18n.t(text),
+        text: text,
         icon: "info"
     }).then(() => {});
 };
@@ -28,7 +28,7 @@ export const handleInfo = (title, text) => {
 export const handleSuccess = (title, text) => {
     Swal.fire({
         titleText: i18n.t(title),
-        text: i18n.t(text),
+        text: text,
         icon: "success"
     }).then(() => {});
 };

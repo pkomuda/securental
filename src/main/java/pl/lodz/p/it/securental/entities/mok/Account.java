@@ -47,6 +47,10 @@ public @Data class Account extends BaseAuditEntity {
     @Column(nullable = false)
     private boolean confirmed;
 
+    private int loginInitializationCounter;
+
+    private int failedAuthenticationCounter;
+
     private String confirmationToken;
 
     private LocalDateTime lastSuccessfulAuthentication;

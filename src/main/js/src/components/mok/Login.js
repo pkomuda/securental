@@ -3,8 +3,9 @@ import React, { useContext, useState } from "react";
 import { Button, ButtonToolbar, Col, Form, FormControl, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { object, string } from "yup";
-import { handleError } from "../../utils/Alerts";
+import { handleError, handleSuccess } from "../../utils/Alerts";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
+import { humanDate } from "../../utils/DateTime";
 import { EditFormGroup } from "../common/EditFormGroup";
 
 export const Login = props => {
@@ -43,6 +44,34 @@ export const Login = props => {
         }
     };
 
+    const handleBackspace = event => {
+        if (event.keyCode === 8) {
+            const currentIndex = parseInt(event.target.id.slice(-1));
+            const tempAuthRequest = {...authRequest};
+            const tempCharacters = tempAuthRequest.characters;
+            if (currentIndex === tempAuthRequest.combination.length - 1) {
+                if (!!tempCharacters[currentIndex]) {
+                    tempCharacters[currentIndex] = "";
+                    tempAuthRequest.characters = tempCharacters;
+                    setAuthRequest(tempAuthRequest);
+                    document.getElementById(event.target.id.slice(0, -1) + (currentIndex)).focus();
+                } else {
+                    tempCharacters[currentIndex - 1] = "";
+                    tempAuthRequest.characters = tempCharacters;
+                    setAuthRequest(tempAuthRequest);
+                    document.getElementById(event.target.id.slice(0, -1) + (currentIndex - 1)).focus();
+                }
+            } else {
+                tempCharacters[currentIndex - 1] = "";
+                tempAuthRequest.characters = tempCharacters;
+                setAuthRequest(tempAuthRequest);
+                if (currentIndex !== 0) {
+                    document.getElementById(event.target.id.slice(0, -1) + (currentIndex - 1)).focus();
+                }
+            }
+        }
+    };
+
     const handleClearCharacters = () => {
         const tempAuthRequest = {...authRequest};
         const tempCharacters = [];
@@ -65,8 +94,8 @@ export const Login = props => {
                 tempAuthRequest.characters = tempCharacters;
                 setAuthRequest(tempAuthRequest);
                 setStage(2);
-            }).catch(err => {
-                handleError(err);
+            }).catch(error => {
+                handleError(error);
         });
     };
 
@@ -90,9 +119,12 @@ export const Login = props => {
         axios.post("/login", tempAuthRequest)
             .then(response => {
                 setUserInfo(response.data);
+                const text = t("login.last.success") + humanDate(response.data.lastSuccessfulAuthentication)
+                    + "\n" + t("login.last.failure") + humanDate(response.data.lastFailedAuthentication);
+                handleSuccess("navigation.success", text);
                 props.history.push("/");
-            }).catch(err => {
-                handleError(err);
+            }).catch(error => {
+                handleError(error);
         });
     };
 
@@ -141,7 +173,7 @@ export const Login = props => {
                     boxes.push(
                         <div key={i} style={{display: "inline-block", position: "relative", marginBottom: "1em"}}>
                             <FormControl style={{width: "2em", marginRight: "1em"}} id={"enabled" + currentIndex} value={authRequest.characters[currentIndex]}
-                                         onChange={handleChangeCharacters} maxLength="1" type="password"/>
+                                         onChange={handleChangeCharacters} onKeyDown={handleBackspace} maxLength="1" type="password"/>
                             <span style={blockMargin(i)}>{i + 1}</span>
                         </div>
                     );
@@ -185,6 +217,7 @@ export const Login = props => {
                     <Form style={{marginTop: "2em"}}>
                         <EditFormGroup id="otpCode"
                                        label="login.otp.code"
+                                       type="password"
                                        required/>
                     </Form>
                     <ButtonToolbar className="justify-content-center">

@@ -10,6 +10,7 @@ public interface AccountController {
 
     RegistrationResponse addAccount(AccountDto accountDto, String language) throws ApplicationBaseException;
     RegistrationResponse register(AccountDto accountDto, String language) throws ApplicationBaseException;
+    RegistrationResponse regenerateOwnQrCode(String username) throws ApplicationBaseException;
     void confirmAccount(ConfirmAccountRequest confirmAccountRequest) throws ApplicationBaseException;
     AccountDto getAccount(String username) throws ApplicationBaseException;
     AccountDto getOwnAccount(String username) throws ApplicationBaseException;

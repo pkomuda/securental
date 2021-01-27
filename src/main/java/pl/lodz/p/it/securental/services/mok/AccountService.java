@@ -6,6 +6,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.warrenstrange.googleauth.GoogleAuthenticator;
+import com.warrenstrange.googleauth.GoogleAuthenticatorConfig;
 import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 import com.warrenstrange.googleauth.GoogleAuthenticatorQRGenerator;
 import lombok.AllArgsConstructor;
@@ -121,6 +122,17 @@ public class AccountService {
                 .build();
     }
 
+    public RegistrationResponse regenerateOwnQrCode(String username) throws ApplicationBaseException {
+        GoogleAuthenticatorKey key = new GoogleAuthenticatorKey.Builder(otpCredentialsAdapter.getSecretKey(username))
+                .setConfig(new GoogleAuthenticatorConfig())
+                .setVerificationCode(0)
+                .setScratchCodes(Collections.emptyList())
+                .build();
+        return RegistrationResponse.builder()
+                .qrCode(generateQrCode(username, key))
+                .build();
+    }
+
     private String generateLastPasswordCharacters() {
         StringBuilder characters = new StringBuilder();
         for (int i = 0; i < ApplicationProperties.LAST_PASSWORD_CHARACTERS_LENGTH; i++) {
@@ -164,9 +176,12 @@ public class AccountService {
         Optional<Account> accountOptional = accountAdapter.getAccount(username);
         if (accountOptional.isPresent()) {
             Account account = accountOptional.get();
+            account.setLoginInitializationCounter(account.getLoginInitializationCounter() + 1);
             AuthenticationToken authenticationToken = account.getAuthenticationToken();
             authenticationToken.setCombination(randomCombination);
             authenticationToken.setExpiration(LocalDateTime.now().plusMinutes(ApplicationProperties.AUTHENTICATION_TOKEN_EXPIRATION));
+        } else {
+            accountAdapter.getAccount(ApplicationProperties.ADMIN_PRINCIPAL);
         }
         return randomCombination;
     }
@@ -224,6 +239,26 @@ public class AccountService {
             }
         } else {
             throw new UsernameNotMatchingException();
+        }
+    }
+
+    public AuthenticationResponse.AuthenticationResponseBuilder finalizeLogin(String username, boolean successful) throws ApplicationBaseException {
+        Optional<Account> accountOptional = accountAdapter.getAccount(username);
+        if (accountOptional.isPresent()) {
+            Account account = accountOptional.get();
+            if (successful) {
+                account.setLastSuccessfulAuthentication(LocalDateTime.now());
+                account.setFailedAuthenticationCounter(0);
+                account.setLoginInitializationCounter(0);
+            } else {
+                account.setLastFailedAuthentication(LocalDateTime.now());
+                account.setFailedAuthenticationCounter(account.getFailedAuthenticationCounter() + 1);
+            }
+            return AuthenticationResponse.builder()
+                    .lastSuccessfulAuthentication(StringUtils.localDateTimeToString(account.getLastSuccessfulAuthentication()))
+                    .lastFailedAuthentication(StringUtils.localDateTimeToString(account.getLastFailedAuthentication()));
+        } else {
+            throw new AccountNotFoundException();
         }
     }
 

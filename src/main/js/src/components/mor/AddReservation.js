@@ -99,8 +99,8 @@ export const AddReservation = props => {
                 .then(() => {
                     handleSuccess("addReservation.success", "");
                     props.history.push(`/carDetails/${car.number}`);
-                }).catch(err => {
-                    handleError(err);
+                }).catch(error => {
+                    handleError(error);
             });
         }
     };

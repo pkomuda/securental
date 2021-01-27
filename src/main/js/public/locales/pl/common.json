@@ -8,11 +8,15 @@
   "navigation.search": "Szukaj",
   "navigation.notFound": "Nie znaleziono strony",
   "navigation.noAccess": "Nie masz dostępu do tej strony",
+  "navigation.success": "Sukces",
 
   "navbar.login": "Zaloguj się",
   "navbar.register": "Zarejestruj",
   "navbar.logout": "Wyloguj się",
   "navbar.cars": "Samochody",
+
+  "home.header": "Wypożyczalnia samochodów, która ceni twoją prywatność.",
+  "home.paragraph1": "",
 
   "breadcrumbs.login": "Logowanie",
   "breadcrumbs.register": "Rejestracja",
@@ -42,6 +46,7 @@
   "account.confirmation": "Potwierdzenie",
   "account.confirmed": "Potwierdzony",
   "account.notConfirmed": "Niepotwierdzony",
+  "account.qrCode": "Kod QR",
 
   "car.number": "Numer samochodu",
   "car.make": "Marka",
@@ -61,8 +66,10 @@
   "login.password.characters": "Znaki hasła",
   "login.otp.code": "Jednorazowy kod",
   "login.sign.in": "Zaloguj się",
-  "login.session.expired": "Twoja sesja wygasła. Proszę zalogować się ponownie.",
+  "login.session.expired": "Twoja sesja wygasła. Zaloguj się ponownie.",
   "login.clear": "Wyczyść",
+  "login.last.success": "Ostatnie udane uwierzytelnienie: ",
+  "login.last.failure": "Ostatnie nieudane uwierzytelnienie: ",
 
   "register.header": "Rejestracja",
   "register.password.header": "To są ostatnie znaki twojego hasła",

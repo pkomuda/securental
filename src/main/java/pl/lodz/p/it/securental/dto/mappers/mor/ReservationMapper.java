@@ -30,8 +30,8 @@ public class ReservationMapper {
     public ReservationDto toReservationDtoWithSignature(Reservation reservation) throws ApplicationBaseException {
         return ReservationDto.builder()
                 .number(reservation.getNumber())
-                .startDate(reservation.getStartDate().toString())
-                .endDate(reservation.getEndDate().toString())
+                .startDate(StringUtils.localDateTimeToString(reservation.getStartDate()))
+                .endDate(StringUtils.localDateTimeToString(reservation.getEndDate()))
                 .price(StringUtils.bigDecimalToString(reservation.getPrice()))
                 .status(reservation.getStatus().getName())
                 .clientDto(ClientMapper.toClientDto(reservation.getClient()))
@@ -43,9 +43,9 @@ public class ReservationMapper {
     public static ReservationDto toReservationDtoWithoutSignature(Reservation reservation) {
         return ReservationDto.builder()
                 .number(reservation.getNumber())
-                .startDate(reservation.getStartDate().toString())
-                .endDate(reservation.getEndDate().toString())
-                .price(reservation.getPrice().toString())
+                .startDate(StringUtils.localDateTimeToString(reservation.getStartDate()))
+                .endDate(StringUtils.localDateTimeToString(reservation.getEndDate()))
+                .price(StringUtils.bigDecimalToString(reservation.getPrice()))
                 .status(reservation.getStatus().getName())
                 .clientDto(ClientMapper.toClientDto(reservation.getClient()))
                 .carDto(CarMapper.toCarDtoWithoutSignature(reservation.getCar()))

@@ -8,11 +8,15 @@
   "navigation.search": "Search",
   "navigation.notFound": "Page not found",
   "navigation.noAccess": "You have no access to this page",
+  "navigation.success": "Success",
 
   "navbar.login": "Sign in",
   "navbar.register": "Register",
   "navbar.logout": "Log out",
   "navbar.cars": "Cars",
+
+  "home.header": "Car rental company that values your privacy.",
+  "home.paragraph1": "",
 
   "breadcrumbs.login": "Login",
   "breadcrumbs.register": "Register",
@@ -42,6 +46,7 @@
   "account.confirmation": "Confirmation",
   "account.confirmed": "Confirmed",
   "account.notConfirmed": "Not confirmed",
+  "account.qrCode": "QR code",
 
   "car.number": "Car number",
   "car.make": "Make",
@@ -61,8 +66,10 @@
   "login.password.characters": "Password characters",
   "login.otp.code": "One time code",
   "login.sign.in": "Sign in",
-  "login.session.expired": "Your session has expired. Please sign in again.",
+  "login.session.expired": "Your session has expired. Sign in again.",
   "login.clear": "Clear",
+  "login.last.success": "Last successful authentication: ",
+  "login.last.failure": "Last failed authentication: ",
 
   "register.header": "Registration",
   "register.password.header": "These are the last characters of your password",

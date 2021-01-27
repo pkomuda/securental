@@ -6,6 +6,8 @@ import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormControl, F
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import { handleError } from "../../utils/Alerts";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
 import { ACCESS_LEVEL_ADMIN } from "../../utils/Constants";
 import { FlatFormGroup } from "../common/FlatFormGroup";
@@ -14,6 +16,7 @@ import { Spinner } from "../common/Spinner";
 export const OwnAccountDetails = props => {
 
     const {t} = useTranslation();
+    const popup = withReactContent(Swal);
     const [userInfo] = useContext(AuthenticationContext);
     const [account, setAccount] = useState({
         username: "",
@@ -82,12 +85,32 @@ export const OwnAccountDetails = props => {
         }
     };
 
-    // const clientButtons = () => {
-    //     if (userInfo.currentAccessLevel === ACCESS_LEVEL_CLIENT) {
-    //         return <Button id="reservations"
-    //                        onClick={() => props.history.push("/listOwnReservations")}>{t("account.reservations")}</Button>;
-    //     }
-    // }
+    const handleQrCode = () => {
+        axios.get(`/qrCode/${userInfo.username}`)
+            .then(response => {
+                const alerts = [];
+                alerts.push({
+                    title: t("register.success.header"),
+                    html:
+                        <div>
+                            <p>{t("register.success.text1")}</p>
+                            <p>{t("register.success.text2")}</p>
+                            <img src={`data:image/png;base64,${response.data.qrCode}`} alt="qrCode"/>
+                        </div>,
+                    icon: "success"
+                });
+                popup.queue(alerts).then(() => {});
+            }).catch(error => {
+                handleError(error);
+        });
+    };
+
+    const adminButtons = () => {
+        if (userInfo.currentAccessLevel === ACCESS_LEVEL_ADMIN) {
+            return <Button id="qrCode"
+                           onClick={handleQrCode}>{t("account.qrCode")}</Button>;
+        }
+    };
 
     if (loaded) {
         return (
@@ -121,7 +144,7 @@ export const OwnAccountDetails = props => {
                                         onClick={() => props.history.push("/")}>{t("navigation.back")}</Button>
                                 <Button id="edit"
                                         onClick={() => props.history.push("/editOwnAccount")}>{t("navigation.edit")}</Button>
-                                {/*{clientButtons()}*/}
+                                {adminButtons()}
                             </ButtonToolbar>
                         </Col>
                     </Row>
