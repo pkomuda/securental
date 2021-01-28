@@ -52,6 +52,17 @@ public class ReservationMapper {
                 .build();
     }
 
+    public static ReservationDto toReservationDtoWithoutCar(Reservation reservation) {
+        return ReservationDto.builder()
+                .number(reservation.getNumber())
+                .startDate(StringUtils.localDateTimeToString(reservation.getStartDate()))
+                .endDate(StringUtils.localDateTimeToString(reservation.getEndDate()))
+                .price(StringUtils.bigDecimalToString(reservation.getPrice()))
+                .status(reservation.getStatus().getName())
+                .clientDto(ClientMapper.toClientDto(reservation.getClient()))
+                .build();
+    }
+
     public static Page<ReservationDto> toReservationDtos(Page<Reservation> reservations) {
         return reservations.map(ReservationMapper::toReservationDtoWithoutSignature);
     }

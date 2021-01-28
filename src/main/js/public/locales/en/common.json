@@ -48,6 +48,9 @@
   "account.notConfirmed": "Not confirmed",
   "account.qrCode": "QR code",
 
+  "account.add.success": "Account added successfully",
+  "account.edit.success": "Account edited successfully",
+
   "car.number": "Car number",
   "car.make": "Make",
   "car.model": "Model",
@@ -57,6 +60,9 @@
   "car.activity": "Activity",
   "car.active": "Active",
   "car.inactive": "Inactive",
+
+  "car.add.success": "Car added successfully",
+  "car.edit.success": "Car edited successfully",
 
   "ADMIN": "Admin",
   "EMPLOYEE": "Employee",
@@ -92,7 +98,8 @@
   "reservation.clientName": "Client name",
   "reservation.carMake": "Car make",
   "reservation.carModel": "Car model",
+  "reservation.unavailableDates": "Unavailable dates",
 
-  "addReservation.success": "Reservation added successfully",
-  "editReservation.success": "Reservation edited successfully"
+  "reservation.add.success": "Reservation added successfully",
+  "reservation.edit.success": "Reservation edited successfully"
 }

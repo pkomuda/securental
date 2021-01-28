@@ -115,7 +115,6 @@ export const Login = props => {
         const tempAuthRequest = {...authRequest};
         tempAuthRequest.otpCode = parseInt(tempAuthRequest.otpCode);
         tempAuthRequest.characters = tempAuthRequest.characters.join("");
-        console.log(tempAuthRequest);
         axios.post("/login", tempAuthRequest)
             .then(response => {
                 setUserInfo(response.data);

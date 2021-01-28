@@ -5,8 +5,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormControl, FormGroup, FormLabel, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
-import Swal from "sweetalert2";
 import { array, bool, mixed, object, string } from "yup";
+import { handleError, handleSuccess } from "../../utils/Alerts";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
 import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_CLIENT, ACCESS_LEVEL_EMPLOYEE } from "../../utils/Constants";
 import { EMAIL_REGEX, validate } from "../../utils/Validation";
@@ -64,14 +64,11 @@ export const EditOwnAccount = props => {
         };
         axios.get(`/ownAccount/${userInfo.username}`)
             .then(response => {
-                console.log(response.data);
                 setAccount(response.data);
                 setAccessLevels(toAccessLevelsObject(response.data.accessLevels));
                 setLoaded(true);
             }).catch(error => {
-            Swal.fire(t("errors:common.header"),
-                t(`errors:${error.response.data}`),
-                "error");
+                handleError(error);
         });
     }, [t, userInfo.username]);
 
@@ -89,21 +86,12 @@ export const EditOwnAccount = props => {
         if (!!(validate(account, errors, setErrors, schema) & validateAccessLevels(accessLevels))) {
             const tempAccount = {...account};
             tempAccount.accessLevels = Object.keys(accessLevels).filter(key => accessLevels[key]);
-            console.log(tempAccount);
             axios.put(`/ownAccount/${tempAccount.username}`, tempAccount)
                 .then(() => {
-                    const alerts = [];
-                    alerts.push({
-                        title: t("register.password.header"),
-                        html: t("register.password.text1"),
-                        icon: "success"
-                    });
-                    Swal.queue(alerts);
+                    handleSuccess("account.edit.success", "");
                     props.history.push("/ownAccountDetails");
-                }).catch(() => {
-                Swal.fire(t("errors:common.header"),
-                    t("errors:common.text"),
-                    "error");
+                }).catch(error => {
+                    handleError(error);
             });
         }
     };

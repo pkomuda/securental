@@ -89,7 +89,7 @@ public class ReservationControllerImpl implements ReservationController {
                                                       @PathVariable int size,
                                                       @PathVariable String property,
                                                       @PathVariable String order) throws ApplicationBaseException {
-        return reservationService.getAllReservations(new PagingHelper(page, size, property, order));
+        return reservationService.getAllReservations(new PagingHelper(page, size, resolvePropertyName(property), order));
     }
 
     @Override
@@ -109,7 +109,7 @@ public class ReservationControllerImpl implements ReservationController {
                                                          @PathVariable int size,
                                                          @PathVariable String property,
                                                          @PathVariable String order) throws ApplicationBaseException {
-        return reservationService.filterReservations(filter, new PagingHelper(page, size, property, order));
+        return reservationService.filterReservations(filter, new PagingHelper(page, size, resolvePropertyName(property), order));
     }
 
     @Override
@@ -129,7 +129,7 @@ public class ReservationControllerImpl implements ReservationController {
                                                          @PathVariable int size,
                                                          @PathVariable String property,
                                                          @PathVariable String order) throws ApplicationBaseException {
-        return reservationService.getOwnReservations(username, new PagingHelper(page, size, property, order));
+        return reservationService.getOwnReservations(username, new PagingHelper(page, size, resolvePropertyName(property), order));
     }
 
     @Override
@@ -151,6 +151,19 @@ public class ReservationControllerImpl implements ReservationController {
                                                             @PathVariable int size,
                                                             @PathVariable String property,
                                                             @PathVariable String order) throws ApplicationBaseException {
-        return reservationService.filterOwnReservations(username, filter, new PagingHelper(page, size, property, order));
+        return reservationService.filterOwnReservations(username, filter, new PagingHelper(page, size, resolvePropertyName(property), order));
+    }
+
+    private String resolvePropertyName(String property) {
+        switch (property) {
+            case "clientDto.username":
+                return "client_account_otpCredentials_username";
+            case "carDto.make":
+                return "car_make";
+            case "carDto.model":
+                return "car_model";
+            default:
+                return property;
+        }
     }
 }

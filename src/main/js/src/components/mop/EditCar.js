@@ -5,8 +5,8 @@ import React, { useEffect, useState } from "react";
 import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormCheck, FormGroup, FormLabel, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
-import Swal from "sweetalert2";
 import { array, bool, object, string } from "yup";
+import { handleError, handleSuccess } from "../../utils/Alerts";
 import { MONEY_REGEX, STRING_REGEX, validate, YEAR_REGEX } from "../../utils/Validation";
 import { EditFormGroup } from "../common/EditFormGroup";
 import { Spinner } from "../common/Spinner";
@@ -49,9 +49,7 @@ export const EditCar = props => {
                 setCar(response.data);
                 setLoaded(true);
             }).catch(error => {
-            Swal.fire(t("errors:common.header"),
-                t(`errors:${error.response.data}`),
-                "error");
+                handleError(error);
         });
     }, [props.match.params.number, t]);
 
@@ -64,20 +62,13 @@ export const EditCar = props => {
             const tempCar = {...car};
             tempCar.productionYear = parseInt(tempCar.productionYear, 10);
             tempCar.price = tempCar.price.replaceAll(",", ".");
-            console.log(tempCar);
             axios.put(`/editCar/${tempCar.number}`, tempCar)
                 .then(() => {
-                    Swal.fire(t("errors:common.header"),
-                        t("errors:common.text"),
-                        "success");
+                    handleSuccess("car.edit.success", "");
                     props.history.push(`/carDetails/${tempCar.number}`);
-                }).catch(() => {
-                Swal.fire(t("errors:common.header"),
-                    t("errors:common.text"),
-                    "error");
+                }).catch(error => {
+                    handleError(error);
             });
-        } else {
-            console.log(errors);
         }
     };
 

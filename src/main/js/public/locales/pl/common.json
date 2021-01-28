@@ -48,6 +48,9 @@
   "account.notConfirmed": "Niepotwierdzony",
   "account.qrCode": "Kod QR",
 
+  "account.add.success": "Konto dodane pomyślnie",
+  "account.edit.success": "Konto edytowane pomyślnie",
+
   "car.number": "Numer samochodu",
   "car.make": "Marka",
   "car.model": "Model",
@@ -57,6 +60,9 @@
   "car.activity": "Aktywność",
   "car.active": "Aktywny",
   "car.inactive": "Nieaktywny",
+
+  "car.add.success": "Samochód dodany pomyślnie",
+  "car.edit.success": "Samochód edytowany pomyślnie",
 
   "ADMIN": "Administrator",
   "EMPLOYEE": "Pracownik",
@@ -92,7 +98,8 @@
   "reservation.clientName": "Imię i nazwisko klienta",
   "reservation.carMake": "Marka samochodu",
   "reservation.carModel": "Model samochodu",
+  "reservation.unavailableDates": "Niedostępne daty",
 
-  "addReservation.success": "Rezerwacja dodana pomyślnie",
-  "editReservation.success": "Rezerwacja edytowana pomyślnie"
+  "reservation.add.success": "Rezerwacja dodana pomyślnie",
+  "reservation.edit.success": "Rezerwacja edytowana pomyślnie"
 }

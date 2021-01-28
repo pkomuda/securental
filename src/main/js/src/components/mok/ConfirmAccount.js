@@ -2,7 +2,7 @@ import axios from "axios";
 import React from "react";
 import { Button, ButtonToolbar } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
-import Swal from "sweetalert2";
+import { handleError, handleSuccess } from "../../utils/Alerts";
 
 export const ConfirmAccount = props => {
 
@@ -11,12 +11,10 @@ export const ConfirmAccount = props => {
     const handleSubmit = () => {
         axios.put("/confirmAccount", {token: window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1)})
             .then(() => {
-                Swal.fire(t("confirm.success"), "", "success");
+                handleSuccess("confirm.success", "");
                 props.history.push("/");
-            }).catch(() => {
-                Swal.fire(t("errors:common.header"),
-                    t("errors:common.text"),
-                    "error");
+            }).catch(error => {
+                handleError(error);
         })
     };
 

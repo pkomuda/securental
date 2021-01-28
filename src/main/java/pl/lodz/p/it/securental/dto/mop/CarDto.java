@@ -2,6 +2,7 @@ package pl.lodz.p.it.securental.dto.mop;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.ToString;
 import pl.lodz.p.it.securental.dto.mor.ReservationDto;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public @Data class CarDto {
     private int productionYear;
     private String price;
     private boolean active;
+    @ToString.Exclude
     private List<ReservationDto> reservations;
     private String signature;
 }

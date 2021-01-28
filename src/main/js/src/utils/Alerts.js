@@ -1,7 +1,7 @@
 import Swal from "sweetalert2";
 import i18n from "../utils/i18n";
 
-const error = (title, text) => {
+const handleErrorInternal = (title, text) => {
     Swal.fire({
         titleText: i18n.t(`errors:${title}`),
         text: i18n.t(`errors:${text}`),
@@ -9,21 +9,13 @@ const error = (title, text) => {
     }).then(() => {});
 };
 
-export const handleError = e => {
-    if (!e.response) {
-        error("common.header", "common.text");
+export const handleError = error => {
+    if (!error.response) {
+        handleErrorInternal("common.header", "common.text");
     } else {
-        error("common.header", e.response.data);
+        handleErrorInternal("common.header", error.response.data);
     }
 }
-
-export const handleInfo = (title, text) => {
-    Swal.fire({
-        titleText: i18n.t(title),
-        text: text,
-        icon: "info"
-    }).then(() => {});
-};
 
 export const handleSuccess = (title, text) => {
     Swal.fire({

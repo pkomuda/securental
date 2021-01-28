@@ -5,9 +5,8 @@ import React, { useState } from "react";
 import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormCheck, FormGroup, FormLabel, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
-import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
 import { bool, object, string } from "yup";
+import { handleError, handleSuccess } from "../../utils/Alerts";
 import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_CLIENT, ACCESS_LEVEL_EMPLOYEE } from "../../utils/Constants";
 import { EMAIL_REGEX, validate } from "../../utils/Validation";
 import { EditFormGroup } from "../common/EditFormGroup";
@@ -15,7 +14,6 @@ import { EditFormGroup } from "../common/EditFormGroup";
 export const AddAccount = props => {
 
     const {t} = useTranslation();
-    const MySwal = withReactContent(Swal);
     const schema = object().shape({
         username: string().required("account.username.required").min(1, "account.username.min").max(32, "account.username.max"),
         email: string().required("account.email.required").matches(EMAIL_REGEX, "account.email.invalid"),
@@ -50,25 +48,12 @@ export const AddAccount = props => {
         if (!!(validate(account, errors, setErrors, schema) & validateAccessLevels(accessLevels))) {
             const tempAccount = {...account};
             tempAccount.accessLevels = Object.keys(accessLevels).filter(key => accessLevels[key]);
-            console.log(tempAccount);
             axios.post("/account", tempAccount, {withCredentials: true, headers: {"Accept-Language": window.navigator.language}})
-                .then(response => {
-                    const alerts = [];
-                    alerts.push({
-                        title: t("register.password.header"),
-                        html:
-                            <div>
-                                <p>{t("register.password.text1") + response.data.lastPasswordCharacters}</p>
-                                <p>{t("register.password.text2")}</p>
-                            </div>,
-                        icon: "info"
-                    });
-                    MySwal.queue(alerts);
+                .then(() => {
+                    handleSuccess("account.add.success", "");
                     props.history.push("/");
-                }).catch(() => {
-                Swal.fire(t("errors:common.header"),
-                    t("errors:common.text"),
-                    "error");
+                }).catch(error => {
+                    handleError(error);
             });
         }
     };

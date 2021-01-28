@@ -8,9 +8,8 @@ import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormControl, F
 import DatePicker, { registerLocale } from "react-datepicker";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
-import Swal from "sweetalert2";
 import { date, mixed, object, string } from "yup";
-import { handleSuccess } from "../../utils/Alerts";
+import { handleError, handleSuccess } from "../../utils/Alerts";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
 import { getDateFormat, getTimeFormat, hoursBetween, isoDate, nearestFullHour } from "../../utils/DateTime";
 import { getLocale, isLanguagePolish } from "../../utils/i18n";
@@ -57,9 +56,7 @@ export const EditOwnReservation = props => {
                 setReservation(tempReservation);
                 setLoaded(true);
             }).catch(error => {
-            Swal.fire(t("errors:common.header"),
-                t(`errors:${error.response.data}`),
-                "error");
+                handleError(error);
         });
     }, [props.match.params.number, t, userInfo.username]);
 
@@ -74,15 +71,12 @@ export const EditOwnReservation = props => {
             tempReservation.endDate = isoDate(tempReservation.endDate);
             tempReservation.price = tempReservation.price.replaceAll(",", ".");
             console.log(tempReservation);
-
             axios.put(`/reservation/${userInfo.username}/${tempReservation.number}`, tempReservation)
                 .then(() => {
-                    handleSuccess("editReservation.success", "");
+                    handleSuccess("reservation.edit.success", "");
                     // props.history.push(`/ownReservationDetails/${tempReservation.number}`);
-                }).catch(() => {
-                Swal.fire(t("errors:common.header"),
-                    t("errors:common.text"),
-                    "error");
+                }).catch(error => {
+                    handleError(error);
             });
         }
     };

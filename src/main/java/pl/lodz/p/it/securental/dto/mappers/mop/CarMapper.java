@@ -68,7 +68,7 @@ public class CarMapper {
 
     private static List<ReservationDto> toReservationDtos(List<Reservation> reservations) {
         return reservations.stream()
-                .map(ReservationMapper::toReservationDtoWithoutSignature)
+                .map(ReservationMapper::toReservationDtoWithoutCar)
                 .collect(Collectors.toList());
     }
 }

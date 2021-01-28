@@ -5,8 +5,8 @@ import React, { useState } from "react";
 import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormCheck, FormGroup, FormLabel, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
-import Swal from "sweetalert2";
 import { bool, object, string } from "yup";
+import { handleError, handleSuccess } from "../../utils/Alerts";
 import { MONEY_REGEX, STRING_REGEX, validate, YEAR_REGEX } from "../../utils/Validation";
 import { EditFormGroup } from "../common/EditFormGroup";
 
@@ -43,17 +43,12 @@ export const AddCar = props => {
             const tempCar = {...car};
             tempCar.productionYear = parseInt(tempCar.productionYear, 10);
             tempCar.price = tempCar.price.replaceAll(",", ".");
-            console.log(tempCar);
             axios.post("/addCar", car)
                 .then(() => {
-                    Swal.fire(t("errors:common.header"),
-                        t("errors:common.text"),
-                        "success");
+                    handleSuccess("car.add.success", "");
                     props.history.push("/");
-                }).catch(() => {
-                    Swal.fire(t("errors:common.header"),
-                        t("errors:common.text"),
-                        "error");
+                }).catch(error => {
+                    handleError(error);
             });
         }
     };

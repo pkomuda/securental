@@ -35,9 +35,7 @@ export const OwnAccountDetails = props => {
                 setAccount(response.data);
                 setLoaded(true);
             }).catch(error => {
-            Swal.fire(t("errors:common.header"),
-                t(`errors:${error.response.data}`),
-                "error");
+                handleError(error);
         });
     }, [t, userInfo.username]);
 

@@ -253,6 +253,9 @@ public class AccountService {
             } else {
                 account.setLastFailedAuthentication(LocalDateTime.now());
                 account.setFailedAuthenticationCounter(account.getFailedAuthenticationCounter() + 1);
+                if (account.getFailedAuthenticationCounter() >= ApplicationProperties.FAILED_AUTHENTICATION_MAX_COUNTER) {
+                    account.setActive(false);
+                }
             }
             return AuthenticationResponse.builder()
                     .lastSuccessfulAuthentication(StringUtils.localDateTimeToString(account.getLastSuccessfulAuthentication()))

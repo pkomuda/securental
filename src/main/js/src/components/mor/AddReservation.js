@@ -4,15 +4,14 @@ import axios from "axios";
 import en from 'date-fns/locale/en-GB';
 import pl from 'date-fns/locale/pl';
 import React, { useContext, useEffect, useState } from "react";
-import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormControl, FormGroup, FormLabel, Row } from "react-bootstrap";
+import { Breadcrumb, Button, ButtonToolbar, Col, Container, Dropdown, DropdownButton, Form, FormControl, FormGroup, FormLabel, Row } from "react-bootstrap";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
-import Swal from "sweetalert2";
 import { date, mixed, object, string } from "yup";
 import { handleError, handleSuccess } from "../../utils/Alerts";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
-import { hoursBetween, isoDate, nearestFullHour } from "../../utils/DateTime";
+import { hoursBetween, humanDate, isoDate, nearestFullHour } from "../../utils/DateTime";
 import { isLanguagePolish } from "../../utils/i18n";
 import { validate } from "../../utils/Validation";
 import { EditFormGroup } from "../common/EditFormGroup";
@@ -65,9 +64,7 @@ export const AddReservation = props => {
                 setCar(response.data);
                 setLoaded(true);
             }).catch(error => {
-            Swal.fire(t("errors:common.header"),
-                t(`errors:${error.response.data}`),
-                "error");
+                handleError(error);
         });
     }, [props.match.params.number, t]);
 
@@ -86,7 +83,6 @@ export const AddReservation = props => {
     }
 
     const handleSubmit = () => {
-        console.log(reservation);
         if (validate(reservation, errors, setErrors, schema)) {
             const tempReservation = {...reservation};
             tempReservation.startDate = isoDate(tempReservation.startDate);
@@ -94,15 +90,29 @@ export const AddReservation = props => {
             tempReservation.price = tempReservation.price.replaceAll(",", ".");
             tempReservation.clientDto.username = userInfo.username;
             tempReservation.carDto.number = car.number;
-            console.log(tempReservation);
             axios.post(`/reservation/${userInfo.username}`, tempReservation)
                 .then(() => {
-                    handleSuccess("addReservation.success", "");
+                    handleSuccess("reservation.add.success", "");
                     props.history.push(`/carDetails/${car.number}`);
                 }).catch(error => {
                     handleError(error);
             });
         }
+    };
+
+    const renderUnavailableDates = () => {
+        const dateStrings = [];
+        for (let reservation of car.reservations) {
+            dateStrings.push(humanDate(reservation.startDate) + " - " + humanDate(reservation.endDate));
+        }
+
+        const dates = [];
+        for (let date of dateStrings.sort()) {
+            dates.push(
+                <Dropdown.Header>{date}</Dropdown.Header>
+            );
+        }
+        return dates;
     };
 
     if (loaded) {
@@ -173,6 +183,10 @@ export const AddReservation = props => {
                             <ButtonToolbar className="justify-content-center">
                                 <Button id="back"
                                         onClick={() => props.history.goBack()}>{t("navigation.back")}</Button>
+                                <DropdownButton id="unavailableDates"
+                                                title={t("reservation.unavailableDates")}>
+                                    {renderUnavailableDates()}
+                                </DropdownButton>
                                 <Button id="submit"
                                         onClick={handleSubmit}>{t("navigation.submit")}</Button>
                             </ButtonToolbar>

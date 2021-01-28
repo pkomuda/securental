@@ -31,6 +31,7 @@ public class ApplicationProperties {
     public static Integer AUTHENTICATION_TOKEN_EXPIRATION;
     public static String[] CLIENT_ROLES;
     public static String[] EMPLOYEE_ROLES;
+    public static Integer FAILED_AUTHENTICATION_MAX_COUNTER;
     public static String FRONTEND_ORIGIN;
     public static Integer FULL_PASSWORD_LENGTH;
     public static Integer JWT_EXPIRATION_TIME;
@@ -38,6 +39,7 @@ public class ApplicationProperties {
     public static char[] KEYSTORE_PASSWORD;
     public static String LAST_PASSWORD_CHARACTERS;
     public static Integer LAST_PASSWORD_CHARACTERS_LENGTH;
+    public static Integer LOGIN_INITIALIZATION_MAX_COUNTER;
     public static Integer MASKED_PASSWORD_MAX_LENGTH;
     public static Integer MASKED_PASSWORD_MIN_LENGTH;
     public static String PASSWORD_HASHING_ALGORITHM;
@@ -49,12 +51,14 @@ public class ApplicationProperties {
                                  @Value("${authentication.token.expiration}") Integer authenticationTokenExpiration,
                                  @Value("${client.roles}") String clientRoles,
                                  @Value("${employee.roles}") String employeeRoles,
+                                 @Value("${failed.authentication.max.counter}") Integer failedAuthenticationMaxCounter,
                                  @Value("${frontend.origin}") String frontendOrigin,
                                  @Value("${full.password.length}") Integer fullPasswordLength,
                                  @Value("${jwt.expiration.time}") Integer jwtExpirationTime,
                                  @Value("${jwt.key}") String jwtKey,
                                  @Value("${keystore.password}") String keystorePassword,
                                  @Value("${last.password.characters}") String lastPasswordCharacters,
+                                 @Value("${login.initialization.max.counter}") Integer loginInitializationMaxCounter,
                                  @Value("${masked.password.max.length}") Integer maskedPasswordMaxLength,
                                  @Value("${masked.password.min.length}") Integer maskedPasswordMinLength,
                                  @Value("${password.hashing.algorithm}") String passwordHashingAlgorithm,
@@ -65,6 +69,7 @@ public class ApplicationProperties {
         AUTHENTICATION_TOKEN_EXPIRATION = authenticationTokenExpiration;
         CLIENT_ROLES = clientRoles.split(",");
         EMPLOYEE_ROLES = employeeRoles.split(",");
+        FAILED_AUTHENTICATION_MAX_COUNTER = failedAuthenticationMaxCounter;
         FRONTEND_ORIGIN = frontendOrigin;
         FULL_PASSWORD_LENGTH = fullPasswordLength;
         JWT_EXPIRATION_TIME = jwtExpirationTime;
@@ -72,6 +77,7 @@ public class ApplicationProperties {
         KEYSTORE_PASSWORD = keystorePassword.toCharArray();
         LAST_PASSWORD_CHARACTERS = lastPasswordCharacters;
         LAST_PASSWORD_CHARACTERS_LENGTH = fullPasswordLength - 8;
+        LOGIN_INITIALIZATION_MAX_COUNTER = loginInitializationMaxCounter;
         MASKED_PASSWORD_MAX_LENGTH = maskedPasswordMaxLength;
         MASKED_PASSWORD_MIN_LENGTH = maskedPasswordMinLength;
         PASSWORD_HASHING_ALGORITHM = passwordHashingAlgorithm;

@@ -34,13 +34,13 @@ public class TimerService {
                         .collect(Collectors.toList())
         );
         logCache.clear();
-        log.warn("moveLogsToDatabase: " + (System.currentTimeMillis() - start)/1000.0);
+        log.info("moveLogsToDatabase | Execution time: " + (System.currentTimeMillis() - start)/1000.0 + "s");
     }
 
     @Scheduled(fixedDelayString = "#{60000 * ${jwt.schedule}}")
     public void clearExpiredBlacklistedJwts() {
         long start = System.currentTimeMillis();
         blacklistedJwtRepository.deleteAllByExpirationBefore(LocalDateTime.now());
-        log.warn("clearExpiredBlacklistedJwts: " + (System.currentTimeMillis() - start)/1000.0);
+        log.info("clearExpiredBlacklistedJwts | Execution time: " + (System.currentTimeMillis() - start)/1000.0 + "s");
     }
 }

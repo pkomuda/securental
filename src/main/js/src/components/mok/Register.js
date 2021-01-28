@@ -5,13 +5,14 @@ import { useTranslation } from "react-i18next";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { array, object, string } from "yup";
+import { handleError } from "../../utils/Alerts";
 import { EMAIL_REGEX, validate } from "../../utils/Validation";
 import { EditFormGroup } from "../common/EditFormGroup";
 
 export const Register = props => {
 
     const {t} = useTranslation();
-    const MySwal = withReactContent(Swal);
+    const popup = withReactContent(Swal);
     const schema = object().shape({
         username: string().required("account.username.required").min(1, "account.username.min").max(32, "account.username.max"),
         email: string().required("account.email.required").matches(EMAIL_REGEX, "account.email.invalid"),
@@ -42,8 +43,6 @@ export const Register = props => {
         const tempAccount = {...account};
         delete tempAccount.password;
         const valid = validate(tempAccount, errors, setErrors, schema);
-        console.log(valid);
-        console.log(errors);
         if (valid) {
             setStage(2);
         }
@@ -73,12 +72,10 @@ export const Register = props => {
                             </div>,
                         icon: "success"
                     });
-                    MySwal.queue(alerts);
+                    popup.queue(alerts).then(() => {});
                     props.history.push("/");
-                }).catch(() => {
-                    Swal.fire(t("errors:common.header"),
-                        t("errors:common.text"),
-                        "error");
+                }).catch(error => {
+                    handleError(error);
             });
         }
     };
@@ -104,10 +101,8 @@ export const Register = props => {
                     </Form>
                     <ButtonToolbar className="justify-content-center">
                         <Button id="back1"
-
                                 onClick={() => props.history.goBack}>{t("navigation.back")}</Button>
                         <Button id="submit1"
-
                                 onClick={handleFirstStage}>{t("navigation.next")}</Button>
                     </ButtonToolbar>
                 </Col>
@@ -128,10 +123,8 @@ export const Register = props => {
                     </Form>
                     <ButtonToolbar className="justify-content-center">
                         <Button id="back2"
-
                                 onClick={() => setStage(1)}>{t("navigation.back")}</Button>
                         <Button id="submit2"
-
                                 onClick={handleSecondStage}>{t("navigation.next")}</Button>
                     </ButtonToolbar>
                 </Col>

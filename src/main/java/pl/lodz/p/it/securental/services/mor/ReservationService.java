@@ -54,10 +54,12 @@ public class ReservationService {
             throw new UsernameNotMatchingException();
         }
 
-        reservation.setNumber(StringUtils.randomBase64Url());
+        Car car = getCar(reservationDto.getCarDto().getNumber());
+        reservation.setCar(car);
         reservation.setStatus(getStatus(ApplicationProperties.RESERVATION_STATUS_NEW));
-        reservation.setCar(getCar(reservationDto.getCarDto().getNumber()));
         reservation.setPrice(calculateReservationPrice(reservation));
+        reservation.setNumber(StringUtils.randomBase64Url());
+        car.getReservations().add(reservation);
 
         reservationAdapter.addReservation(reservation);
     }

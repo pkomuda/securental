@@ -38,7 +38,6 @@ public class UserDetailsServiceImpl {
             Account account = accountOptional.get();
             for (MaskedPassword maskedPassword : account.getCredentials().getMaskedPasswords()) {
                 if (passwordEncoder.matches(combination, maskedPassword.getCombination())) {
-                    boolean canLogin = account.isActive() && account.isConfirmed();
                     List<Integer> combinationList = account.getAuthenticationToken().getCombination();
                     String combinationString = combination;
 //                    if (integerArrayToString(account.getAuthenticationToken().getCombination().stream().mapToInt(i -> i).toArray()).equals(combination)) {
@@ -46,10 +45,10 @@ public class UserDetailsServiceImpl {
                                 username,
                                 combination,
                                 maskedPassword.getHash(),
-                                canLogin,
-                                canLogin,
-                                canLogin,
-                                canLogin,
+                                account.isConfirmed(),
+                                true,
+                                true,
+                                account.isActive(),
                                 getUserFrontendRoles(account));
 //                }
                 }

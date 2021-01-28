@@ -33,6 +33,7 @@ public @Data class Car extends BaseAuditEntity {
     private boolean active;
 
     @OneToMany
+    @ToString.Exclude
     private List<Reservation> reservations = new ArrayList<>();
 
     public String toSignString() {

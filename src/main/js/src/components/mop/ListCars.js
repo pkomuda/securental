@@ -7,7 +7,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from 'react-router-bootstrap';
-import Swal from "sweetalert2";
+import { handleError } from "../../utils/Alerts";
 import { PAGINATION_SIZES } from "../../utils/Constants";
 import { Spinner } from "../common/Spinner";
 
@@ -16,7 +16,7 @@ export const ListCars = props => {
     const {t} = useTranslation();
     const [cars, setCars] = useState([]);
     const [page, setPage] = useState(1);
-    const [sizePerPage, setSizePerPage] = useState(5);
+    const [sizePerPage, setSizePerPage] = useState(10);
     const [totalSize, setTotalSize] = useState(0);
     const [sortField, setSortField] = useState("");
     const [sortOrder, setSortOrder] = useState("");
@@ -82,10 +82,7 @@ export const ListCars = props => {
                 setTotalSize(response.data.totalElements);
                 setLoaded(true);
             }).catch(error => {
-            console.log(error);
-            Swal.fire(t("errors:common.header"),
-                t(`errors:${error.response.data}`),
-                "error");
+                handleError(error);
         });
     }, [filter, page, sizePerPage, sortField, sortOrder, t]);
 

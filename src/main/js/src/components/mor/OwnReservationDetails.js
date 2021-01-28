@@ -5,7 +5,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormControl, FormGroup, FormLabel, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
-import Swal from "sweetalert2";
+import { handleError } from "../../utils/Alerts";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
 import { humanDate } from "../../utils/DateTime";
 import { FlatFormGroup } from "../common/FlatFormGroup";
@@ -32,9 +32,7 @@ export const OwnReservationDetails = props => {
                 setReservation(response.data);
                 setLoaded(true);
             }).catch(error => {
-            Swal.fire(t("errors:common.header"),
-                t(`errors:${error.response.data}`),
-                "error");
+                handleError(error);
         });
     }, [props.match.params.number, t, userInfo.username]);
 
