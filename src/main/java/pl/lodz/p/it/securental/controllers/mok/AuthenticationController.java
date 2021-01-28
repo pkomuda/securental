@@ -1,7 +1,7 @@
 package pl.lodz.p.it.securental.controllers.mok;
 
-import pl.lodz.p.it.securental.dto.mok.AuthenticationRequest;
-import pl.lodz.p.it.securental.dto.mok.AuthenticationResponse;
+import pl.lodz.p.it.securental.dto.model.mok.AuthenticationRequest;
+import pl.lodz.p.it.securental.dto.model.mok.AuthenticationResponse;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 
 import javax.servlet.http.HttpServletRequest;

@@ -1,9 +1,9 @@
 package pl.lodz.p.it.securental.controllers.mok;
 
 import org.springframework.data.domain.Page;
-import pl.lodz.p.it.securental.dto.mok.AccountDto;
-import pl.lodz.p.it.securental.dto.mok.ConfirmAccountRequest;
-import pl.lodz.p.it.securental.dto.mok.RegistrationResponse;
+import pl.lodz.p.it.securental.dto.model.mok.AccountDto;
+import pl.lodz.p.it.securental.dto.model.mok.ConfirmAccountRequest;
+import pl.lodz.p.it.securental.dto.model.mok.RegistrationResponse;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 
 public interface AccountController {

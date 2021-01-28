@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.adapters.mop.CarAdapter;
 import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.dto.mappers.mop.CarMapper;
-import pl.lodz.p.it.securental.dto.mop.CarDto;
+import pl.lodz.p.it.securental.dto.model.mop.CarDto;
 import pl.lodz.p.it.securental.entities.mop.Car;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.ApplicationOptimisticLockException;
@@ -35,6 +35,15 @@ public class CarService {
     }
 
     public CarDto getCar(String number) throws ApplicationBaseException {
+        Optional<Car> carOptional = carAdapter.getCar(number);
+        if (carOptional.isPresent()) {
+            return CarMapper.toCarDtoWithReservationDatesOnly(carOptional.get());
+        } else {
+            throw new CarNotFoundException();
+        }
+    }
+
+    public CarDto getCarToEdit(String number) throws ApplicationBaseException {
         Optional<Car> carOptional = carAdapter.getCar(number);
         if (carOptional.isPresent()) {
             return carMapper.toCarDtoWithSignature(carOptional.get());
@@ -68,17 +77,17 @@ public class CarService {
 
     public Page<CarDto> getAllCars(PagingHelper pagingHelper) throws ApplicationBaseException {
         try {
-            return CarMapper.toCarDtos(carAdapter.getAllCars(pagingHelper.withSorting()));
+            return CarMapper.toCarDtosWithReservationDatesOnly(carAdapter.getAllCars(pagingHelper.withSorting()));
         } catch (PropertyNotFoundException e) {
-            return CarMapper.toCarDtos(carAdapter.getAllCars(pagingHelper.withoutSorting()));
+            return CarMapper.toCarDtosWithReservationDatesOnly(carAdapter.getAllCars(pagingHelper.withoutSorting()));
         }
     }
 
     public Page<CarDto> filterCars(String filter, PagingHelper pagingHelper) throws ApplicationBaseException {
         try {
-            return CarMapper.toCarDtos(carAdapter.filterCars(filter, pagingHelper.withSorting()));
+            return CarMapper.toCarDtosWithReservationDatesOnly(carAdapter.filterCars(filter, pagingHelper.withSorting()));
         } catch (PropertyNotFoundException e) {
-            return CarMapper.toCarDtos(carAdapter.filterCars(filter, pagingHelper.withoutSorting()));
+            return CarMapper.toCarDtosWithReservationDatesOnly(carAdapter.filterCars(filter, pagingHelper.withoutSorting()));
         }
     }
 }

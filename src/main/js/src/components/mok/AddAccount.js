@@ -64,7 +64,7 @@ export const AddAccount = props => {
         validateAccessLevels(temp);
     };
 
-    const validateAccessLevels = (object) => {
+    const validateAccessLevels = object => {
         if (!Object.values(object).includes(true)) {
             document.getElementById("accessLevelsFeedback").style.display = "block";
             return false;

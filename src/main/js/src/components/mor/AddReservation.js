@@ -82,8 +82,18 @@ export const AddReservation = props => {
         setReservation(tempReservation);
     }
 
+    const validateDates = object => {
+        if (object.startDate.getTime() < object.endDate.getTime()) {
+            document.getElementById("datesFeedback").style.display = "none";
+            return true;
+        } else {
+            document.getElementById("datesFeedback").style.display = "block";
+            return false;
+        }
+    };
+
     const handleSubmit = () => {
-        if (validate(reservation, errors, setErrors, schema)) {
+        if (!!(validate(reservation, errors, setErrors, schema) & validateDates(reservation))) {
             const tempReservation = {...reservation};
             tempReservation.startDate = isoDate(tempReservation.startDate);
             tempReservation.endDate = isoDate(tempReservation.endDate);
@@ -177,6 +187,7 @@ export const AddReservation = props => {
                                                     dateFormat="yyyy.MM.dd HH:mm"
                                                     timeIntervals={60}
                                                     showTimeSelect/>
+                                        <p id="datesFeedback" className="invalid" style={{display: "none"}}>{t("validation:reservation.dates.invalid")}</p>
                                     </div>
                                 </FormGroup>
                             </Form>

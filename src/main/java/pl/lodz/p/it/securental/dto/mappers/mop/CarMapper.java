@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import pl.lodz.p.it.securental.dto.mappers.mor.ReservationMapper;
-import pl.lodz.p.it.securental.dto.mop.CarDto;
-import pl.lodz.p.it.securental.dto.mor.ReservationDto;
+import pl.lodz.p.it.securental.dto.model.mop.CarDto;
+import pl.lodz.p.it.securental.dto.model.mor.ReservationDto;
 import pl.lodz.p.it.securental.entities.mop.Car;
 import pl.lodz.p.it.securental.entities.mor.Reservation;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
@@ -62,13 +62,36 @@ public class CarMapper {
                 .build();
     }
 
+    public static CarDto toCarDtoWithReservationDatesOnly(Car car) {
+        return CarDto.builder()
+                .number(car.getNumber())
+                .make(car.getMake())
+                .model(car.getModel())
+                .description(car.getDescription())
+                .productionYear(car.getProductionYear())
+                .price(StringUtils.bigDecimalToString(car.getPrice()))
+                .active(car.isActive())
+                .reservations(toReservationDtosWithDatesOnly(car.getReservations()))
+                .build();
+    }
+
     public static Page<CarDto> toCarDtos(Page<Car> cars) {
         return cars.map(CarMapper::toCarDtoWithoutSignature);
+    }
+
+    public static Page<CarDto> toCarDtosWithReservationDatesOnly(Page<Car> cars) {
+        return cars.map(CarMapper::toCarDtoWithReservationDatesOnly);
     }
 
     private static List<ReservationDto> toReservationDtos(List<Reservation> reservations) {
         return reservations.stream()
                 .map(ReservationMapper::toReservationDtoWithoutCar)
+                .collect(Collectors.toList());
+    }
+
+    private static List<ReservationDto> toReservationDtosWithDatesOnly(List<Reservation> reservations) {
+        return reservations.stream()
+                .map(ReservationMapper::toReservationDtoWithDatesOnly)
                 .collect(Collectors.toList());
     }
 }

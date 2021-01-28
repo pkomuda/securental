@@ -9,7 +9,7 @@ import pl.lodz.p.it.securental.adapters.mor.ReservationAdapter;
 import pl.lodz.p.it.securental.adapters.mor.StatusAdapter;
 import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.dto.mappers.mor.ReservationMapper;
-import pl.lodz.p.it.securental.dto.mor.ReservationDto;
+import pl.lodz.p.it.securental.dto.model.mor.ReservationDto;
 import pl.lodz.p.it.securental.entities.mok.Client;
 import pl.lodz.p.it.securental.entities.mop.Car;
 import pl.lodz.p.it.securental.entities.mor.Reservation;
@@ -20,10 +20,7 @@ import pl.lodz.p.it.securental.exceptions.db.PropertyNotFoundException;
 import pl.lodz.p.it.securental.exceptions.mok.AccountNotFoundException;
 import pl.lodz.p.it.securental.exceptions.mok.UsernameNotMatchingException;
 import pl.lodz.p.it.securental.exceptions.mop.CarNotFoundException;
-import pl.lodz.p.it.securental.exceptions.mor.IncorrectStatusException;
-import pl.lodz.p.it.securental.exceptions.mor.ReservationNotFoundException;
-import pl.lodz.p.it.securental.exceptions.mor.ReservationNumberNotMatchingException;
-import pl.lodz.p.it.securental.exceptions.mor.StatusNotFoundException;
+import pl.lodz.p.it.securental.exceptions.mor.*;
 import pl.lodz.p.it.securental.utils.ApplicationProperties;
 import pl.lodz.p.it.securental.utils.PagingHelper;
 import pl.lodz.p.it.securental.utils.SignatureUtils;
@@ -47,6 +44,11 @@ public class ReservationService {
 
     public void addReservation(String username, ReservationDto reservationDto) throws ApplicationBaseException {
         Reservation reservation = ReservationMapper.toReservation(reservationDto);
+
+        if (reservation.getStartDate().isAfter(reservation.getEndDate())
+                || reservation.getStartDate().isEqual(reservation.getEndDate())) {
+            throw new ReservationStartNotBeforeEndException();
+        }
 
         if (username.equals(reservationDto.getClientDto().getUsername())) {
             reservation.setClient(getClient(username));

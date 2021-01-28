@@ -6,7 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.securental.aop.annotations.NeverTransaction;
 import pl.lodz.p.it.securental.controllers.mor.ReservationController;
-import pl.lodz.p.it.securental.dto.mor.ReservationDto;
+import pl.lodz.p.it.securental.dto.model.mor.ReservationDto;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.services.mor.ReservationService;
 import pl.lodz.p.it.securental.utils.PagingHelper;

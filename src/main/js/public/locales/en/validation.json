@@ -39,5 +39,7 @@
   "car.productionYear.invalid": "Production year is invalid",
 
   "car.price.required": "Price is required",
-  "car.price.invalid": "Price is invalid"
+  "car.price.invalid": "Price is invalid",
+
+  "reservation.dates.invalid": "Start date must be before end date"
 }

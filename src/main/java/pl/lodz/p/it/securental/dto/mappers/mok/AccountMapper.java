@@ -3,7 +3,7 @@ package pl.lodz.p.it.securental.dto.mappers.mok;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
-import pl.lodz.p.it.securental.dto.mok.AccountDto;
+import pl.lodz.p.it.securental.dto.model.mok.AccountDto;
 import pl.lodz.p.it.securental.entities.mok.*;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.utils.ApplicationProperties;

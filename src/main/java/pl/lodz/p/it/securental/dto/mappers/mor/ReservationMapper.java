@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import pl.lodz.p.it.securental.adapters.mok.ClientMapper;
 import pl.lodz.p.it.securental.dto.mappers.mop.CarMapper;
-import pl.lodz.p.it.securental.dto.mor.ReservationDto;
+import pl.lodz.p.it.securental.dto.model.mor.ReservationDto;
 import pl.lodz.p.it.securental.entities.mor.Reservation;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.utils.SignatureUtils;
@@ -60,6 +60,13 @@ public class ReservationMapper {
                 .price(StringUtils.bigDecimalToString(reservation.getPrice()))
                 .status(reservation.getStatus().getName())
                 .clientDto(ClientMapper.toClientDto(reservation.getClient()))
+                .build();
+    }
+
+    public static ReservationDto toReservationDtoWithDatesOnly(Reservation reservation) {
+        return ReservationDto.builder()
+                .startDate(StringUtils.localDateTimeToString(reservation.getStartDate()))
+                .endDate(StringUtils.localDateTimeToString(reservation.getEndDate()))
                 .build();
     }
 

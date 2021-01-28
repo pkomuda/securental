@@ -1,9 +1,9 @@
-package pl.lodz.p.it.securental.dto.mor;
+package pl.lodz.p.it.securental.dto.model.mor;
 
 import lombok.Builder;
 import lombok.Data;
-import pl.lodz.p.it.securental.dto.mok.ClientDto;
-import pl.lodz.p.it.securental.dto.mop.CarDto;
+import pl.lodz.p.it.securental.dto.model.mok.ClientDto;
+import pl.lodz.p.it.securental.dto.model.mop.CarDto;
 
 @Builder
 public @Data class ReservationDto {

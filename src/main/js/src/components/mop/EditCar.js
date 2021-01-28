@@ -44,7 +44,7 @@ export const EditCar = props => {
     };
 
     useEffect(() => {
-        axios.get(`/car/${props.match.params.number}`)
+        axios.get(`/carToEdit/${props.match.params.number}`)
             .then(response => {
                 setCar(response.data);
                 setLoaded(true);

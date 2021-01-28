@@ -1,6 +1,6 @@
 package pl.lodz.p.it.securental.adapters.mok;
 
-import pl.lodz.p.it.securental.dto.mok.ClientDto;
+import pl.lodz.p.it.securental.dto.model.mok.ClientDto;
 import pl.lodz.p.it.securental.entities.mok.Client;
 
 public class ClientMapper {

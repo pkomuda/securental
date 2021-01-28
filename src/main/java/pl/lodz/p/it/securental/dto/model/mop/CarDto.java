@@ -1,9 +1,9 @@
-package pl.lodz.p.it.securental.dto.mop;
+package pl.lodz.p.it.securental.dto.model.mop;
 
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
-import pl.lodz.p.it.securental.dto.mor.ReservationDto;
+import pl.lodz.p.it.securental.dto.model.mor.ReservationDto;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package pl.lodz.p.it.securental.controllers.mor;
 
 import org.springframework.data.domain.Page;
-import pl.lodz.p.it.securental.dto.mor.ReservationDto;
+import pl.lodz.p.it.securental.dto.model.mor.ReservationDto;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 
 public interface ReservationController {

@@ -6,7 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.securental.aop.annotations.NeverTransaction;
 import pl.lodz.p.it.securental.controllers.mop.CarController;
-import pl.lodz.p.it.securental.dto.mop.CarDto;
+import pl.lodz.p.it.securental.dto.model.mop.CarDto;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.services.mop.CarService;
 import pl.lodz.p.it.securental.utils.PagingHelper;
@@ -30,6 +30,13 @@ public class CarControllerImpl implements CarController {
     @PreAuthorize("permitAll()")
     public CarDto getCar(@PathVariable String number) throws ApplicationBaseException {
         return carService.getCar(number);
+    }
+
+    @Override
+    @GetMapping("/carToEdit/{number}")
+    @PreAuthorize("hasAuthority('getCarToEdit')")
+    public CarDto getCarToEdit(@PathVariable String number) throws ApplicationBaseException {
+        return carService.getCarToEdit(number);
     }
 
     @Override
