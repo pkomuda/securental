@@ -3,6 +3,7 @@
   "navigation.next": "Dalej",
   "navigation.submit": "Zatwierdź",
   "navigation.ok": "OK",
+  "navigation.cancel": "Anuluj",
   "navigation.edit": "Edytuj",
   "navigation.details": "Szczegóły",
   "navigation.search": "Szukaj",
@@ -95,12 +96,19 @@
   "reservation.startDate": "Data rozpoczęcia",
   "reservation.endDate": "Data zakończenia",
   "reservation.price": "Cena",
+  "reservation.status": "Status",
   "reservation.time": "Czas",
   "reservation.clientName": "Imię i nazwisko klienta",
   "reservation.carMake": "Marka samochodu",
   "reservation.carModel": "Model samochodu",
   "reservation.unavailableDates": "Niedostępne daty",
 
+  "NEW": "Nowy",
+  "CANCELLED": "Anulowany",
+  "FINISHED": "Zakończony",
+
   "reservation.add.success": "Rezerwacja dodana pomyślnie",
-  "reservation.edit.success": "Rezerwacja edytowana pomyślnie"
+  "reservation.edit.success": "Rezerwacja edytowana pomyślnie",
+  "reservation.cancel.success": "Rezerwacja anulowana pomyślnie",
+  "reservation.status.change.success": "Status rezerwacji zmieniony pomyślnie"
 }

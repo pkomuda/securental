@@ -41,13 +41,6 @@ public class ReservationControllerImpl implements ReservationController {
         return reservationService.getOwnReservation(username, number);
     }
 
-    /*
-    //TODO
-    jako pracownik na szczegolach mozna zmienic status na anulowany lub zakonczony
-    jako klient na szczegolach mozna zmienic status na anulowany
-    jako klient w edycji mozna zmienic daty
-     */
-
     @Override
     @PutMapping("/reservation/{username}/{number}")
     @PreAuthorize("hasAuthority('editOwnReservation') and #username == authentication.principal.username")

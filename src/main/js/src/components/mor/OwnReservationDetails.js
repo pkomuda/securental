@@ -5,9 +5,9 @@ import React, { useContext, useEffect, useState } from "react";
 import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormControl, FormGroup, FormLabel, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
-import { handleError } from "../../utils/Alerts";
+import { handleError, handleSuccess } from "../../utils/Alerts";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
-import { CURRENCY } from "../../utils/Constants";
+import { CURRENCY, RESERVATION_STATUS_CANCELLED, RESERVATION_STATUS_NEW } from "../../utils/Constants";
 import { formatDate } from "../../utils/DateTime";
 import { FlatFormGroup } from "../common/FlatFormGroup";
 import { Spinner } from "../common/Spinner";
@@ -39,6 +39,27 @@ export const OwnReservationDetails = props => {
 
     FlatFormGroup.defaultProps = {
         values: reservation
+    };
+
+    const handleCancel = () => {
+        const tempReservation = {...reservation};
+        tempReservation.status = RESERVATION_STATUS_CANCELLED;
+        axios.put(`/reservationStatus/${userInfo.username}/${reservation.number}`, tempReservation)
+            .then(() => {
+                handleSuccess("reservation.cancel.success", "");
+                props.history.push("/listOwnReservations");
+            }).catch(error => {
+            handleError(error);
+        });
+    };
+
+    const renderCancelButton = () => {
+        if (reservation.status === RESERVATION_STATUS_NEW) {
+            return (
+                <Button id="cancel"
+                        onClick={handleCancel}>{t("navigation.cancel")}</Button>
+            );
+        }
     };
 
     if (loaded) {
@@ -87,6 +108,14 @@ export const OwnReservationDetails = props => {
                                                  plaintext/>
                                     <hr/>
                                 </FormGroup>
+                                <FormGroup>
+                                    <FormLabel className="flat-form-label">{t("reservation.status")}</FormLabel>
+                                    <FormControl id="car"
+                                                 value={t(reservation.status)}
+                                                 disabled
+                                                 plaintext/>
+                                    <hr/>
+                                </FormGroup>
                                 <FlatFormGroup id="price"
                                                label="reservation.price"
                                                suffix={CURRENCY}
@@ -95,6 +124,7 @@ export const OwnReservationDetails = props => {
                             <ButtonToolbar className="justify-content-center">
                                 <Button id="back"
                                         onClick={() => props.history.push("/listReservations")}>{t("navigation.back")}</Button>
+                                {renderCancelButton()}
                                 <Button id="edit"
                                         onClick={() => props.history.push(`/editOwnReservation/${reservation.number}`)}>{t("navigation.edit")}</Button>
                             </ButtonToolbar>

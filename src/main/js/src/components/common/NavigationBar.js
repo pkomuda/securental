@@ -76,6 +76,7 @@ export const NavigationBar = () => {
                                       onClick={() => {
                                           setUserInfo({...userInfo, currentAccessLevel: accessLevel});
                                           setCurrentAccessLevel(accessLevel);
+                                          history.push("/");
                                       }}>
                         {t(accessLevel)}
                     </NavDropdown.Item>

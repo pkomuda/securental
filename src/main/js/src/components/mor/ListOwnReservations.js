@@ -27,7 +27,8 @@ export const ListOwnReservations = props => {
     const columns = [{
         dataField: "number",
         text: t("reservation.number"),
-        sort: true
+        sort: true,
+        style: {wordBreak: "break-all"}
     }, {
         dataField: "carDto.make",
         text: t("reservation.carMake"),

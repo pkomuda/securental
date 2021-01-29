@@ -2,6 +2,10 @@ export const ACCESS_LEVEL_ADMIN = "ADMIN";
 export const ACCESS_LEVEL_EMPLOYEE = "EMPLOYEE";
 export const ACCESS_LEVEL_CLIENT = "CLIENT";
 
+export const RESERVATION_STATUS_NEW = "NEW";
+export const RESERVATION_STATUS_CANCELLED = "CANCELLED";
+export const RESERVATION_STATUS_FINISHED = "FINISHED";
+
 export const CURRENCY = "PLN";
 
 export const PAGINATION_SIZES = [{

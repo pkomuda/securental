@@ -25,7 +25,8 @@ export const ListReservations = props => {
     const columns = [{
         dataField: "number",
         text: t("reservation.number"),
-        sort: true
+        sort: true,
+        style: {wordBreak: "break-all"}
     }, {
         dataField: "clientDto.username",
         text: t("account.username"),
@@ -113,7 +114,7 @@ export const ListReservations = props => {
                                      value={filter}
                                      onChange={event => setFilter(event.target.value)}/>
                     </InputGroup>
-                    <BootstrapTable remote
+                    <BootstrapTable className="table-responsive" remote
                                     bootstrap4
                                     keyField="number"
                                     data={reservations}

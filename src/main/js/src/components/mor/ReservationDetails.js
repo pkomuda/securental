@@ -2,11 +2,11 @@ import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormControl, FormGroup, FormLabel, Row } from "react-bootstrap";
+import { Breadcrumb, Button, ButtonToolbar, Col, Container, Dropdown, DropdownButton, Form, FormControl, FormGroup, FormLabel, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
-import { handleError } from "../../utils/Alerts";
-import { CURRENCY } from "../../utils/Constants";
+import { handleError, handleSuccess } from "../../utils/Alerts";
+import { CURRENCY, RESERVATION_STATUS_CANCELLED, RESERVATION_STATUS_FINISHED, RESERVATION_STATUS_NEW } from "../../utils/Constants";
 import { formatDate } from "../../utils/DateTime";
 import { FlatFormGroup } from "../common/FlatFormGroup";
 import { Spinner } from "../common/Spinner";
@@ -37,6 +37,49 @@ export const ReservationDetails = props => {
 
     FlatFormGroup.defaultProps = {
         values: reservation
+    };
+
+    const handleChangeStatus = value => {
+        const tempReservation = {...reservation};
+        tempReservation.status = value;
+        axios.put(`/reservationStatus/${reservation.number}`, tempReservation)
+            .then(() => {
+                handleSuccess("reservation.status.change.success", "");
+                props.history.push("/listReservations");
+            }).catch(error => {
+                handleError(error);
+        });
+    };
+
+    const renderStatusList = () => {
+        const statuses = [];
+        statuses.push(
+            <Dropdown.Item onClick={() => handleChangeStatus(RESERVATION_STATUS_NEW)}
+                           disabled={reservation.status === RESERVATION_STATUS_NEW
+                           || reservation.status === RESERVATION_STATUS_CANCELLED
+                           || reservation.status === RESERVATION_STATUS_FINISHED}>{t(RESERVATION_STATUS_NEW)}</Dropdown.Item>
+        );
+        statuses.push(
+            <Dropdown.Item onClick={() => handleChangeStatus(RESERVATION_STATUS_CANCELLED)}
+                           disabled={reservation.status === RESERVATION_STATUS_CANCELLED
+                           || reservation.status === RESERVATION_STATUS_FINISHED}>{t(RESERVATION_STATUS_CANCELLED)}</Dropdown.Item>
+        );
+        statuses.push(
+            <Dropdown.Item onClick={() => handleChangeStatus(RESERVATION_STATUS_FINISHED)}
+                           disabled={reservation.status === RESERVATION_STATUS_FINISHED}>{t(RESERVATION_STATUS_FINISHED)}</Dropdown.Item>
+        );
+        return statuses;
+    };
+
+    const renderStatusButton = () => {
+        if (reservation.status !== RESERVATION_STATUS_FINISHED) {
+            return (
+                <DropdownButton id="statuses"
+                                title={t("reservation.status")}>
+                    {renderStatusList()}
+                </DropdownButton>
+            );
+        }
     };
 
     if (loaded) {
@@ -95,6 +138,14 @@ export const ReservationDetails = props => {
                                                  plaintext/>
                                     <hr/>
                                 </FormGroup>
+                                <FormGroup>
+                                    <FormLabel className="flat-form-label">{t("reservation.status")}</FormLabel>
+                                    <FormControl id="car"
+                                                 value={t(reservation.status)}
+                                                 disabled
+                                                 plaintext/>
+                                    <hr/>
+                                </FormGroup>
                                 <FlatFormGroup id="price"
                                                label="reservation.price"
                                                suffix={CURRENCY}
@@ -103,6 +154,7 @@ export const ReservationDetails = props => {
                             <ButtonToolbar className="justify-content-center">
                                 <Button id="back"
                                         onClick={() => props.history.push("/listReservations")}>{t("navigation.back")}</Button>
+                                {renderStatusButton()}
                                 <Button id="edit"
                                         onClick={() => props.history.push(`/editReservation/${reservation.number}`)}>{t("navigation.edit")}</Button>
                             </ButtonToolbar>

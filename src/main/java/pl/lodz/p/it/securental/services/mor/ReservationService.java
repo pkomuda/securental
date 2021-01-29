@@ -29,6 +29,8 @@ import pl.lodz.p.it.securental.utils.StringUtils;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -109,6 +111,7 @@ public class ReservationService {
             if (reservationOptional.isPresent()) {
                 Reservation reservation = reservationOptional.get();
                 if (signatureUtils.verify(reservation.toSignString(), reservationDto.getSignature())) {
+                    validateStatuses(reservation.getStatus().getName(), reservationDto.getStatus());
                     reservation.setStatus(getStatus(reservationDto.getStatus()));
                 } else {
                     throw new ApplicationOptimisticLockException();
@@ -210,6 +213,23 @@ public class ReservationService {
             throw new ReservationDateBeforeNowException();
         } else if (!reservation.getStartDate().isBefore(reservation.getEndDate())) {
             throw new ReservationStartNotBeforeEndException();
+        }
+    }
+
+    private List<String> getAvailableStatuses(String status) {
+        switch (status) {
+            case ApplicationProperties.RESERVATION_STATUS_NEW:
+                return List.of(ApplicationProperties.RESERVATION_STATUS_CANCELLED, ApplicationProperties.RESERVATION_STATUS_FINISHED);
+            case ApplicationProperties.RESERVATION_STATUS_CANCELLED:
+                return Collections.singletonList(ApplicationProperties.RESERVATION_STATUS_FINISHED);
+            default:
+                return Collections.emptyList();
+        }
+    }
+
+    private void validateStatuses(String reservationStatus, String reservationDtoStatus) throws ApplicationBaseException {
+        if (!getAvailableStatuses(reservationStatus).contains(reservationDtoStatus)) {
+            throw new IncorrectStatusException();
         }
     }
 
