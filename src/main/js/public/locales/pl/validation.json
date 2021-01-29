@@ -41,5 +41,6 @@
   "car.price.required": "Cena jest wymagana",
   "car.price.invalid": "Cena jest nieprawidłowa",
 
-  "reservation.dates.invalid": "Data rozpoczęcia musi być przed datą zakończenia"
+  "reservation.date.start.not.before.end": "Data rozpoczęcia musi być przed datą zakończenia",
+  "reservation.date.before.now": "Daty muszą być przyszłe"
 }

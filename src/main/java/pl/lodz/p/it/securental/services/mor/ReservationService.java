@@ -27,6 +27,7 @@ import pl.lodz.p.it.securental.utils.SignatureUtils;
 import pl.lodz.p.it.securental.utils.StringUtils;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
@@ -45,10 +46,7 @@ public class ReservationService {
     public void addReservation(String username, ReservationDto reservationDto) throws ApplicationBaseException {
         Reservation reservation = ReservationMapper.toReservation(reservationDto);
 
-        if (reservation.getStartDate().isAfter(reservation.getEndDate())
-                || reservation.getStartDate().isEqual(reservation.getEndDate())) {
-            throw new ReservationStartNotBeforeEndException();
-        }
+        validateDates(reservation);
 
         if (username.equals(reservationDto.getClientDto().getUsername())) {
             reservation.setClient(getClient(username));
@@ -202,6 +200,16 @@ public class ReservationService {
             return carOptional.get();
         } else {
             throw new CarNotFoundException();
+        }
+    }
+
+    private void validateDates(Reservation reservation) throws ApplicationBaseException {
+        LocalDateTime now = LocalDateTime.now();
+        if (!reservation.getStartDate().isAfter(now)
+                || !reservation.getEndDate().isAfter(now)) {
+            throw new ReservationDateBeforeNowException();
+        } else if (!reservation.getStartDate().isBefore(reservation.getEndDate())) {
+            throw new ReservationStartNotBeforeEndException();
         }
     }
 

@@ -11,7 +11,8 @@ import { LinkContainer } from "react-router-bootstrap";
 import { date, mixed, object, string } from "yup";
 import { handleError, handleSuccess } from "../../utils/Alerts";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
-import { hoursBetween, humanDate, isoDate, nearestFullHour } from "../../utils/DateTime";
+import { CURRENCY } from "../../utils/Constants";
+import { hoursBetween, formatDate, isoDate, nearestFullHour } from "../../utils/DateTime";
 import { isLanguagePolish } from "../../utils/i18n";
 import { validate } from "../../utils/Validation";
 import { EditFormGroup } from "../common/EditFormGroup";
@@ -46,7 +47,7 @@ export const AddReservation = props => {
         make: "",
         model: "",
         price: ""
-    })
+    });
     const [loaded, setLoaded] = useState(false);
     const [errors, setErrors] = useState({});
     EditFormGroup.defaultProps = {
@@ -80,15 +81,24 @@ export const AddReservation = props => {
         }
 
         setReservation(tempReservation);
-    }
+    };
 
     const validateDates = object => {
-        if (object.startDate.getTime() < object.endDate.getTime()) {
-            document.getElementById("datesFeedback").style.display = "none";
-            return true;
-        } else {
-            document.getElementById("datesFeedback").style.display = "block";
+        const now = new Date();
+        if (object.startDate.getTime() < now.getTime()
+            || object.endDate.getTime() < now.getTime()) {
+            document.getElementById("dateBeforeNowFeedback").style.display = "block";
+            document.getElementById("startNotBeforeEndFeedback").style.display = "none";
             return false;
+        } else {
+            document.getElementById("dateBeforeNowFeedback").style.display = "none";
+            if (object.startDate.getTime() < object.endDate.getTime()) {
+                document.getElementById("startNotBeforeEndFeedback").style.display = "none";
+                return true;
+            } else {
+                document.getElementById("startNotBeforeEndFeedback").style.display = "block";
+                return false;
+            }
         }
     };
 
@@ -113,7 +123,7 @@ export const AddReservation = props => {
     const renderUnavailableDates = () => {
         const dateStrings = [];
         for (let reservation of car.reservations) {
-            dateStrings.push(humanDate(reservation.startDate) + " - " + humanDate(reservation.endDate));
+            dateStrings.push(formatDate(reservation.startDate) + " - " + formatDate(reservation.endDate));
         }
 
         const dates = [];
@@ -157,7 +167,7 @@ export const AddReservation = props => {
                                 <FormGroup>
                                     <FormLabel className="font-weight-bold">{t("reservation.price")}</FormLabel>
                                     <FormControl id="price"
-                                                 value={`${reservation.price} PLN`}
+                                                 value={`${reservation.price} ${CURRENCY}`}
                                                  disabled
                                                  plaintext/>
                                     <hr/>
@@ -187,7 +197,8 @@ export const AddReservation = props => {
                                                     dateFormat="yyyy.MM.dd HH:mm"
                                                     timeIntervals={60}
                                                     showTimeSelect/>
-                                        <p id="datesFeedback" className="invalid" style={{display: "none"}}>{t("validation:reservation.dates.invalid")}</p>
+                                        <p id="dateBeforeNowFeedback" className="invalid" style={{display: "none"}}>{t("validation:reservation.date.before.now")}</p>
+                                        <p id="startNotBeforeEndFeedback" className="invalid" style={{display: "none"}}>{t("validation:reservation.date.start.not.before.end")}</p>
                                     </div>
                                 </FormGroup>
                             </Form>

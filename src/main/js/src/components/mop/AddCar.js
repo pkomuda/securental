@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import { bool, object, string } from "yup";
 import { handleError, handleSuccess } from "../../utils/Alerts";
+import { CURRENCY } from "../../utils/Constants";
 import { MONEY_REGEX, STRING_REGEX, validate, YEAR_REGEX } from "../../utils/Validation";
 import { EditFormGroup } from "../common/EditFormGroup";
 
@@ -85,9 +86,9 @@ export const AddCar = props => {
                                            type="number"
                                            required/>
                             <EditFormGroup id="price"
-                                           label="car.price"
+                                           label="car.details.price"
                                            type="number"
-                                           suffix="PLN"
+                                           suffix={CURRENCY}
                                            required/>
                             <FormGroup>
                                 <FormLabel className="font-weight-bold">{t("car.activity")}</FormLabel>

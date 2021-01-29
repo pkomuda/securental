@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import { handleError } from "../../utils/Alerts";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
-import { ACCESS_LEVEL_CLIENT, ACCESS_LEVEL_EMPLOYEE } from "../../utils/Constants";
+import { ACCESS_LEVEL_CLIENT, ACCESS_LEVEL_EMPLOYEE, CURRENCY } from "../../utils/Constants";
 import { FlatFormGroup } from "../common/FlatFormGroup";
 import { Spinner } from "../common/Spinner";
 
@@ -53,7 +53,7 @@ export const CarDetails = props => {
             return <Button id="edit"
                            onClick={() => props.history.push(`/editCar/${car.number}`)}>{t("navigation.edit")}</Button>;
         }
-    }
+    };
 
     if (loaded) {
         return (
@@ -84,8 +84,8 @@ export const CarDetails = props => {
                                 <FlatFormGroup id="productionYear"
                                                label="car.productionYear"/>
                                 <FlatFormGroup id="price"
-                                               label="car.price"
-                                               suffix="PLN"/>
+                                               label="car.details.price"
+                                               suffix={CURRENCY}/>
                                 <FormGroup>
                                     <FormLabel className="flat-form-label">{t("car.activity")}</FormLabel>
                                     <FormControl id="active"

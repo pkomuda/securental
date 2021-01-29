@@ -1,4 +1,4 @@
-export const humanDate = date => {
+export const formatDate = date => {
     return date.substring(0, 16).replaceAll("-", ".").replace("T", " ");
 }
 

@@ -7,7 +7,8 @@ import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import { handleError } from "../../utils/Alerts";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
-import { humanDate } from "../../utils/DateTime";
+import { CURRENCY } from "../../utils/Constants";
+import { formatDate } from "../../utils/DateTime";
 import { FlatFormGroup } from "../common/FlatFormGroup";
 import { Spinner } from "../common/Spinner";
 
@@ -73,7 +74,7 @@ export const OwnReservationDetails = props => {
                                 <FormGroup>
                                     <FormLabel className="flat-form-label">{t("reservation.startDate")}</FormLabel>
                                     <FormControl id="car"
-                                                 value={humanDate(reservation.startDate)}
+                                                 value={formatDate(reservation.startDate)}
                                                  disabled
                                                  plaintext/>
                                     <hr/>
@@ -81,14 +82,14 @@ export const OwnReservationDetails = props => {
                                 <FormGroup>
                                     <FormLabel className="flat-form-label">{t("reservation.endDate")}</FormLabel>
                                     <FormControl id="car"
-                                                 value={humanDate(reservation.endDate)}
+                                                 value={formatDate(reservation.endDate)}
                                                  disabled
                                                  plaintext/>
                                     <hr/>
                                 </FormGroup>
                                 <FlatFormGroup id="price"
                                                label="reservation.price"
-                                               suffix="PLN"
+                                               suffix={CURRENCY}
                                                last/>
                             </Form>
                             <ButtonToolbar className="justify-content-center">

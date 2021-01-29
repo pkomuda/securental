@@ -8,7 +8,8 @@ import paginationFactory from 'react-bootstrap-table2-paginator';
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from 'react-router-bootstrap';
 import { handleError } from "../../utils/Alerts";
-import { PAGINATION_SIZES } from "../../utils/Constants";
+import { CURRENCY, PAGINATION_SIZES } from "../../utils/Constants";
+import { formatDecimal } from "../../utils/i18n";
 import { Spinner } from "../common/Spinner";
 
 export const ListCars = props => {
@@ -36,10 +37,10 @@ export const ListCars = props => {
         sort: true
     }, {
         dataField: "price",
-        text: t("car.price"),
+        text: t("car.list.price"),
         sort: true,
         formatter: (cell, row) => {
-            return `${row["price"]} PLN`;
+            return `${formatDecimal(row["price"])} ${CURRENCY}`;
         }
     }, {
         dataField: "details",

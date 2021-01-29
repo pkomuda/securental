@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { object, string } from "yup";
 import { handleError, handleSuccess } from "../../utils/Alerts";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
-import { humanDate } from "../../utils/DateTime";
+import { formatDate } from "../../utils/DateTime";
 import { EditFormGroup } from "../common/EditFormGroup";
 
 export const Login = props => {
@@ -50,7 +50,7 @@ export const Login = props => {
             const tempAuthRequest = {...authRequest};
             const tempCharacters = tempAuthRequest.characters;
             if (currentIndex === tempAuthRequest.combination.length - 1) {
-                if (!!tempCharacters[currentIndex]) {
+                if (tempCharacters[currentIndex]) {
                     tempCharacters[currentIndex] = "";
                     tempAuthRequest.characters = tempCharacters;
                     setAuthRequest(tempAuthRequest);
@@ -118,8 +118,8 @@ export const Login = props => {
         axios.post("/login", tempAuthRequest)
             .then(response => {
                 setUserInfo(response.data);
-                const text = t("login.last.success") + humanDate(response.data.lastSuccessfulAuthentication)
-                    + "\n" + t("login.last.failure") + humanDate(response.data.lastFailedAuthentication);
+                const text = t("login.last.success") + formatDate(response.data.lastSuccessfulAuthentication)
+                    + "\n" + t("login.last.failure") + formatDate(response.data.lastFailedAuthentication);
                 handleSuccess("navigation.success", text);
                 props.history.push("/");
             }).catch(error => {

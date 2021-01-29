@@ -1,10 +1,20 @@
 import React from "react";
 import { FormControl, FormGroup, FormLabel } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
+import { CURRENCY } from "../../utils/Constants";
+import { formatDecimal } from "../../utils/i18n";
 
 export const FlatFormGroup = props => {
 
     const {t} = useTranslation();
+
+    const value = () => {
+        if (props.suffix === CURRENCY) {
+            return formatDecimal(property()) + suffix();
+        } else {
+            return property() + suffix();
+        }
+    };
 
     const property = () => {
         if (props.id.includes(".")) {
@@ -26,7 +36,7 @@ export const FlatFormGroup = props => {
         <FormGroup>
             <FormLabel className="flat-form-label">{t(`${props.label}`)}</FormLabel>
             <FormControl id={props.id}
-                         value={property() + suffix()}
+                         value={value()}
                          disabled
                          plaintext/>
             {!props.last && <hr/>}

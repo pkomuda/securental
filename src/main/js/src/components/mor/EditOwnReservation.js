@@ -11,6 +11,7 @@ import { LinkContainer } from "react-router-bootstrap";
 import { date, mixed, object, string } from "yup";
 import { handleError, handleSuccess } from "../../utils/Alerts";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
+import { CURRENCY } from "../../utils/Constants";
 import { getDateFormat, getTimeFormat, hoursBetween, isoDate, nearestFullHour } from "../../utils/DateTime";
 import { getLocale, isLanguagePolish } from "../../utils/i18n";
 import { validate } from "../../utils/Validation";
@@ -60,12 +61,27 @@ export const EditOwnReservation = props => {
         });
     }, [props.match.params.number, t, userInfo.username]);
 
+    const validateDates = object => {
+        const now = new Date();
+        if (object.startDate.getTime() < now.getTime()
+            || object.endDate.getTime() < now.getTime()) {
+            document.getElementById("dateBeforeNowFeedback").style.display = "block";
+            document.getElementById("startNotBeforeEndFeedback").style.display = "none";
+            return false;
+        } else {
+            document.getElementById("dateBeforeNowFeedback").style.display = "none";
+            if (object.startDate.getTime() < object.endDate.getTime()) {
+                document.getElementById("startNotBeforeEndFeedback").style.display = "none";
+                return true;
+            } else {
+                document.getElementById("startNotBeforeEndFeedback").style.display = "block";
+                return false;
+            }
+        }
+    };
+
     const handleSubmit = () => {
-        // const tempReservation = {...reservation};
-        // console.log(tempReservation.startDate);
-        // console.log(tempReservation.startDate.toDateString());
-        // console.log(tempReservation.startDate.toISOString());
-        if (validate(reservation, errors, setErrors, schema)) {
+        if (!!(validate(reservation, errors, setErrors, schema) & validateDates(reservation))) {
             const tempReservation = {...reservation};
             tempReservation.startDate = isoDate(tempReservation.startDate);
             tempReservation.endDate = isoDate(tempReservation.endDate);
@@ -74,7 +90,7 @@ export const EditOwnReservation = props => {
             axios.put(`/reservation/${userInfo.username}/${tempReservation.number}`, tempReservation)
                 .then(() => {
                     handleSuccess("reservation.edit.success", "");
-                    // props.history.push(`/ownReservationDetails/${tempReservation.number}`);
+                    props.history.push(`/ownReservationDetails/${tempReservation.number}`);
                 }).catch(error => {
                     handleError(error);
             });
@@ -130,7 +146,7 @@ export const EditOwnReservation = props => {
                                 </FormGroup>
                                 <FlatFormGroup id="price"
                                                label="reservation.price"
-                                               suffix="PLN"/>
+                                               suffix={CURRENCY}/>
                                 <FormGroup>
                                     <FormLabel className="font-weight-bold">{t("reservation.startDate")}</FormLabel>
                                     <div>
@@ -156,6 +172,8 @@ export const EditOwnReservation = props => {
                                                     timeFormat={getTimeFormat()}
                                                     timeIntervals={60}
                                                     showTimeSelect/>
+                                        <p id="dateBeforeNowFeedback" className="invalid" style={{display: "none"}}>{t("validation:reservation.date.before.now")}</p>
+                                        <p id="startNotBeforeEndFeedback" className="invalid" style={{display: "none"}}>{t("validation:reservation.date.start.not.before.end")}</p>
                                     </div>
                                 </FormGroup>
                             </Form>

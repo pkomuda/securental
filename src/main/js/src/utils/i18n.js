@@ -9,7 +9,15 @@ export const isLanguagePolish = () => {
 
 export const getLocale = () => {
     return isLanguagePolish() ? "pl" : "en";
-}
+};
+
+export const formatDecimal = value => {
+    if (isLanguagePolish()) {
+        return value.replace(".", ",");
+    } else {
+        return value;
+    }
+};
 
 i18n.use(initReactI18next)
     .use(Backend)
