@@ -9,8 +9,8 @@ import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleException(Exception e) {
+    @ExceptionHandler(Throwable.class)
+    public ResponseEntity<String> handleException(Throwable e) {
         if (e instanceof ApplicationBaseException) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)

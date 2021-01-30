@@ -44,6 +44,7 @@ export const CarDetails = props => {
     const clientButtons = () => {
         if (userInfo.currentAccessLevel === ACCESS_LEVEL_CLIENT) {
             return <Button id="reserve"
+                           disabled={!car.active}
                            onClick={() => props.history.push(`/addReservation/${car.number}`)}>{t("reservation.reserve")}</Button>;
         }
     };

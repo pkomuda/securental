@@ -96,7 +96,7 @@ public final class StringUtils {
     }
 
     public static BigDecimal stringToBigDecimal(String amount) {
-        return new BigDecimal(amount, new MathContext(2, RoundingMode.HALF_UP));
+        return new BigDecimal(amount).setScale(2, RoundingMode.HALF_UP);
     }
 
     public static String bigDecimalToString(BigDecimal amount) {

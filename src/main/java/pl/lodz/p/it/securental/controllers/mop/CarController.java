@@ -8,7 +8,6 @@ public interface CarController {
 
     void addCar(CarDto carDto) throws ApplicationBaseException;
     CarDto getCar(String number) throws ApplicationBaseException;
-    CarDto getCarToEdit(String number) throws ApplicationBaseException;
     void editCar(String number, CarDto carDto) throws ApplicationBaseException;
     Page<CarDto> getAllCars(int page, int size) throws ApplicationBaseException;
     Page<CarDto> getSortedCars(int page, int size, String property, String order) throws ApplicationBaseException;

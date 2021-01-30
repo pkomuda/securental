@@ -57,7 +57,16 @@ public class ReservationService {
         }
 
         Car car = getCar(reservationDto.getCarDto().getNumber());
-        reservation.setCar(car);
+        if (signatureUtils.verify(car.toSignString(), reservationDto.getCarDto().getSignature())) {
+            if (car.isActive()) {
+                reservation.setCar(car);
+            } else {
+                throw new CarInactiveException();
+            }
+        } else {
+            throw new ApplicationOptimisticLockException();
+        }
+
         reservation.setStatus(getStatus(ApplicationProperties.RESERVATION_STATUS_NEW));
         reservation.setPrice(calculateReservationPrice(reservation));
         reservation.setNumber(StringUtils.randomBase64Url());
@@ -89,11 +98,16 @@ public class ReservationService {
             Optional<Reservation> reservationOptional = reservationAdapter.getOwnReservation(username, number);
             if (reservationOptional.isPresent()) {
                 Reservation reservation = reservationOptional.get();
+                Car car = getCar(reservationDto.getCarDto().getNumber());
                 if (signatureUtils.verify(reservation.toSignString(), reservationDto.getSignature())) {
                     Reservation temp = ReservationMapper.toReservation(reservationDto);
-                    reservation.setStartDate(temp.getStartDate());
-                    reservation.setEndDate(temp.getEndDate());
-                    reservation.setPrice(calculateReservationPrice(reservation));
+                    if (signatureUtils.verify(car.toSignString(), reservationDto.getCarDto().getSignature())) {
+                        reservation.setStartDate(temp.getStartDate());
+                        reservation.setEndDate(temp.getEndDate());
+                        reservation.setPrice(calculateReservationPrice(reservation));
+                    } else {
+                        throw new ApplicationOptimisticLockException();
+                    }
                 } else {
                     throw new ApplicationOptimisticLockException();
                 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import pl.lodz.p.it.securental.aop.annotations.CaptchaRequired;
 import pl.lodz.p.it.securental.aop.annotations.NeverTransaction;
 import pl.lodz.p.it.securental.controllers.mop.CarController;
 import pl.lodz.p.it.securental.dto.model.mop.CarDto;
@@ -33,13 +34,7 @@ public class CarControllerImpl implements CarController {
     }
 
     @Override
-    @GetMapping("/carToEdit/{number}")
-    @PreAuthorize("hasAuthority('getCarToEdit')")
-    public CarDto getCarToEdit(@PathVariable String number) throws ApplicationBaseException {
-        return carService.getCarToEdit(number);
-    }
-
-    @Override
+    @CaptchaRequired
     @PutMapping("/editCar/{number}")
     @PreAuthorize("hasAuthority('editCar')")
     public void editCar(@PathVariable String number,

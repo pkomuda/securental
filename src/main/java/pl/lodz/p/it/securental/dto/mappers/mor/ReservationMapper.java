@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ReservationMapper {
 
+    private final CarMapper carMapper;
     private final SignatureUtils signatureUtils;
 
     public static Reservation toReservation(ReservationDto reservationDto) {
@@ -35,7 +36,7 @@ public class ReservationMapper {
                 .price(StringUtils.bigDecimalToString(reservation.getPrice()))
                 .status(reservation.getStatus().getName())
                 .clientDto(ClientMapper.toClientDto(reservation.getClient()))
-                .carDto(CarMapper.toCarDtoWithoutSignature(reservation.getCar()))
+                .carDto(carMapper.toCarDtoWithSignature(reservation.getCar()))
                 .signature(signatureUtils.sign(reservation.toSignString()))
                 .build();
     }
@@ -49,17 +50,6 @@ public class ReservationMapper {
                 .status(reservation.getStatus().getName())
                 .clientDto(ClientMapper.toClientDto(reservation.getClient()))
                 .carDto(CarMapper.toCarDtoWithoutSignature(reservation.getCar()))
-                .build();
-    }
-
-    public static ReservationDto toReservationDtoWithoutCar(Reservation reservation) {
-        return ReservationDto.builder()
-                .number(reservation.getNumber())
-                .startDate(StringUtils.localDateTimeToString(reservation.getStartDate()))
-                .endDate(StringUtils.localDateTimeToString(reservation.getEndDate()))
-                .price(StringUtils.bigDecimalToString(reservation.getPrice()))
-                .status(reservation.getStatus().getName())
-                .clientDto(ClientMapper.toClientDto(reservation.getClient()))
                 .build();
     }
 

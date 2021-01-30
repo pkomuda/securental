@@ -44,25 +44,12 @@ public class CarMapper {
                 .productionYear(car.getProductionYear())
                 .price(StringUtils.bigDecimalToString(car.getPrice()))
                 .active(car.isActive())
-                .reservations(toReservationDtos(car.getReservations()))
+                .reservations(toReservationDtosWithDatesOnly(car.getReservations()))
                 .signature(signatureUtils.sign(car.toSignString()))
                 .build();
     }
 
     public static CarDto toCarDtoWithoutSignature(Car car) {
-        return CarDto.builder()
-                .number(car.getNumber())
-                .make(car.getMake())
-                .model(car.getModel())
-                .description(car.getDescription())
-                .productionYear(car.getProductionYear())
-                .price(StringUtils.bigDecimalToString(car.getPrice()))
-                .active(car.isActive())
-                .reservations(toReservationDtos(car.getReservations()))
-                .build();
-    }
-
-    public static CarDto toCarDtoWithReservationDatesOnly(Car car) {
         return CarDto.builder()
                 .number(car.getNumber())
                 .make(car.getMake())
@@ -77,16 +64,6 @@ public class CarMapper {
 
     public static Page<CarDto> toCarDtos(Page<Car> cars) {
         return cars.map(CarMapper::toCarDtoWithoutSignature);
-    }
-
-    public static Page<CarDto> toCarDtosWithReservationDatesOnly(Page<Car> cars) {
-        return cars.map(CarMapper::toCarDtoWithReservationDatesOnly);
-    }
-
-    private static List<ReservationDto> toReservationDtos(List<Reservation> reservations) {
-        return reservations.stream()
-                .map(ReservationMapper::toReservationDtoWithoutCar)
-                .collect(Collectors.toList());
     }
 
     private static List<ReservationDto> toReservationDtosWithDatesOnly(List<Reservation> reservations) {

@@ -29,6 +29,7 @@ public class ApplicationProperties {
     public static String ADMIN_PRINCIPAL;
     public static String[] ADMIN_ROLES;
     public static Integer AUTHENTICATION_TOKEN_EXPIRATION;
+    public static String CAPTCHA_SECRET_KEY;
     public static String[] CLIENT_ROLES;
     public static String[] EMPLOYEE_ROLES;
     public static Integer FAILED_AUTHENTICATION_MAX_COUNTER;
@@ -49,6 +50,7 @@ public class ApplicationProperties {
                                  @Value("${admin.principal}") String adminPrincipal,
                                  @Value("${admin.roles}") String adminRoles,
                                  @Value("${authentication.token.expiration}") Integer authenticationTokenExpiration,
+                                 @Value("${captcha.secret.key}") String captchaSecretKey,
                                  @Value("${client.roles}") String clientRoles,
                                  @Value("${employee.roles}") String employeeRoles,
                                  @Value("${failed.authentication.max.counter}") Integer failedAuthenticationMaxCounter,
@@ -67,6 +69,7 @@ public class ApplicationProperties {
         ADMIN_PRINCIPAL = adminPrincipal;
         ADMIN_ROLES = adminRoles.split(",");
         AUTHENTICATION_TOKEN_EXPIRATION = authenticationTokenExpiration;
+        CAPTCHA_SECRET_KEY = captchaSecretKey;
         CLIENT_ROLES = clientRoles.split(",");
         EMPLOYEE_ROLES = employeeRoles.split(",");
         FAILED_AUTHENTICATION_MAX_COUNTER = failedAuthenticationMaxCounter;

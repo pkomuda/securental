@@ -7,14 +7,16 @@ import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import { array, bool, object, string } from "yup";
 import { handleError, handleSuccess } from "../../utils/Alerts";
-import { CURRENCY } from "../../utils/Constants";
+import { CAPTCHA_SITE_KEY, CURRENCY } from "../../utils/Constants";
 import { MONEY_REGEX, STRING_REGEX, validate, YEAR_REGEX } from "../../utils/Validation";
 import { EditFormGroup } from "../common/EditFormGroup";
 import { Spinner } from "../common/Spinner";
+import ReCAPTCHA from "react-google-recaptcha";
 
 export const EditCar = props => {
 
     const {t} = useTranslation();
+    const [captcha, setCaptcha] = useState("");
     const schema = object().shape({
         number: string(),
         make: string().required("car.make.required").min(1, "car.make.min").max(32, "car.make.max").matches(STRING_REGEX, "car.make.invalid"),
@@ -45,7 +47,7 @@ export const EditCar = props => {
     };
 
     useEffect(() => {
-        axios.get(`/carToEdit/${props.match.params.number}`)
+        axios.get(`/car/${props.match.params.number}`)
             .then(response => {
                 setCar(response.data);
                 setLoaded(true);
@@ -59,11 +61,12 @@ export const EditCar = props => {
     };
 
     const handleSubmit = () => {
+        console.log(captcha);
         if (validate(car, errors, setErrors, schema)) {
             const tempCar = {...car};
             tempCar.productionYear = parseInt(tempCar.productionYear, 10);
             tempCar.price = tempCar.price.replaceAll(",", ".");
-            axios.put(`/editCar/${tempCar.number}`, tempCar)
+            axios.put(`/editCar/${tempCar.number}`, tempCar, {headers: {"Captcha-Response": captcha}})
                 .then(() => {
                     handleSuccess("car.edit.success", "");
                     props.history.push(`/carDetails/${tempCar.number}`);
@@ -123,6 +126,9 @@ export const EditCar = props => {
                                         onClick={() => props.history.goBack()}>{t("navigation.back")}</Button>
                                 <Button id="edit"
                                         onClick={handleSubmit}>{t("navigation.submit")}</Button>
+                                <ReCAPTCHA sitekey={CAPTCHA_SITE_KEY}
+                                           onChange={value => setCaptcha(value)}
+                                           style={{marginTop: "1em"}}/>
                             </ButtonToolbar>
                         </Col>
                     </Row>

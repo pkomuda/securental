@@ -86,13 +86,13 @@ export const EditOwnReservation = props => {
             tempReservation.startDate = isoDate(tempReservation.startDate);
             tempReservation.endDate = isoDate(tempReservation.endDate);
             tempReservation.price = tempReservation.price.replaceAll(",", ".");
-            console.log(tempReservation);
             axios.put(`/reservation/${userInfo.username}/${tempReservation.number}`, tempReservation)
                 .then(() => {
                     handleSuccess("reservation.edit.success", "");
                     props.history.push(`/ownReservationDetails/${tempReservation.number}`);
                 }).catch(error => {
                     handleError(error);
+                    props.history.push(`/ownReservationDetails/${tempReservation.number}`);
             });
         }
     };

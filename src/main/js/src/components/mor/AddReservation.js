@@ -109,7 +109,6 @@ export const AddReservation = props => {
             tempReservation.endDate = isoDate(tempReservation.endDate);
             tempReservation.price = tempReservation.price.replaceAll(",", ".");
             tempReservation.clientDto.username = userInfo.username;
-            tempReservation.carDto.number = car.number;
             axios.post(`/reservation/${userInfo.username}`, tempReservation)
                 .then(() => {
                     handleSuccess("reservation.add.success", "");

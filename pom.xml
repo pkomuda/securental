@@ -23,6 +23,7 @@
 		<frontend-maven-plugin.version>1.11.0</frontend-maven-plugin.version>
 		<node.version>v12.20.1</node.version>
 		<react.app.api>${react.app.api}</react.app.api>
+		<react.app.captcha.site.key>${react.app.captcha.site.key}</react.app.captcha.site.key>
 	</properties>
 
 	<dependencies>
@@ -170,6 +171,7 @@
 							<arguments>run build</arguments>
 							<environmentVariables>
 								<REACT_APP_API>${react.app.api}</REACT_APP_API>
+								<REACT_APP_CAPTCHA_SITE_KEY>${react.app.captcha.site.key}</REACT_APP_CAPTCHA_SITE_KEY>
 							</environmentVariables>
 						</configuration>
 					</execution>

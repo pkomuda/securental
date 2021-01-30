@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.client.RestTemplate;
 import pl.lodz.p.it.securental.adapters.mok.OtpCredentialsAdapter;
 import pl.lodz.p.it.securental.utils.ApplicationProperties;
 
@@ -37,5 +38,10 @@ public class BeanRegistry {
         DefaultCacheManager cacheManager = new DefaultCacheManager();
         cacheManager.defineConfiguration(ApplicationProperties.LOG_CACHE_NAME, new ConfigurationBuilder().build());
         return cacheManager.getCache(ApplicationProperties.LOG_CACHE_NAME);
+    }
+
+    @Bean
+    public RestTemplate restTemplateBean() {
+        return new RestTemplate();
     }
 }

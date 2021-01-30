@@ -6,6 +6,7 @@ export const RESERVATION_STATUS_NEW = "NEW";
 export const RESERVATION_STATUS_CANCELLED = "CANCELLED";
 export const RESERVATION_STATUS_FINISHED = "FINISHED";
 
+export const CAPTCHA_SITE_KEY = process.env.REACT_APP_CAPTCHA_SITE_KEY;
 export const CURRENCY = "PLN";
 
 export const PAGINATION_SIZES = [{

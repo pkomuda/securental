@@ -37,15 +37,6 @@ public class CarService {
     public CarDto getCar(String number) throws ApplicationBaseException {
         Optional<Car> carOptional = carAdapter.getCar(number);
         if (carOptional.isPresent()) {
-            return CarMapper.toCarDtoWithReservationDatesOnly(carOptional.get());
-        } else {
-            throw new CarNotFoundException();
-        }
-    }
-
-    public CarDto getCarToEdit(String number) throws ApplicationBaseException {
-        Optional<Car> carOptional = carAdapter.getCar(number);
-        if (carOptional.isPresent()) {
             return carMapper.toCarDtoWithSignature(carOptional.get());
         } else {
             throw new CarNotFoundException();
@@ -77,17 +68,17 @@ public class CarService {
 
     public Page<CarDto> getAllCars(PagingHelper pagingHelper) throws ApplicationBaseException {
         try {
-            return CarMapper.toCarDtosWithReservationDatesOnly(carAdapter.getAllCars(pagingHelper.withSorting()));
+            return CarMapper.toCarDtos(carAdapter.getAllCars(pagingHelper.withSorting()));
         } catch (PropertyNotFoundException e) {
-            return CarMapper.toCarDtosWithReservationDatesOnly(carAdapter.getAllCars(pagingHelper.withoutSorting()));
+            return CarMapper.toCarDtos(carAdapter.getAllCars(pagingHelper.withoutSorting()));
         }
     }
 
     public Page<CarDto> filterCars(String filter, PagingHelper pagingHelper) throws ApplicationBaseException {
         try {
-            return CarMapper.toCarDtosWithReservationDatesOnly(carAdapter.filterCars(filter, pagingHelper.withSorting()));
+            return CarMapper.toCarDtos(carAdapter.filterCars(filter, pagingHelper.withSorting()));
         } catch (PropertyNotFoundException e) {
-            return CarMapper.toCarDtosWithReservationDatesOnly(carAdapter.filterCars(filter, pagingHelper.withoutSorting()));
+            return CarMapper.toCarDtos(carAdapter.filterCars(filter, pagingHelper.withoutSorting()));
         }
     }
 }
