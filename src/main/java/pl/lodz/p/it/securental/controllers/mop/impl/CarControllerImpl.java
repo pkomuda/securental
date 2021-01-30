@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import pl.lodz.p.it.securental.aop.annotations.CaptchaRequired;
 import pl.lodz.p.it.securental.aop.annotations.NeverTransaction;
+import pl.lodz.p.it.securental.aop.annotations.OtpAuthorizationRequired;
 import pl.lodz.p.it.securental.controllers.mop.CarController;
 import pl.lodz.p.it.securental.dto.model.mop.CarDto;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
@@ -34,7 +34,7 @@ public class CarControllerImpl implements CarController {
     }
 
     @Override
-    @CaptchaRequired
+    @OtpAuthorizationRequired
     @PutMapping("/editCar/{number}")
     @PreAuthorize("hasAuthority('editCar')")
     public void editCar(@PathVariable String number,

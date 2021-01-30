@@ -6,12 +6,15 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { array, object, string } from "yup";
 import { handleError } from "../../utils/Alerts";
+import { CAPTCHA_SITE_KEY } from "../../utils/Constants";
 import { EMAIL_REGEX, validate } from "../../utils/Validation";
 import { EditFormGroup } from "../common/EditFormGroup";
+import ReCAPTCHA from "react-google-recaptcha";
 
 export const Register = props => {
 
     const {t} = useTranslation();
+    const [captcha, setCaptcha] = useState("");
     const popup = withReactContent(Swal);
     const schema = object().shape({
         username: string().required("account.username.required").min(1, "account.username.min").max(32, "account.username.max"),
@@ -48,9 +51,25 @@ export const Register = props => {
         }
     };
 
+    const handleChangeCaptcha = value => {
+        let temp = value;
+        setCaptcha(temp);
+        validateCaptcha(temp);
+    };
+
+    const validateCaptcha = value => {
+        if (value) {
+            document.getElementById("captchaFeedback").style.display = "none";
+            return true;
+        } else {
+            document.getElementById("captchaFeedback").style.display = "block";
+            return false;
+        }
+    };
+
     const handleSecondStage = () => {
-        if (validate({password: account.password}, errors, setErrors, schema)) {
-            axios.post("/register", account, {headers: {"Accept-Language": window.navigator.language}})
+        if (!!(validate({password: account.password}, errors, setErrors, schema) & validateCaptcha(captcha))) {
+            axios.post("/register", account, {headers: {"Accept-Language": window.navigator.language, "Captcha-Response": captcha}})
                 .then(response => {
                     const alerts = [];
                     alerts.push({
@@ -126,6 +145,10 @@ export const Register = props => {
                                 onClick={() => setStage(1)}>{t("navigation.back")}</Button>
                         <Button id="submit2"
                                 onClick={handleSecondStage}>{t("navigation.next")}</Button>
+                        <ReCAPTCHA sitekey={CAPTCHA_SITE_KEY}
+                                   onChange={handleChangeCaptcha}
+                                   style={{marginTop: "1em"}}/>
+                        <p id="captchaFeedback" className="invalid text-center" style={{display: "none"}}>{t("validation:captcha.required")}</p>
                     </ButtonToolbar>
                 </Col>
             );

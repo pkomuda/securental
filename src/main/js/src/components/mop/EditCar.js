@@ -5,18 +5,18 @@ import React, { useEffect, useState } from "react";
 import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormCheck, FormGroup, FormLabel, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
+import Swal from "sweetalert2";
 import { array, bool, object, string } from "yup";
 import { handleError, handleSuccess } from "../../utils/Alerts";
-import { CAPTCHA_SITE_KEY, CURRENCY } from "../../utils/Constants";
+import { CURRENCY } from "../../utils/Constants";
+import i18n from "../../utils/i18n";
 import { MONEY_REGEX, STRING_REGEX, validate, YEAR_REGEX } from "../../utils/Validation";
 import { EditFormGroup } from "../common/EditFormGroup";
 import { Spinner } from "../common/Spinner";
-import ReCAPTCHA from "react-google-recaptcha";
 
 export const EditCar = props => {
 
     const {t} = useTranslation();
-    const [captcha, setCaptcha] = useState("");
     const schema = object().shape({
         number: string(),
         make: string().required("car.make.required").min(1, "car.make.min").max(32, "car.make.max").matches(STRING_REGEX, "car.make.invalid"),
@@ -61,18 +61,23 @@ export const EditCar = props => {
     };
 
     const handleSubmit = () => {
-        console.log(captcha);
         if (validate(car, errors, setErrors, schema)) {
-            const tempCar = {...car};
-            tempCar.productionYear = parseInt(tempCar.productionYear, 10);
-            tempCar.price = tempCar.price.replaceAll(",", ".");
-            axios.put(`/editCar/${tempCar.number}`, tempCar, {headers: {"Captcha-Response": captcha}})
-                .then(() => {
-                    handleSuccess("car.edit.success", "");
-                    props.history.push(`/carDetails/${tempCar.number}`);
-                }).catch(error => {
-                    handleError(error);
-            });
+            Swal.fire({
+                titleText: i18n.t("login.otp.code"),
+                input: "password",
+                preConfirm: otpCode => {
+                    const tempCar = {...car};
+                    tempCar.productionYear = parseInt(tempCar.productionYear, 10);
+                    tempCar.price = tempCar.price.replaceAll(",", ".");
+                    axios.put(`/editCar/${tempCar.number}`, tempCar, {headers: {"Otp-Code": otpCode}})
+                        .then(() => {
+                            handleSuccess("car.edit.success", "");
+                            props.history.push(`/carDetails/${tempCar.number}`);
+                        }).catch(error => {
+                            handleError(error);
+                    });
+                }
+            }).then(() => {});
         }
     };
 
@@ -126,9 +131,6 @@ export const EditCar = props => {
                                         onClick={() => props.history.goBack()}>{t("navigation.back")}</Button>
                                 <Button id="edit"
                                         onClick={handleSubmit}>{t("navigation.submit")}</Button>
-                                <ReCAPTCHA sitekey={CAPTCHA_SITE_KEY}
-                                           onChange={value => setCaptcha(value)}
-                                           style={{marginTop: "1em"}}/>
                             </ButtonToolbar>
                         </Col>
                     </Row>

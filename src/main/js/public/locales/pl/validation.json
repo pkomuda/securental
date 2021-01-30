@@ -42,5 +42,7 @@
   "car.price.invalid": "Cena jest nieprawidłowa",
 
   "reservation.date.start.not.before.end": "Data rozpoczęcia musi być przed datą zakończenia",
-  "reservation.date.before.now": "Daty muszą być przyszłe"
+  "reservation.date.before.now": "Daty muszą być przyszłe",
+
+  "captcha.required": "Formularz reCAPTCHA musi być wypełniony"
 }

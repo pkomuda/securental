@@ -42,5 +42,7 @@
   "car.price.invalid": "Price is invalid",
 
   "reservation.date.start.not.before.end": "Start date must be before end date",
-  "reservation.date.before.now": "Dates must be in the future"
+  "reservation.date.before.now": "Dates must be in the future",
+
+  "captcha.required": "reCAPTCHA form must be filled out"
 }

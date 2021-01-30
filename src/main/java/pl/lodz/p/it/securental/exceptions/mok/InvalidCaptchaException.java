@@ -4,7 +4,7 @@ import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 
 public class InvalidCaptchaException extends ApplicationBaseException {
 
-    public static final String KEY_CAPTCHA_INVALID = "error.credentials.incorrect";
+    public static final String KEY_CAPTCHA_INVALID = "error.captcha.invalid";
 
     public InvalidCaptchaException() {
         super(KEY_CAPTCHA_INVALID);
