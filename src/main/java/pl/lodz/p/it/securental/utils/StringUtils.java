@@ -3,7 +3,6 @@ package pl.lodz.p.it.securental.utils;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
