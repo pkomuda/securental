@@ -125,3 +125,8 @@ th {
     margin-left: 1em;
     margin-right: 1em;
 }
+
+.captcha {
+    display: inline-block;
+    margin-top: 1em;
+}

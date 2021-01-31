@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { Breadcrumb, Button, ButtonToolbar, Col, Container, Dropdown, DropdownButton, Form, FormControl, FormGroup, FormLabel, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
+import Swal from "sweetalert2";
 import { handleError, handleSuccess } from "../../utils/Alerts";
 import { CURRENCY, RESERVATION_STATUS_CANCELLED, RESERVATION_STATUS_FINISHED, RESERVATION_STATUS_NEW } from "../../utils/Constants";
 import { formatDate } from "../../utils/DateTime";
@@ -40,15 +41,23 @@ export const ReservationDetails = props => {
     };
 
     const handleChangeStatus = value => {
-        const tempReservation = {...reservation};
-        tempReservation.status = value;
-        axios.put(`/reservationStatus/${reservation.number}`, tempReservation)
-            .then(() => {
-                handleSuccess("reservation.status.change.success", "");
-                props.history.push("/listReservations");
-            }).catch(error => {
-                handleError(error);
-        });
+        Swal.fire({
+            titleText: t("login.otp.code"),
+            input: "password",
+            preConfirm: otpCode => {
+                const tempReservation = {...reservation};
+                tempReservation.status = value;
+                axios.put(`/reservationStatus/${reservation.number}`,
+                    tempReservation,
+                    {headers: {"Otp-Code": otpCode}})
+                    .then(() => {
+                        handleSuccess("reservation.status.change.success", "");
+                        props.history.push("/listReservations");
+                    }).catch(error => {
+                    handleError(error);
+                });
+            }
+        }).then(() => {});
     };
 
     const renderStatusList = () => {

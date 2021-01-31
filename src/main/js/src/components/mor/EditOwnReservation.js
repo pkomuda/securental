@@ -8,6 +8,7 @@ import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormControl, F
 import DatePicker, { registerLocale } from "react-datepicker";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
+import Swal from "sweetalert2";
 import { date, mixed, object, string } from "yup";
 import { handleError, handleSuccess } from "../../utils/Alerts";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
@@ -82,18 +83,26 @@ export const EditOwnReservation = props => {
 
     const handleSubmit = () => {
         if (!!(validate(reservation, errors, setErrors, schema) & validateDates(reservation))) {
-            const tempReservation = {...reservation};
-            tempReservation.startDate = isoDate(tempReservation.startDate);
-            tempReservation.endDate = isoDate(tempReservation.endDate);
-            tempReservation.price = tempReservation.price.replaceAll(",", ".");
-            axios.put(`/reservation/${userInfo.username}/${tempReservation.number}`, tempReservation)
-                .then(() => {
-                    handleSuccess("reservation.edit.success", "");
-                    props.history.push(`/ownReservationDetails/${tempReservation.number}`);
-                }).catch(error => {
-                    handleError(error);
-                    props.history.push(`/ownReservationDetails/${tempReservation.number}`);
-            });
+            Swal.fire({
+                titleText: t("login.otp.code"),
+                input: "password",
+                preConfirm: otpCode => {
+                    const tempReservation = {...reservation};
+                    tempReservation.startDate = isoDate(tempReservation.startDate);
+                    tempReservation.endDate = isoDate(tempReservation.endDate);
+                    tempReservation.price = tempReservation.price.replaceAll(",", ".");
+                    axios.put(`/reservation/${userInfo.username}/${tempReservation.number}`,
+                        tempReservation,
+                        {headers: {"Otp-Code": otpCode}})
+                        .then(() => {
+                            handleSuccess("reservation.edit.success", "");
+                            props.history.push(`/ownReservationDetails/${tempReservation.number}`);
+                        }).catch(error => {
+                        handleError(error);
+                        props.history.push(`/ownReservationDetails/${tempReservation.number}`);
+                    });
+                }
+            }).then(() => {});
         }
     };
 

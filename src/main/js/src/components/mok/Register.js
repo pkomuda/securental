@@ -6,10 +6,9 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { array, object, string } from "yup";
 import { handleError } from "../../utils/Alerts";
-import { CAPTCHA_SITE_KEY } from "../../utils/Constants";
 import { EMAIL_REGEX, validate } from "../../utils/Validation";
+import { Captcha } from "../common/Captcha";
 import { EditFormGroup } from "../common/EditFormGroup";
-import ReCAPTCHA from "react-google-recaptcha";
 
 export const Register = props => {
 
@@ -69,7 +68,9 @@ export const Register = props => {
 
     const handleSecondStage = () => {
         if (!!(validate({password: account.password}, errors, setErrors, schema) & validateCaptcha(captcha))) {
-            axios.post("/register", account, {headers: {"Accept-Language": window.navigator.language, "Captcha-Response": captcha}})
+            axios.post("/register",
+                account,
+                {headers: {"Accept-Language": window.navigator.language, "Captcha-Response": captcha}})
                 .then(response => {
                     const alerts = [];
                     alerts.push({
@@ -145,11 +146,8 @@ export const Register = props => {
                                 onClick={() => setStage(1)}>{t("navigation.back")}</Button>
                         <Button id="submit2"
                                 onClick={handleSecondStage}>{t("navigation.next")}</Button>
-                        <ReCAPTCHA sitekey={CAPTCHA_SITE_KEY}
-                                   onChange={handleChangeCaptcha}
-                                   style={{marginTop: "1em"}}/>
-                        <p id="captchaFeedback" className="invalid text-center" style={{display: "none"}}>{t("validation:captcha.required")}</p>
                     </ButtonToolbar>
+                    <Captcha onChange={handleChangeCaptcha}/>
                 </Col>
             );
         }

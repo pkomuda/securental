@@ -9,7 +9,6 @@ import Swal from "sweetalert2";
 import { array, bool, object, string } from "yup";
 import { handleError, handleSuccess } from "../../utils/Alerts";
 import { CURRENCY } from "../../utils/Constants";
-import i18n from "../../utils/i18n";
 import { MONEY_REGEX, STRING_REGEX, validate, YEAR_REGEX } from "../../utils/Validation";
 import { EditFormGroup } from "../common/EditFormGroup";
 import { Spinner } from "../common/Spinner";
@@ -63,13 +62,15 @@ export const EditCar = props => {
     const handleSubmit = () => {
         if (validate(car, errors, setErrors, schema)) {
             Swal.fire({
-                titleText: i18n.t("login.otp.code"),
+                titleText: t("login.otp.code"),
                 input: "password",
                 preConfirm: otpCode => {
                     const tempCar = {...car};
                     tempCar.productionYear = parseInt(tempCar.productionYear, 10);
                     tempCar.price = tempCar.price.replaceAll(",", ".");
-                    axios.put(`/editCar/${tempCar.number}`, tempCar, {headers: {"Otp-Code": otpCode}})
+                    axios.put(`/editCar/${tempCar.number}`,
+                        tempCar,
+                        {headers: {"Otp-Code": otpCode}})
                         .then(() => {
                             handleSuccess("car.edit.success", "");
                             props.history.push(`/carDetails/${tempCar.number}`);

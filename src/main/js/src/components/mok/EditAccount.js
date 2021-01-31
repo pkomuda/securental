@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormCheck, FormGroup, FormLabel, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
+import Swal from "sweetalert2";
 import { array, bool, mixed, object, string } from "yup";
 import { handleError, handleSuccess } from "../../utils/Alerts";
 import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_CLIENT, ACCESS_LEVEL_EMPLOYEE } from "../../utils/Constants";
@@ -88,15 +89,23 @@ export const EditAccount = props => {
 
     const handleSubmit = () => {
         if (!!(validate(account, errors, setErrors, schema) & validateAccessLevels(accessLevels))) {
-            const tempAccount = {...account};
-            tempAccount.accessLevels = Object.keys(accessLevels).filter(key => accessLevels[key]);
-            axios.put(`/account/${tempAccount.username}`, tempAccount)
-                .then(() => {
-                    handleSuccess("account.edit.success", "");
-                    props.history.push(`/accountDetails/${tempAccount.username}`);
-                }).catch(error => {
-                    handleError(error);
-            });
+            Swal.fire({
+                titleText: t("login.otp.code"),
+                input: "password",
+                preConfirm: otpCode => {
+                    const tempAccount = {...account};
+                    tempAccount.accessLevels = Object.keys(accessLevels).filter(key => accessLevels[key]);
+                    axios.put(`/account/${tempAccount.username}`,
+                        tempAccount,
+                        {headers: {"Otp-Code": otpCode}})
+                        .then(() => {
+                            handleSuccess("account.edit.success", "");
+                            props.history.push(`/accountDetails/${tempAccount.username}`);
+                        }).catch(error => {
+                        handleError(error);
+                    });
+                }
+            }).then(() => {});
         }
     };
 

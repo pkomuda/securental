@@ -8,11 +8,12 @@ import { Breadcrumb, Button, ButtonToolbar, Col, Container, Dropdown, DropdownBu
 import DatePicker, { registerLocale } from "react-datepicker";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
+import Swal from "sweetalert2";
 import { date, mixed, object, string } from "yup";
 import { handleError, handleSuccess } from "../../utils/Alerts";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
 import { CURRENCY } from "../../utils/Constants";
-import { hoursBetween, formatDate, isoDate, nearestFullHour } from "../../utils/DateTime";
+import { formatDate, hoursBetween, isoDate, nearestFullHour } from "../../utils/DateTime";
 import { isLanguagePolish } from "../../utils/i18n";
 import { validate } from "../../utils/Validation";
 import { EditFormGroup } from "../common/EditFormGroup";
@@ -104,18 +105,26 @@ export const AddReservation = props => {
 
     const handleSubmit = () => {
         if (!!(validate(reservation, errors, setErrors, schema) & validateDates(reservation))) {
-            const tempReservation = {...reservation};
-            tempReservation.startDate = isoDate(tempReservation.startDate);
-            tempReservation.endDate = isoDate(tempReservation.endDate);
-            tempReservation.price = tempReservation.price.replaceAll(",", ".");
-            tempReservation.clientDto.username = userInfo.username;
-            axios.post(`/reservation/${userInfo.username}`, tempReservation)
-                .then(() => {
-                    handleSuccess("reservation.add.success", "");
-                    props.history.push(`/carDetails/${car.number}`);
-                }).catch(error => {
-                    handleError(error);
-            });
+            Swal.fire({
+                titleText: t("login.otp.code"),
+                input: "password",
+                preConfirm: otpCode => {
+                    const tempReservation = {...reservation};
+                    tempReservation.startDate = isoDate(tempReservation.startDate);
+                    tempReservation.endDate = isoDate(tempReservation.endDate);
+                    tempReservation.price = tempReservation.price.replaceAll(",", ".");
+                    tempReservation.clientDto.username = userInfo.username;
+                    axios.post(`/reservation/${userInfo.username}`,
+                        tempReservation,
+                        {headers: {"Otp-Code": otpCode}})
+                        .then(() => {
+                            handleSuccess("reservation.add.success", "");
+                            props.history.push(`/carDetails/${car.number}`);
+                        }).catch(error => {
+                        handleError(error);
+                    });
+                }
+            }).then(() => {});
         }
     };
 

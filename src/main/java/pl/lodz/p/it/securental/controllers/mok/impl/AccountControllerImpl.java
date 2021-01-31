@@ -6,6 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.securental.aop.annotations.CaptchaRequired;
 import pl.lodz.p.it.securental.aop.annotations.NeverTransaction;
+import pl.lodz.p.it.securental.aop.annotations.OtpAuthorizationRequired;
 import pl.lodz.p.it.securental.controllers.mok.AccountController;
 import pl.lodz.p.it.securental.dto.model.mok.AccountDto;
 import pl.lodz.p.it.securental.dto.model.mok.ConfirmAccountRequest;
@@ -46,6 +47,7 @@ public class AccountControllerImpl implements AccountController {
     }
 
     @Override
+    @CaptchaRequired
     @PutMapping("/confirmAccount")
     @PreAuthorize("permitAll()")
     public void confirmAccount(@RequestBody ConfirmAccountRequest confirmAccountRequest) throws ApplicationBaseException {
@@ -67,6 +69,7 @@ public class AccountControllerImpl implements AccountController {
     }
 
     @Override
+    @OtpAuthorizationRequired
     @PutMapping("/account/{username}")
     @PreAuthorize("hasAuthority('editAccount')")
     public void editAccount(@PathVariable String username,
@@ -75,6 +78,7 @@ public class AccountControllerImpl implements AccountController {
     }
 
     @Override
+    @OtpAuthorizationRequired
     @PutMapping("/ownAccount/{username}")
     @PreAuthorize("hasAuthority('editOwnAccount') and #username == authentication.principal.username")
     public void editOwnAccount(@PathVariable String username,

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.securental.aop.annotations.NeverTransaction;
+import pl.lodz.p.it.securental.aop.annotations.OtpAuthorizationRequired;
 import pl.lodz.p.it.securental.controllers.mor.ReservationController;
 import pl.lodz.p.it.securental.dto.model.mor.ReservationDto;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
@@ -19,6 +20,7 @@ public class ReservationControllerImpl implements ReservationController {
     private final ReservationService reservationService;
 
     @Override
+    @OtpAuthorizationRequired
     @PostMapping("/reservation/{username}")
     @PreAuthorize("hasAuthority('addReservation') and #username == authentication.principal.username")
     public void addReservation(@PathVariable String username,
@@ -42,6 +44,7 @@ public class ReservationControllerImpl implements ReservationController {
     }
 
     @Override
+    @OtpAuthorizationRequired
     @PutMapping("/reservation/{username}/{number}")
     @PreAuthorize("hasAuthority('editOwnReservation') and #username == authentication.principal.username")
     public void editOwnReservation(@PathVariable String username,
@@ -51,6 +54,7 @@ public class ReservationControllerImpl implements ReservationController {
     }
 
     @Override
+    @OtpAuthorizationRequired
     @PutMapping("/reservationStatus/{number}")
     @PreAuthorize("hasAuthority('changeReservationStatus')")
     public void changeReservationStatus(@PathVariable String number,
@@ -59,6 +63,7 @@ public class ReservationControllerImpl implements ReservationController {
     }
 
     @Override
+    @OtpAuthorizationRequired
     @PutMapping("/reservationStatus/{username}/{number}")
     @PreAuthorize("hasAuthority('changeOwnReservationStatus') and #username == authentication.principal.username")
     public void changeOwnReservationStatus(@PathVariable String username,

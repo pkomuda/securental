@@ -48,7 +48,9 @@ export const AddAccount = props => {
         if (!!(validate(account, errors, setErrors, schema) & validateAccessLevels(accessLevels))) {
             const tempAccount = {...account};
             tempAccount.accessLevels = Object.keys(accessLevels).filter(key => accessLevels[key]);
-            axios.post("/account", tempAccount, {withCredentials: true, headers: {"Accept-Language": window.navigator.language}})
+            axios.post("/account",
+                tempAccount,
+                {headers: {"Accept-Language": window.navigator.language}})
                 .then(() => {
                     handleSuccess("account.add.success", "");
                     props.history.push("/");

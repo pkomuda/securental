@@ -12,6 +12,8 @@ import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.services.mop.CarService;
 import pl.lodz.p.it.securental.utils.PagingHelper;
 
+import javax.validation.Valid;
+
 @RestController
 @AllArgsConstructor
 @NeverTransaction
@@ -38,7 +40,7 @@ public class CarControllerImpl implements CarController {
     @PutMapping("/editCar/{number}")
     @PreAuthorize("hasAuthority('editCar')")
     public void editCar(@PathVariable String number,
-                        @RequestBody CarDto carDto) throws ApplicationBaseException {
+                        @Valid @RequestBody CarDto carDto) throws ApplicationBaseException {
         carService.editCar(number, carDto);
     }
 

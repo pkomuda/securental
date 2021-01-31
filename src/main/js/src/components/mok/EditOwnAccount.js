@@ -5,6 +5,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormControl, FormGroup, FormLabel, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
+import Swal from "sweetalert2";
 import { array, bool, mixed, object, string } from "yup";
 import { handleError, handleSuccess } from "../../utils/Alerts";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
@@ -84,15 +85,23 @@ export const EditOwnAccount = props => {
 
     const handleSubmit = () => {
         if (!!(validate(account, errors, setErrors, schema) & validateAccessLevels(accessLevels))) {
-            const tempAccount = {...account};
-            tempAccount.accessLevels = Object.keys(accessLevels).filter(key => accessLevels[key]);
-            axios.put(`/ownAccount/${tempAccount.username}`, tempAccount)
-                .then(() => {
-                    handleSuccess("account.edit.success", "");
-                    props.history.push("/ownAccountDetails");
-                }).catch(error => {
-                    handleError(error);
-            });
+            Swal.fire({
+                titleText: t("login.otp.code"),
+                input: "password",
+                preConfirm: otpCode => {
+                    const tempAccount = {...account};
+                    tempAccount.accessLevels = Object.keys(accessLevels).filter(key => accessLevels[key]);
+                    axios.put(`/ownAccount/${tempAccount.username}`,
+                        tempAccount,
+                        {headers: {"Otp-Code": otpCode}})
+                        .then(() => {
+                            handleSuccess("account.edit.success", "");
+                            props.history.push("/ownAccountDetails");
+                        }).catch(error => {
+                        handleError(error);
+                    });
+                }
+            }).then(() => {});
         }
     };
 
