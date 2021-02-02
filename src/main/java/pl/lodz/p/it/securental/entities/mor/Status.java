@@ -1,7 +1,7 @@
 package pl.lodz.p.it.securental.entities.mor;
 
 import lombok.*;
-import pl.lodz.p.it.securental.entities.BaseAuditEntity;
+import pl.lodz.p.it.securental.entities.BaseEntity;
 
 import javax.persistence.Entity;
 
@@ -10,7 +10,7 @@ import javax.persistence.Entity;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
-public @Data class Status extends BaseAuditEntity {
+public @Data class Status extends BaseEntity {
 
     private String name;
 }

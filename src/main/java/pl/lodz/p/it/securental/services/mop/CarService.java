@@ -54,7 +54,7 @@ public class CarService {
                     car.setDescription(carDto.getDescription());
                     car.setProductionYear(carDto.getProductionYear());
                     car.setPrice(StringUtils.stringToBigDecimal(carDto.getPrice()));
-                    car.setActive(carDto.isActive());
+                    car.setActive(carDto.getActive());
                 } else {
                     throw new ApplicationOptimisticLockException();
                 }

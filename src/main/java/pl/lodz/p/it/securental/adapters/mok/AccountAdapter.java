@@ -47,6 +47,14 @@ public class AccountAdapter {
         }
     }
 
+    public Optional<Account> getAccountByResetPasswordTokenHash(String hash) throws ApplicationBaseException {
+        try {
+            return accountRepository.findByResetPasswordTokenHash(hash);
+        } catch (PersistenceException | DataAccessException e) {
+            throw new DatabaseConnectionException(e);
+        }
+    }
+
     public Page<Account> filterAccounts(String filter, Pageable pageable) throws ApplicationBaseException {
         try {
             return accountRepository.findAllByOtpCredentialsUsernameContainsIgnoreCaseOrEmailContainsIgnoreCaseOrFirstNameContainsIgnoreCaseOrLastNameContainsIgnoreCase(filter,

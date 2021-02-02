@@ -23,16 +23,19 @@
   "car.make.required": "Make is required",
   "car.make.min": "Make is too short",
   "car.make.max": "Make is too long",
+  "car.make.size": "Make should be between 1 and 32 characters",
   "car.make.invalid": "Make is invalid",
 
   "car.model.required": "Model is required",
   "car.model.min": "Model is too short",
   "car.model.max": "Model is too long",
+  "car.model.size": "Model should be between 1 and 32 characters",
   "car.model.invalid": "Model is invalid",
 
   "car.description.required": "Description is required",
   "car.description.min": "Description is too short",
   "car.description.max": "Description is too long",
+  "car.description.size": "Description should be between 1 and 255 characters",
   "car.description.invalid": "Description is invalid",
 
   "car.productionYear.required": "Production year is required",

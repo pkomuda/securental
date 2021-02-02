@@ -1,4 +1,4 @@
-package pl.lodz.p.it.securental.adapters.mok;
+package pl.lodz.p.it.securental.dto.mappers.mok;
 
 import pl.lodz.p.it.securental.dto.model.mok.ClientDto;
 import pl.lodz.p.it.securental.entities.mok.Client;

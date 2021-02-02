@@ -20,6 +20,7 @@ import { ListAccounts } from "./components/mok/ListAccounts";
 import { Login } from "./components/mok/Login";
 import { OwnAccountDetails } from "./components/mok/OwnAccountDetails";
 import { Register } from "./components/mok/Register";
+import { ResetPassword } from "./components/mok/ResetPassword";
 import { AddCar } from "./components/mop/AddCar";
 import { CarDetails } from "./components/mop/CarDetails";
 import { EditCar } from "./components/mop/EditCar";
@@ -77,6 +78,7 @@ export const App = () => {
                             <RestrictedRoute exact path="/login/:session?" component={Login}/>
                             <RestrictedRoute exact path="/register" component={Register}/>
                             <RestrictedRoute exact path="/confirmAccount/:token" component={ConfirmAccount}/>
+                            <RestrictedRoute exact path="/resetPassword/:hash" component={ResetPassword}/>
                             <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_EMPLOYEE, ACCESS_LEVEL_CLIENT]} exact path="/ownAccountDetails" component={OwnAccountDetails}/>
                             <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_EMPLOYEE, ACCESS_LEVEL_CLIENT]} exact path="/editOwnAccount" component={EditOwnAccount}/>
                             <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN]} exact path="/addAccount" component={AddAccount}/>

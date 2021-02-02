@@ -27,7 +27,7 @@ public @Data class Account extends BaseAuditEntity {
 
     @NotNull
     @Column(nullable = false)
-    private String fullPassword;
+    private String fullPassword; //TODO usunac
 
     @NotNull
     @Size(min = 1, max = 32)
@@ -41,21 +41,23 @@ public @Data class Account extends BaseAuditEntity {
 
     @NotNull
     @Column(nullable = false)
-    private boolean active;
+    private Boolean active;
 
     @NotNull
     @Column(nullable = false)
-    private boolean confirmed;
+    private Boolean confirmed;
 
-    private int loginInitializationCounter;
+    private Integer loginInitializationCounter;
 
-    private int failedAuthenticationCounter;
+    private Integer failedAuthenticationCounter;
 
     private String confirmationToken;
 
     private LocalDateTime lastSuccessfulAuthentication;
 
     private LocalDateTime lastFailedAuthentication;
+
+    private String lastAuthenticationIpAddress;
 
     @ToString.Exclude
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
@@ -67,8 +69,8 @@ public @Data class Account extends BaseAuditEntity {
     @OneToOne(cascade = CascadeType.PERSIST)
     private AuthenticationToken authenticationToken;
 
-//    @OneToOne
-//    private AuthenticationData authenticationData;
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private ResetPasswordToken resetPasswordToken;
 
     @OneToMany(cascade = CascadeType.PERSIST)
     private List<AccessLevel> accessLevels = new ArrayList<>();

@@ -30,7 +30,7 @@ public class CarMapper {
                 .description(carDto.getDescription())
                 .productionYear(carDto.getProductionYear())
                 .price(StringUtils.stringToBigDecimal(carDto.getPrice()))
-                .active(carDto.isActive())
+                .active(carDto.getActive())
                 .reservations(new ArrayList<>())
                 .build();
     }
@@ -43,7 +43,7 @@ public class CarMapper {
                 .description(car.getDescription())
                 .productionYear(car.getProductionYear())
                 .price(StringUtils.bigDecimalToString(car.getPrice()))
-                .active(car.isActive())
+                .active(car.getActive())
                 .reservations(toReservationDtosWithDatesOnly(car.getReservations()))
                 .signature(signatureUtils.sign(car.toSignString()))
                 .build();
@@ -57,7 +57,7 @@ public class CarMapper {
                 .description(car.getDescription())
                 .productionYear(car.getProductionYear())
                 .price(StringUtils.bigDecimalToString(car.getPrice()))
-                .active(car.isActive())
+                .active(car.getActive())
                 .reservations(toReservationDtosWithDatesOnly(car.getReservations()))
                 .build();
     }

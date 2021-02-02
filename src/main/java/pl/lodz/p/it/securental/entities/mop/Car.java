@@ -26,11 +26,11 @@ public @Data class Car extends BaseAuditEntity {
 
     private String description;
 
-    private int productionYear;
+    private Integer productionYear;
 
     private BigDecimal price;
 
-    private boolean active;
+    private Boolean active;
 
     @OneToMany
     @ToString.Exclude

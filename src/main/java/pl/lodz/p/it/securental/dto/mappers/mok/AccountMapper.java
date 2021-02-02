@@ -25,8 +25,8 @@ public class AccountMapper {
                 .fullPassword(accountDto.getPassword())
                 .firstName(accountDto.getFirstName())
                 .lastName(accountDto.getLastName())
-                .active(accountDto.isActive())
-                .confirmed(accountDto.isConfirmed())
+                .active(accountDto.getActive())
+                .confirmed(accountDto.getConfirmed())
                 .build();
         account.setAccessLevels(toAccessLevels(account, accountDto.getAccessLevels()));
         return account;
@@ -38,8 +38,8 @@ public class AccountMapper {
                 .email(account.getEmail())
                 .firstName(account.getFirstName())
                 .lastName(account.getLastName())
-                .active(account.isActive())
-                .confirmed(account.isConfirmed())
+                .active(account.getActive())
+                .confirmed(account.getConfirmed())
                 .accessLevels(toAccessLevelStrings(account.getAccessLevels()))
                 .signature(signatureUtils.sign(account.toSignString()))
                 .build();
@@ -51,8 +51,8 @@ public class AccountMapper {
                 .email(account.getEmail())
                 .firstName(account.getFirstName())
                 .lastName(account.getLastName())
-                .active(account.isActive())
-                .confirmed(account.isConfirmed())
+                .active(account.getActive())
+                .confirmed(account.getConfirmed())
                 .accessLevels(toAccessLevelStrings(account.getAccessLevels()))
                 .build();
     }
@@ -97,7 +97,7 @@ public class AccountMapper {
 
     private static List<String> toAccessLevelStrings(List<AccessLevel> accessLevels) {
         return accessLevels.stream()
-                .filter(AccessLevel::isActive)
+                .filter(AccessLevel::getActive)
                 .map(AccessLevel::getName)
                 .collect(Collectors.toList());
     }

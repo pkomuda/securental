@@ -2,6 +2,8 @@ import axios from "axios";
 import React, { useContext, useState } from "react";
 import { Button, ButtonToolbar, Col, Form, FormControl, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import { object, string } from "yup";
 import { handleError, handleSuccess } from "../../utils/Alerts";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
@@ -11,6 +13,7 @@ import { EditFormGroup } from "../common/EditFormGroup";
 export const Login = props => {
 
     const {t} = useTranslation();
+    const popup = withReactContent(Swal);
     const schema = object().shape({
         username: string().required("account.username.required").min(1, "account.username.min").max(32, "account.username.max"),
         otpCode: string().required("account.username.required").min(1, "account.username.min").max(32, "account.username.max")
@@ -118,9 +121,15 @@ export const Login = props => {
         axios.post("/login", tempAuthRequest)
             .then(response => {
                 setUserInfo(response.data);
-                const text = t("login.last.success") + formatDate(response.data.lastSuccessfulAuthentication)
-                    + "\n" + t("login.last.failure") + formatDate(response.data.lastFailedAuthentication);
-                handleSuccess("navigation.success", text);
+                popup.fire({
+                    titleText: t("navigation.success"),
+                    html:
+                        <div>
+                            <p>{t("login.last.success") + formatDate(response.data.lastSuccessfulAuthentication)}</p>
+                            <p>{t("login.last.failure") + formatDate(response.data.lastFailedAuthentication)}</p>
+                        </div>,
+                    icon: "success"
+                }).then(() => {});
                 props.history.push("/");
             }).catch(error => {
                 handleError(error);
@@ -163,6 +172,17 @@ export const Login = props => {
         }
     };
 
+    const handleForgotPassword = () => {
+        axios.put(`/initializeResetPassword/${authRequest.username}`, {}, {headers: {"Accept-Language": window.navigator.language}})
+            .then(() => {
+                handleSuccess("reset.mail.sent", "");
+                props.history.push("/");
+            }).catch(error => {
+                handleError(error);
+                props.history.push("/");
+        })
+    };
+
     const renderSecondStage = () => {
         if (stage === 2) {
             let boxes = [];
@@ -201,6 +221,9 @@ export const Login = props => {
                             <Button id="submit2"
                                     onClick={handleSecondStage}>{t("navigation.next")}</Button>
                         </ButtonToolbar>
+                        <a href="#"
+                           onClick={handleForgotPassword}
+                           className="text-center">{t("password.forgot")}</a>
                     </Form>
                 </div>
             );

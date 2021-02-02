@@ -45,10 +45,10 @@ public class UserDetailsServiceImpl {
                                 username,
                                 combination,
                                 maskedPassword.getHash(),
-                                account.isConfirmed(),
+                                account.getConfirmed(),
                                 true,
                                 true,
-                                account.isActive(),
+                                account.getActive(),
                                 getUserFrontendRoles(account));
 //                }
                 }
@@ -67,10 +67,10 @@ public class UserDetailsServiceImpl {
                     username,
                     null,
                     "",
-                    account.isConfirmed(),
+                    account.getConfirmed(),
                     true,
                     true,
-                    account.isActive(),
+                    account.getActive(),
                     getUserBackendRoles(account));
         }
     }
@@ -90,7 +90,7 @@ public class UserDetailsServiceImpl {
 
     private Set<String> getUserGroupNames(Account account) {
         return account.getAccessLevels().stream()
-                .filter(AccessLevel::isActive)
+                .filter(AccessLevel::getActive)
                 .map(AccessLevel::getName)
                 .collect(Collectors.toSet());
     }

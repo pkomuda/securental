@@ -9,6 +9,7 @@ import pl.lodz.p.it.securental.aop.annotations.NeverTransaction;
 import pl.lodz.p.it.securental.aop.annotations.OtpAuthorizationRequired;
 import pl.lodz.p.it.securental.controllers.mok.AccountController;
 import pl.lodz.p.it.securental.dto.model.mok.AccountDto;
+import pl.lodz.p.it.securental.dto.model.mok.ChangePasswordRequest;
 import pl.lodz.p.it.securental.dto.model.mok.ConfirmAccountRequest;
 import pl.lodz.p.it.securental.dto.model.mok.RegistrationResponse;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
@@ -122,6 +123,41 @@ public class AccountControllerImpl implements AccountController {
                                                  @PathVariable String property,
                                                  @PathVariable String order) throws ApplicationBaseException {
         return accountService.filterAccounts(filter, new PagingHelper(page, size, resolvePropertyName(property), order));
+    }
+
+    @Override
+    @PutMapping("/initializeResetPassword/{username}")
+    @PreAuthorize("permitAll()")
+    public void initializeResetPassword(@PathVariable String username,
+                                        @RequestHeader("Accept-Language") String language) throws ApplicationBaseException {
+        accountService.initializeResetPassword(username, language);
+    }
+
+    @Override
+    @OtpAuthorizationRequired
+    @PutMapping("/changePassword/{username}")
+    @PreAuthorize("hasAuthority('changePassword')")
+    public void changePassword(@PathVariable String username,
+                               @RequestBody ChangePasswordRequest changePasswordRequest) throws ApplicationBaseException {
+        accountService.changePassword(username, changePasswordRequest);
+    }
+
+    @Override
+    @OtpAuthorizationRequired
+    @PutMapping("/changeOwnPassword/{username}")
+    @PreAuthorize("hasAuthority('changeOwnPassword') and #username == authentication.principal.username")
+    public RegistrationResponse changeOwnPassword(@PathVariable String username,
+                                                  @RequestBody ChangePasswordRequest changePasswordRequest) throws ApplicationBaseException {
+        return accountService.changeOwnPassword(username, changePasswordRequest);
+    }
+
+    @Override
+    @CaptchaRequired
+    @PutMapping("/resetOwnPassword/{hash}")
+    @PreAuthorize("permitAll()")
+    public RegistrationResponse resetOwnPassword(@PathVariable String hash,
+                                                 @RequestBody ChangePasswordRequest changePasswordRequest) throws ApplicationBaseException {
+        return accountService.resetOwnPassword(hash, changePasswordRequest);
     }
 
     private String resolvePropertyName(String property) {

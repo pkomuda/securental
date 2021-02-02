@@ -51,14 +51,15 @@ public class ReservationService {
         validateDates(reservation);
 
         if (username.equals(reservationDto.getClientDto().getUsername())) {
-            reservation.setClient(getClient(username));
+            reservation.setClient(
+                    getClient(username));
         } else {
             throw new UsernameNotMatchingException();
         }
 
         Car car = getCar(reservationDto.getCarDto().getNumber());
         if (signatureUtils.verify(car.toSignString(), reservationDto.getCarDto().getSignature())) {
-            if (car.isActive()) {
+            if (car.getActive()) {
                 reservation.setCar(car);
             } else {
                 throw new CarInactiveException();
@@ -204,7 +205,7 @@ public class ReservationService {
 
     private Client getClient(String username) throws ApplicationBaseException {
         Optional<Client> clientOptional = accessLevelAdapter.getClient(username);
-        if (clientOptional.isPresent() && clientOptional.get().isActive()) {
+        if (clientOptional.isPresent() && clientOptional.get().getActive()) {
             return clientOptional.get();
         } else {
             throw new AccountNotFoundException();

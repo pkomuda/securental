@@ -14,31 +14,24 @@ import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.lodz.p.it.securental.adapters.BlacklistedJwtAdapter;
 import pl.lodz.p.it.securental.adapters.mok.AccountAdapter;
 import pl.lodz.p.it.securental.adapters.mok.OtpCredentialsAdapter;
 import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.dto.mappers.mok.AccountMapper;
 import pl.lodz.p.it.securental.dto.model.mok.AccountDto;
-import pl.lodz.p.it.securental.dto.model.mok.AuthenticationResponse;
+import pl.lodz.p.it.securental.dto.model.mok.ChangePasswordRequest;
 import pl.lodz.p.it.securental.dto.model.mok.RegistrationResponse;
-import pl.lodz.p.it.securental.entities.BlacklistedJwt;
 import pl.lodz.p.it.securental.entities.mok.*;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.ApplicationOptimisticLockException;
 import pl.lodz.p.it.securental.exceptions.db.PropertyNotFoundException;
-import pl.lodz.p.it.securental.exceptions.mok.AccountNotFoundException;
-import pl.lodz.p.it.securental.exceptions.mok.QrCodeGenerationException;
-import pl.lodz.p.it.securental.exceptions.mok.UsernameNotMatchingException;
+import pl.lodz.p.it.securental.exceptions.mok.*;
 import pl.lodz.p.it.securental.utils.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
@@ -50,7 +43,6 @@ public class AccountService {
     private final PasswordEncoder passwordEncoder;
     private final GoogleAuthenticator googleAuthenticator;
     private final OtpCredentialsAdapter otpCredentialsAdapter;
-    private final BlacklistedJwtAdapter blacklistedJwtAdapter;
     private final EmailSender emailSender;
     private final SignatureUtils signatureUtils;
     private final AccountMapper accountMapper;
@@ -75,6 +67,37 @@ public class AccountService {
         return maskedPasswords;
     }
 
+    private List<MaskedPassword> generateNewMaskedPasswords(String fullPassword, List<MaskedPassword> previous) throws ApplicationBaseException {
+        List<MaskedPassword> maskedPasswords = new ArrayList<>();
+        int[] maskedPasswordLengthRange = IntStream.rangeClosed(
+                ApplicationProperties.MASKED_PASSWORD_MIN_LENGTH,
+                ApplicationProperties.MASKED_PASSWORD_MAX_LENGTH)
+                .toArray();
+
+        for (int maskedPasswordLength : maskedPasswordLengthRange) {
+            Iterator<int[]> iterator = CombinatoricsUtils.combinationsIterator(ApplicationProperties.FULL_PASSWORD_LENGTH, maskedPasswordLength);
+            while (iterator.hasNext()) {
+                int[] combination = iterator.next();
+                MaskedPassword maskedPassword = new MaskedPassword();
+                String combinationString = StringUtils.integerArrayToString(combination);
+                String selectedCharacters = StringUtils.selectCharacters(fullPassword, combination);
+                for (MaskedPassword previousMaskedPassword : previous) {
+                    if (passwordEncoder.matches(combinationString, previousMaskedPassword.getCombination())) {
+                        if (passwordEncoder.matches(selectedCharacters, previousMaskedPassword.getHash())) {
+                            throw new PasswordAlreadyUsedException();
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                maskedPassword.setCombination(passwordEncoder.encode(combinationString));
+                maskedPassword.setHash(passwordEncoder.encode(selectedCharacters));
+                maskedPasswords.add(maskedPassword);
+            }
+        }
+        return maskedPasswords;
+    }
+
     public RegistrationResponse addAccount(AccountDto accountDto, String language) throws ApplicationBaseException {
         GoogleAuthenticatorKey key = googleAuthenticator.createCredentials(accountDto.getUsername());
         String lastPasswordCharacters = generateLastPasswordCharacters();
@@ -82,6 +105,7 @@ public class AccountService {
         account.setConfirmed(true);
         account.setCredentials(new Credentials(generateMaskedPasswords(accountDto.getPassword() + lastPasswordCharacters)));
         account.setAuthenticationToken(new AuthenticationToken(new ArrayList<>(), LocalDateTime.now()));
+        account.setResetPasswordToken(new ResetPasswordToken(LocalDateTime.now(), StringUtils.randomBase64Url(), true));
         if (otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).isPresent()) {
             account.setOtpCredentials(otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).get());
             String subject = StringUtils.getTranslatedText("created.subject", language);
@@ -105,12 +129,13 @@ public class AccountService {
         account.setConfirmationToken(StringUtils.randomBase64Url());
         account.setCredentials(new Credentials(generateMaskedPasswords(accountDto.getPassword() + lastPasswordCharacters)));
         account.setAuthenticationToken(new AuthenticationToken(new ArrayList<>(), LocalDateTime.now()));
+        account.setResetPasswordToken(new ResetPasswordToken(LocalDateTime.now(), StringUtils.randomBase64Url(), true));
         account.setAccessLevels(generateClientAccessLevels(account));
         if (otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).isPresent()) {
             account.setOtpCredentials(otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).get());
             String subject = StringUtils.getTranslatedText("confirm.subject", language);
             String text = "<a href=\"" + ApplicationProperties.FRONTEND_ORIGIN + "/confirmAccount/" + account.getConfirmationToken() + "\">"
-                    + StringUtils.getTranslatedText("confirm.link", language) + "</a>" + StringUtils.getTranslatedText("confirm.text", language);
+                    + StringUtils.getTranslatedText("common.link", language) + "</a>" + StringUtils.getTranslatedText("confirm.text", language);
             emailSender.sendMessage(account.getEmail(), subject, text);
         } else {
             throw new AccountNotFoundException();
@@ -120,6 +145,80 @@ public class AccountService {
                 .qrCode(generateQrCode(accountDto.getUsername(), key))
                 .lastPasswordCharacters(lastPasswordCharacters)
                 .build();
+    }
+
+    public void initializeResetPassword(String username, String language) throws ApplicationBaseException {
+        Optional<Account> accountOptional = accountAdapter.getAccount(username);
+        if (accountOptional.isPresent()) {
+            Account account = accountOptional.get();
+            ResetPasswordToken resetPasswordToken = account.getResetPasswordToken();
+            resetPasswordToken.setExpiration(LocalDateTime.now().plusMinutes(ApplicationProperties.RESET_PASSWORD_TOKEN_EXPIRATION));
+            resetPasswordToken.setHash(StringUtils.randomBase64Url());
+            resetPasswordToken.setUsed(false);
+            String subject = StringUtils.getTranslatedText("reset.subject", language);
+            String text = "<a href=\"" + ApplicationProperties.FRONTEND_ORIGIN + "/resetPassword/" + resetPasswordToken.getHash() + "\">"
+                    + StringUtils.getTranslatedText("common.link", language) + "</a>" + StringUtils.getTranslatedText("reset.text", language);
+            emailSender.sendMessage(account.getEmail(), subject, text);
+        } else {
+            throw new AccountNotFoundException();
+        }
+    }
+
+    public void changePassword(String username, ChangePasswordRequest changePasswordRequest) throws ApplicationBaseException {
+        if (changePasswordRequest.getPassword().equals(changePasswordRequest.getConfirmPassword())) {
+            Optional<Account> accountOptional = accountAdapter.getAccount(username);
+            if (accountOptional.isPresent()) {
+                Account account = accountOptional.get();
+                String lastPasswordCharacters = generateLastPasswordCharacters();
+                account.setCredentials(new Credentials(generateMaskedPasswords(changePasswordRequest.getPassword() + lastPasswordCharacters)));
+            } else {
+                throw new AccountNotFoundException();
+            }
+        } else {
+            throw new PasswordsNotMatchingException();
+        }
+    }
+
+    public RegistrationResponse changeOwnPassword(String username, ChangePasswordRequest changePasswordRequest) throws ApplicationBaseException {
+        if (changePasswordRequest.getPassword().equals(changePasswordRequest.getConfirmPassword())) {
+            Optional<Account> accountOptional = accountAdapter.getAccount(username);
+            if (accountOptional.isPresent()) {
+                Account account = accountOptional.get();
+                String lastPasswordCharacters = generateLastPasswordCharacters();
+                account.setCredentials(new Credentials(generateNewMaskedPasswords(changePasswordRequest.getPassword() + lastPasswordCharacters, account.getCredentials().getMaskedPasswords())));
+                return RegistrationResponse.builder()
+                        .lastPasswordCharacters(lastPasswordCharacters)
+                        .build();
+            } else {
+                throw new AccountNotFoundException();
+            }
+        } else {
+            throw new PasswordsNotMatchingException();
+        }
+    }
+
+    public RegistrationResponse resetOwnPassword(String hash, ChangePasswordRequest changePasswordRequest) throws ApplicationBaseException {
+        if (changePasswordRequest.getPassword().equals(changePasswordRequest.getConfirmPassword())) {
+            Optional<Account> accountOptional = accountAdapter.getAccountByResetPasswordTokenHash(hash);
+            if (accountOptional.isPresent()) {
+                Account account = accountOptional.get();
+                ResetPasswordToken resetPasswordToken = account.getResetPasswordToken();
+                if (!resetPasswordToken.getUsed() && resetPasswordToken.getExpiration().isAfter(LocalDateTime.now())) {
+                    String lastPasswordCharacters = generateLastPasswordCharacters();
+                    account.setCredentials(new Credentials(generateNewMaskedPasswords(changePasswordRequest.getPassword() + lastPasswordCharacters, account.getCredentials().getMaskedPasswords())));
+                    resetPasswordToken.setUsed(true);
+                    return RegistrationResponse.builder()
+                            .lastPasswordCharacters(lastPasswordCharacters)
+                            .build();
+                } else {
+                    throw new TokenAlreadyUsedException();
+                }
+            } else {
+                throw new AccountNotFoundException();
+            }
+        } else {
+            throw new PasswordsNotMatchingException();
+        }
     }
 
     public RegistrationResponse regenerateOwnQrCode(String username) throws ApplicationBaseException {
@@ -168,24 +267,6 @@ public class AccountService {
         }
     }
 
-    public List<Integer> initializeLogin(String username) throws ApplicationBaseException {
-        List<Integer> randomCombination = StringUtils.randomCombination(
-                ApplicationProperties.FULL_PASSWORD_LENGTH,
-                ApplicationProperties.MASKED_PASSWORD_MIN_LENGTH,
-                ApplicationProperties.MASKED_PASSWORD_MAX_LENGTH);
-        Optional<Account> accountOptional = accountAdapter.getAccount(username);
-        if (accountOptional.isPresent()) {
-            Account account = accountOptional.get();
-            account.setLoginInitializationCounter(account.getLoginInitializationCounter() + 1);
-            AuthenticationToken authenticationToken = account.getAuthenticationToken();
-            authenticationToken.setCombination(randomCombination);
-            authenticationToken.setExpiration(LocalDateTime.now().plusMinutes(ApplicationProperties.AUTHENTICATION_TOKEN_EXPIRATION));
-        } else {
-            accountAdapter.getAccount(ApplicationProperties.ADMIN_PRINCIPAL);
-        }
-        return randomCombination;
-    }
-
     public Page<AccountDto> getAllAccounts(PagingHelper pagingHelper) throws ApplicationBaseException {
         try {
             return AccountMapper.toAccountDtos(accountAdapter.getAllAccounts(pagingHelper.withSorting()));
@@ -210,7 +291,7 @@ public class AccountService {
                 if (signatureUtils.verify(account.toSignString(), accountDto.getSignature())) {
                     account.setFirstName(accountDto.getFirstName());
                     account.setLastName(accountDto.getLastName());
-                    account.setActive(accountDto.isActive());
+                    account.setActive(accountDto.getActive());
                     AccountMapper.updateAccessLevels(account.getAccessLevels(), accountDto.getAccessLevels());
                 } else {
                     throw new ApplicationOptimisticLockException();
@@ -239,70 +320,6 @@ public class AccountService {
             }
         } else {
             throw new UsernameNotMatchingException();
-        }
-    }
-
-    public AuthenticationResponse.AuthenticationResponseBuilder finalizeLogin(String username, boolean successful) throws ApplicationBaseException {
-        Optional<Account> accountOptional = accountAdapter.getAccount(username);
-        if (accountOptional.isPresent()) {
-            Account account = accountOptional.get();
-            if (successful) {
-                account.setLastSuccessfulAuthentication(LocalDateTime.now());
-                account.setFailedAuthenticationCounter(0);
-                account.setLoginInitializationCounter(0);
-            } else {
-                account.setLastFailedAuthentication(LocalDateTime.now());
-                account.setFailedAuthenticationCounter(account.getFailedAuthenticationCounter() + 1);
-                if (account.getFailedAuthenticationCounter() >= ApplicationProperties.FAILED_AUTHENTICATION_MAX_COUNTER) {
-                    account.setActive(false);
-                }
-            }
-            return AuthenticationResponse.builder()
-                    .lastSuccessfulAuthentication(StringUtils.localDateTimeToString(account.getLastSuccessfulAuthentication()))
-                    .lastFailedAuthentication(StringUtils.localDateTimeToString(account.getLastFailedAuthentication()));
-        } else {
-            throw new AccountNotFoundException();
-        }
-    }
-
-    public AuthenticationResponse.AuthenticationResponseBuilder currentUser(String username) throws ApplicationBaseException {
-        Optional<Account> accountOptional = accountAdapter.getAccount(username);
-        if (accountOptional.isPresent()) {
-            Account account = accountOptional.get();
-            List<String> accessLevels = getUserFrontendRoles(account);
-            return AuthenticationResponse.builder()
-                    .username(username)
-                    .accessLevels(accessLevels)
-                    .currentAccessLevel(getHighestFrontendRole(accessLevels));
-        } else {
-            throw new AccountNotFoundException();
-        }
-    }
-
-    public void addJwtToBlacklist(String jwt, long expiration) throws ApplicationBaseException {
-        blacklistedJwtAdapter.addBlacklistedJwt(
-                BlacklistedJwt.builder()
-                        .token(jwt)
-                        .expiration(LocalDateTime.ofInstant(Instant.ofEpochMilli(expiration), ZoneId.systemDefault()))
-                        .build()
-        );
-    }
-
-    private List<String> getUserFrontendRoles(Account account) {
-        return account.getAccessLevels().stream()
-                .filter(AccessLevel::isActive)
-                .map(AccessLevel::getName)
-                .sorted(Comparator.comparing(ApplicationProperties.ACCESS_LEVEL_ORDER::indexOf))
-                .collect(Collectors.toList());
-    }
-
-    private String getHighestFrontendRole(List<String> roles) {
-        if (roles.contains(ApplicationProperties.ACCESS_LEVEL_ADMIN)) {
-            return ApplicationProperties.ACCESS_LEVEL_ADMIN;
-        } else if (roles.contains(ApplicationProperties.ACCESS_LEVEL_EMPLOYEE)) {
-            return ApplicationProperties.ACCESS_LEVEL_EMPLOYEE;
-        } else {
-            return ApplicationProperties.ACCESS_LEVEL_CLIENT;
         }
     }
 

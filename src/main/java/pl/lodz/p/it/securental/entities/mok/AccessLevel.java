@@ -25,7 +25,7 @@ public @Data class AccessLevel extends BaseAuditEntity {
 
     @NotNull
     @Column(nullable = false)
-    private boolean active;
+    private Boolean active;
 
     @ManyToOne
     private Account account;

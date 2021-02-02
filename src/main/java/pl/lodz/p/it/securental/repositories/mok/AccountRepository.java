@@ -16,6 +16,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Optional<Account> findByOtpCredentialsUsername(String username);
     Optional<Account> findByConfirmationToken(String token);
+    Optional<Account> findByResetPasswordTokenHash(String hash);
     @NonNull Page<Account> findAll(@NonNull Pageable pageable);
     Page<Account> findAllByOtpCredentialsUsernameContainsIgnoreCaseOrEmailContainsIgnoreCaseOrFirstNameContainsIgnoreCaseOrLastNameContainsIgnoreCase(String username,
                                                                                                                                                       String email,

@@ -36,7 +36,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             Optional<Cookie> cookieOptional = Arrays.stream(cookies)
-                    .filter(cookie -> cookie.getName().equals("Authentication"))
+                    .filter(cookie -> cookie.getName().equals("Authorization"))
                     .findFirst();
             if (cookieOptional.isPresent()) {
                 jwt = cookieOptional.get().getValue();

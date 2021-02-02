@@ -1,4 +1,4 @@
 {
-  "common.header": "Wystąpił błąd",
-  "common.text": "Spróbuj ponownie później."
+  "error.default": "Wystąpił błąd",
+  "error.default.text": "Spróbuj ponownie później"
 }

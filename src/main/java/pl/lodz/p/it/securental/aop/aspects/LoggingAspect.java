@@ -11,6 +11,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
+import pl.lodz.p.it.securental.entities.Log;
+import pl.lodz.p.it.securental.repositories.LogRepository;
 import pl.lodz.p.it.securental.utils.ApplicationProperties;
 
 import java.time.LocalDateTime;
@@ -23,6 +25,7 @@ import java.time.LocalDateTime;
 public class LoggingAspect {
 
     private final Cache<String, String> logCache;
+    private final LogRepository logRepository;
 
     @Around("execution(public * pl.lodz.p.it.securental.controllers.mo*..*.*(..)) " +
             "|| execution(public * pl.lodz.p.it.securental.services.mo*..*.*(..)) " +
@@ -77,11 +80,11 @@ public class LoggingAspect {
 
         String messageString = message.toString();
         log.info(messageString);
-        logCache.put(messageString, "");
-//        logRepository.save(Log.builder()
-//                .message(messageString)
-//                .build()
-//        );
+        if (ApplicationProperties.LOG_CACHE_ENABLE) {
+            logCache.put(messageString, "");
+        } else {
+            logRepository.save(new Log(messageString));
+        }
         return result;
     }
 }

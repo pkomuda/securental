@@ -9,11 +9,27 @@ const handleErrorInternal = (title, text) => {
     }).then(() => {});
 };
 
+const handleValidationErrorInternal = (title, messages) => {
+    let text = "";
+    for (let message of messages) {
+        text += i18n.t(`validation:${message}`) + "<br/>";
+    }
+    Swal.fire({
+        titleText: i18n.t(`errors:${title}`),
+        html: text,
+        icon: "error"
+    }).then(() => {});
+}
+
 export const handleError = error => {
-    if (!error.response) {
-        handleErrorInternal("common.header", "common.text");
+    if (!error.response || error.response.status === 500) {
+        handleErrorInternal("error.default", "error.default.text");
     } else {
-        handleErrorInternal("common.header", error.response.data);
+        if (error.response.status === 422) {
+            handleValidationErrorInternal("error.default", error.response.data);
+        } else {
+            handleErrorInternal("error.default", error.response.data);
+        }
     }
 }
 

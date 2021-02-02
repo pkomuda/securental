@@ -26,7 +26,7 @@ public class TimerService {
     private final BlacklistedJwtRepository blacklistedJwtRepository;
 
     @Scheduled(fixedDelayString = "#{60000 * ${log.schedule}}")
-    public void moveLogsToDatabase() {
+    public void persistLogs() {
         long start = System.currentTimeMillis();
         logRepository.saveAll(
                 logCache.keySet().stream()
@@ -34,13 +34,13 @@ public class TimerService {
                         .collect(Collectors.toList())
         );
         logCache.clear();
-        log.info("moveLogsToDatabase | Execution time: " + (System.currentTimeMillis() - start)/1000.0 + "s");
+        log.info("Completed scheduled task TimerService::persistLogs | Execution time: " + (System.currentTimeMillis() - start)/1000.0 + "s");
     }
 
     @Scheduled(fixedDelayString = "#{60000 * ${jwt.schedule}}")
     public void clearExpiredBlacklistedJwts() {
         long start = System.currentTimeMillis();
         blacklistedJwtRepository.deleteAllByExpirationBefore(LocalDateTime.now());
-        log.info("clearExpiredBlacklistedJwts | Execution time: " + (System.currentTimeMillis() - start)/1000.0 + "s");
+        log.info("Completed scheduled task TimerService::clearExpiredBlacklistedJwts | Execution time: " + (System.currentTimeMillis() - start)/1000.0 + "s");
     }
 }
