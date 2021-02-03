@@ -1,6 +1,7 @@
 package pl.lodz.p.it.securental.controllers.mok.impl;
 
 import lombok.AllArgsConstructor;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.AuthenticationException;
@@ -12,6 +13,7 @@ import pl.lodz.p.it.securental.controllers.mok.AuthenticationController;
 import pl.lodz.p.it.securental.dto.model.mok.AuthenticationRequest;
 import pl.lodz.p.it.securental.dto.model.mok.AuthenticationResponse;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
+import pl.lodz.p.it.securental.exceptions.db.DatabaseConnectionException;
 import pl.lodz.p.it.securental.exceptions.mok.IncorrectCredentialsException;
 import pl.lodz.p.it.securental.security.AuthenticationTokenImpl;
 import pl.lodz.p.it.securental.security.UserDetailsServiceImpl;
@@ -32,6 +34,7 @@ import java.util.stream.Collectors;
 @RestController
 @AllArgsConstructor
 @NeverTransaction
+@Retryable(DatabaseConnectionException.class)
 public class AuthenticationControllerImpl implements AuthenticationController {
 
     private final AuthenticationManager authManager;

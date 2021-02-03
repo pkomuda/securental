@@ -98,6 +98,22 @@ public class AccountService {
         return maskedPasswords;
     }
 
+    public void sendConfirmationEmail(String username) throws ApplicationBaseException {
+        Optional<Account> accountOptional = accountAdapter.getAccount(username);
+        if (accountOptional.isPresent()) {
+            Account account = accountOptional.get();
+            String subject = StringUtils.getTranslatedText("confirm.subject", "pl") + "/" + StringUtils.getTranslatedText("confirm.subject", "en");
+            String text = "ENGLISH VERSION BELOW<br/><br/>"
+                    + "<a href=\"" + ApplicationProperties.FRONTEND_ORIGIN + "/confirmAccount/" + account.getConfirmationToken() + "\">"
+                    + StringUtils.getTranslatedText("common.link", "pl") + "</a>" + StringUtils.getTranslatedText("confirm.text", "pl") + "<br/><br/>"
+                    + "<a href=\"" + ApplicationProperties.FRONTEND_ORIGIN + "/confirmAccount/" + account.getConfirmationToken() + "\">"
+                    + StringUtils.getTranslatedText("common.link", "en") + "</a>" + StringUtils.getTranslatedText("confirm.text", "en");
+            emailSender.sendMessage(account.getEmail(), subject, text);
+        } else {
+            throw new AccountNotFoundException();
+        }
+    }
+
     public RegistrationResponse addAccount(AccountDto accountDto, String language) throws ApplicationBaseException {
         GoogleAuthenticatorKey key = googleAuthenticator.createCredentials(accountDto.getUsername());
         String lastPasswordCharacters = generateLastPasswordCharacters();
@@ -164,13 +180,16 @@ public class AccountService {
         }
     }
 
-    public void changePassword(String username, ChangePasswordRequest changePasswordRequest) throws ApplicationBaseException {
+    public RegistrationResponse changePassword(String username, ChangePasswordRequest changePasswordRequest) throws ApplicationBaseException {
         if (changePasswordRequest.getPassword().equals(changePasswordRequest.getConfirmPassword())) {
             Optional<Account> accountOptional = accountAdapter.getAccount(username);
             if (accountOptional.isPresent()) {
                 Account account = accountOptional.get();
                 String lastPasswordCharacters = generateLastPasswordCharacters();
                 account.setCredentials(new Credentials(generateMaskedPasswords(changePasswordRequest.getPassword() + lastPasswordCharacters)));
+                return RegistrationResponse.builder()
+                        .lastPasswordCharacters(lastPasswordCharacters)
+                        .build();
             } else {
                 throw new AccountNotFoundException();
             }

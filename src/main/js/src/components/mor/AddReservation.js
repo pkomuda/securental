@@ -212,7 +212,7 @@ export const AddReservation = props => {
                             </Form>
                             <ButtonToolbar className="justify-content-center">
                                 <Button id="back"
-                                        onClick={() => props.history.goBack()}>{t("navigation.back")}</Button>
+                                        onClick={() => props.history.push(`/carDetails/${car.number}`)}>{t("navigation.back")}</Button>
                                 <DropdownButton id="unavailableDates"
                                                 title={t("reservation.unavailableDates")}>
                                     {renderUnavailableDates()}

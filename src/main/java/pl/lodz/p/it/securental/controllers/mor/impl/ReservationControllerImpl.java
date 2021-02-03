@@ -2,6 +2,7 @@ package pl.lodz.p.it.securental.controllers.mor.impl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.securental.aop.annotations.NeverTransaction;
@@ -9,12 +10,14 @@ import pl.lodz.p.it.securental.aop.annotations.OtpAuthorizationRequired;
 import pl.lodz.p.it.securental.controllers.mor.ReservationController;
 import pl.lodz.p.it.securental.dto.model.mor.ReservationDto;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
+import pl.lodz.p.it.securental.exceptions.db.DatabaseConnectionException;
 import pl.lodz.p.it.securental.services.mor.ReservationService;
 import pl.lodz.p.it.securental.utils.PagingHelper;
 
 @RestController
 @AllArgsConstructor
 @NeverTransaction
+@Retryable(DatabaseConnectionException.class)
 public class ReservationControllerImpl implements ReservationController {
 
     private final ReservationService reservationService;

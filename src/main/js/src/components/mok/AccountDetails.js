@@ -2,10 +2,12 @@ import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormControl, FormGroup, FormLabel, Row } from "react-bootstrap";
+import { Breadcrumb, Button, ButtonToolbar, Col, Container, Dropdown, DropdownButton, Form, FormControl, FormGroup, FormLabel, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
-import { handleError } from "../../utils/Alerts";
+import Swal from "sweetalert2";
+import { handleError, handleSuccess } from "../../utils/Alerts";
+import { RESERVATION_STATUS_FINISHED } from "../../utils/Constants";
 import { FlatFormGroup } from "../common/FlatFormGroup";
 import { Spinner } from "../common/Spinner";
 
@@ -35,6 +37,21 @@ export const AccountDetails = props => {
 
     FlatFormGroup.defaultProps = {
         values: account
+    };
+
+    const handleResendConfirmationEmail = () => {
+        Swal.fire({
+            titleText: t("login.otp.code"),
+            input: "password",
+            preConfirm: otpCode => {
+                axios.get(`/resendConfirmationEmail/${account.username}`, {headers: {"Otp-Code": otpCode}})
+                    .then(() => {
+                        handleSuccess("account.resend.success", "");
+                    }).catch(error => {
+                        handleError(error);
+                });
+            }
+        }).then(() => {});
     };
 
     if (loaded) {
@@ -92,6 +109,14 @@ export const AccountDetails = props => {
                                         onClick={() => props.history.push("/listAccounts")}>{t("navigation.back")}</Button>
                                 <Button id="edit"
                                         onClick={() => props.history.push(`/editAccount/${account.username}`)}>{t("navigation.edit")}</Button>
+                                <DropdownButton id="more"
+                                                title={t("navigation.more")}>
+                                    <Dropdown.Item id="changePassword"
+                                                   onClick={() => props.history.push(`/changePassword/${account.username}`)}>{t("breadcrumbs.changePassword")}</Dropdown.Item>
+                                    <Dropdown.Item id="resendConfirmationEmail"
+                                                   onClick={handleResendConfirmationEmail}
+                                                   disabled={account.confirmed}>{t("account.resend.confirmation.email")}</Dropdown.Item>
+                                </DropdownButton>
                             </ButtonToolbar>
                         </Col>
                     </Row>

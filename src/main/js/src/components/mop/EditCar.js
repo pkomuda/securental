@@ -129,7 +129,7 @@ export const EditCar = props => {
                             </Form>
                             <ButtonToolbar className="justify-content-center">
                                 <Button id="back"
-                                        onClick={() => props.history.goBack()}>{t("navigation.back")}</Button>
+                                        onClick={() => props.history.push(`/carDetails/${car.number}`)}>{t("navigation.back")}</Button>
                                 <Button id="edit"
                                         onClick={handleSubmit}>{t("navigation.submit")}</Button>
                             </ButtonToolbar>

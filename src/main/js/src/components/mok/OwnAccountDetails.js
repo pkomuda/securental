@@ -142,6 +142,8 @@ export const OwnAccountDetails = props => {
                                         onClick={() => props.history.push("/")}>{t("navigation.back")}</Button>
                                 <Button id="edit"
                                         onClick={() => props.history.push("/editOwnAccount")}>{t("navigation.edit")}</Button>
+                                <Button id="changePassword"
+                                        onClick={() => props.history.push("/changeOwnPassword")}>{t("breadcrumbs.changePassword")}</Button>
                                 {adminButtons()}
                             </ButtonToolbar>
                         </Col>

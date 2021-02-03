@@ -27,7 +27,8 @@ public interface AccountController {
     Page<AccountDto> filterAccounts(String filter, int page, int size) throws ApplicationBaseException;
     Page<AccountDto> filterSortedAccounts(String filter, int page, int size, String property, String order) throws ApplicationBaseException;
     void initializeResetPassword(String username, String language) throws ApplicationBaseException;
-    void changePassword(String username, ChangePasswordRequest changePasswordRequest) throws ApplicationBaseException;
+    RegistrationResponse changePassword(String username, ChangePasswordRequest changePasswordRequest) throws ApplicationBaseException;
     RegistrationResponse changeOwnPassword(String username, ChangePasswordRequest changePasswordRequest) throws ApplicationBaseException;
     RegistrationResponse resetOwnPassword(String hash, ChangePasswordRequest changePasswordRequest) throws ApplicationBaseException;
+    void resendConfirmationEmail(String username) throws ApplicationBaseException;
 }

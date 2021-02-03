@@ -17,6 +17,7 @@
   "account.password.required": "Password is required",
   "account.password.min": "Password is too short",
   "account.password.max": "Password is too long",
+  "account.passwords.match": "Password and its confirmation must be the same",
 
   "account.accessLevels.required": "At least one access level is required",
 

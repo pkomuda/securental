@@ -5,8 +5,7 @@ import { useTranslation } from "react-i18next";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { object, string } from "yup";
-import { handleError, handleSuccess } from "../../utils/Alerts";
-import { formatDate } from "../../utils/DateTime";
+import { handleError } from "../../utils/Alerts";
 import { validate } from "../../utils/Validation";
 import { Captcha } from "../common/Captcha";
 import { EditFormGroup } from "../common/EditFormGroup";
@@ -18,7 +17,7 @@ export const ResetPassword = props => {
     const [captcha, setCaptcha] = useState("");
     const schema = object().shape({
         password: string().required("account.password.required").min(8, "account.password.min").max(8, "account.password.max"),
-        confirmPassword: string().required("acccount.confirmPassword.required").min(8, "account.password.min").max(8, "account.password.max")
+        confirmPassword: string().required("account.confirmPassword.required").min(8, "account.password.min").max(8, "account.password.max")
     });
     const [changePasswordRequest, setChangePasswordRequest] = useState({
         password: "",
@@ -39,6 +38,16 @@ export const ResetPassword = props => {
         validateCaptcha(temp);
     };
 
+    const validatePasswords = () => {
+        if (changePasswordRequest.password === changePasswordRequest.confirmPassword) {
+            document.getElementById("passwordsFeedback").style.display = "none";
+            return true;
+        } else {
+            document.getElementById("passwordsFeedback").style.display = "block";
+            return false;
+        }
+    };
+
     const validateCaptcha = value => {
         if (value) {
             document.getElementById("captchaFeedback").style.display = "none";
@@ -50,7 +59,7 @@ export const ResetPassword = props => {
     };
 
     const handleSubmit = () => {
-        if (!!(validate(changePasswordRequest, errors, setErrors, schema) & validateCaptcha(captcha))) {
+        if (!!(validate(changePasswordRequest, errors, setErrors, schema) & validatePasswords() & validateCaptcha(captcha))) {
             axios.put(`/resetOwnPassword/${window.location.pathname.substring(window.location.pathname.lastIndexOf("/") + 1)}`,
                 changePasswordRequest,
                 {headers: {"Captcha-Response": captcha}})
@@ -84,6 +93,7 @@ export const ResetPassword = props => {
                                    label="account.confirmPassword"
                                    type="password"
                                    required/>
+                    <p id="passwordsFeedback" className="invalid" style={{display: "none"}}>{t("validation:account.passwords.match")}</p>
                 </Form>
                 <ButtonToolbar className="justify-content-center">
                     <Button id="back"

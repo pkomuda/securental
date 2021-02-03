@@ -17,6 +17,7 @@
   "account.password.required": "Hasło jest wymagane",
   "account.password.min": "Hasło jest zbyt krótkie",
   "account.password.max": "Hasło jest zbyt długie",
+  "account.passwords.match": "Hasło i potwierdzenie hasła muszą być takie same",
 
   "account.accessLevels.required": "Przynajmniej jeden poziom dostępu jest wymagany",
 

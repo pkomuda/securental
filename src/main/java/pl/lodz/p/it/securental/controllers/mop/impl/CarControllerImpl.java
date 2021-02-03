@@ -2,6 +2,7 @@ package pl.lodz.p.it.securental.controllers.mop.impl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.securental.aop.annotations.NeverTransaction;
@@ -9,6 +10,7 @@ import pl.lodz.p.it.securental.aop.annotations.OtpAuthorizationRequired;
 import pl.lodz.p.it.securental.controllers.mop.CarController;
 import pl.lodz.p.it.securental.dto.model.mop.CarDto;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
+import pl.lodz.p.it.securental.exceptions.db.DatabaseConnectionException;
 import pl.lodz.p.it.securental.services.mop.CarService;
 import pl.lodz.p.it.securental.utils.PagingHelper;
 
@@ -17,6 +19,7 @@ import javax.validation.Valid;
 @RestController
 @AllArgsConstructor
 @NeverTransaction
+@Retryable(DatabaseConnectionException.class)
 public class CarControllerImpl implements CarController {
 
     private final CarService carService;

@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { Suspense, useEffect, useState } from "react";
-import { Button } from "react-bootstrap";
+import { Button, DropdownButton } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Error } from "./components/common/Error";
 import ErrorBoundary from "./components/common/ErrorBoundary";
@@ -13,6 +13,8 @@ import { RestrictedRoute } from "./components/common/RestrictedRoute";
 import { Spinner } from "./components/common/Spinner";
 import { AccountDetails } from "./components/mok/AccountDetails";
 import { AddAccount } from "./components/mok/AddAccount";
+import { ChangeOwnPassword } from "./components/mok/ChangeOwnPassword";
+import { ChangePassword } from "./components/mok/ChangePassword";
 import { ConfirmAccount } from "./components/mok/ConfirmAccount";
 import { EditAccount } from "./components/mok/EditAccount";
 import { EditOwnAccount } from "./components/mok/EditOwnAccount";
@@ -64,6 +66,10 @@ export const App = () => {
         variant: "dark",
         className: "button"
     };
+    DropdownButton.defaultProps = {
+        variant: "dark",
+        className: "button"
+    };
 
     return (
         <ErrorBoundary>
@@ -81,10 +87,12 @@ export const App = () => {
                             <RestrictedRoute exact path="/resetPassword/:hash" component={ResetPassword}/>
                             <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_EMPLOYEE, ACCESS_LEVEL_CLIENT]} exact path="/ownAccountDetails" component={OwnAccountDetails}/>
                             <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_EMPLOYEE, ACCESS_LEVEL_CLIENT]} exact path="/editOwnAccount" component={EditOwnAccount}/>
+                            <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_EMPLOYEE, ACCESS_LEVEL_CLIENT]} exact path="/changeOwnPassword" component={ChangeOwnPassword}/>
                             <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN]} exact path="/addAccount" component={AddAccount}/>
                             <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN]} exact path="/listAccounts" component={ListAccounts}/>
                             <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN]} exact path="/accountDetails/:username" component={AccountDetails}/>
                             <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN]} exact path="/editAccount/:username" component={EditAccount}/>
+                            <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN]} exact path="/changePassword/:username" component={ChangePassword}/>
                             <PrivateRoute accessLevels={[ACCESS_LEVEL_EMPLOYEE]} exact path="/addCar" component={AddCar}/>
                             <PrivateRoute accessLevels={[ACCESS_LEVEL_EMPLOYEE]} exact path="/editCar/:number" component={EditCar}/>
                             <PrivateRoute accessLevels={[ACCESS_LEVEL_EMPLOYEE]} exact path="/listReservations" component={ListReservations}/>

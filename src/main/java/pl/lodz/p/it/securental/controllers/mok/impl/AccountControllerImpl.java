@@ -2,6 +2,7 @@ package pl.lodz.p.it.securental.controllers.mok.impl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.securental.aop.annotations.CaptchaRequired;
@@ -13,12 +14,14 @@ import pl.lodz.p.it.securental.dto.model.mok.ChangePasswordRequest;
 import pl.lodz.p.it.securental.dto.model.mok.ConfirmAccountRequest;
 import pl.lodz.p.it.securental.dto.model.mok.RegistrationResponse;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
+import pl.lodz.p.it.securental.exceptions.db.DatabaseConnectionException;
 import pl.lodz.p.it.securental.services.mok.AccountService;
 import pl.lodz.p.it.securental.utils.PagingHelper;
 
 @RestController
 @AllArgsConstructor
 @NeverTransaction
+@Retryable(DatabaseConnectionException.class)
 public class AccountControllerImpl implements AccountController {
 
     private final AccountService accountService;
@@ -137,9 +140,9 @@ public class AccountControllerImpl implements AccountController {
     @OtpAuthorizationRequired
     @PutMapping("/changePassword/{username}")
     @PreAuthorize("hasAuthority('changePassword')")
-    public void changePassword(@PathVariable String username,
+    public RegistrationResponse changePassword(@PathVariable String username,
                                @RequestBody ChangePasswordRequest changePasswordRequest) throws ApplicationBaseException {
-        accountService.changePassword(username, changePasswordRequest);
+        return accountService.changePassword(username, changePasswordRequest);
     }
 
     @Override
@@ -158,6 +161,14 @@ public class AccountControllerImpl implements AccountController {
     public RegistrationResponse resetOwnPassword(@PathVariable String hash,
                                                  @RequestBody ChangePasswordRequest changePasswordRequest) throws ApplicationBaseException {
         return accountService.resetOwnPassword(hash, changePasswordRequest);
+    }
+
+    @Override
+    @OtpAuthorizationRequired
+    @GetMapping("/resendConfirmationEmail/{username}")
+    @PreAuthorize("hasAuthority('resendConfirmationEmail')")
+    public void resendConfirmationEmail(@PathVariable String username) throws ApplicationBaseException {
+        accountService.sendConfirmationEmail(username);
     }
 
     private String resolvePropertyName(String property) {

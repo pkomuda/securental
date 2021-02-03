@@ -10,6 +10,7 @@
   "navigation.notFound": "Page not found",
   "navigation.noAccess": "You have no access to this page",
   "navigation.success": "Success",
+  "navigation.more": "More",
 
   "navbar.login": "Sign in",
   "navbar.register": "Register",
@@ -33,11 +34,13 @@
   "breadcrumbs.listReservations": "Reservation list",
   "breadcrumbs.reservationDetails": "Reservation details",
   "breadcrumbs.editReservation": "Edit reservation",
+  "breadcrumbs.changePassword": "Change password",
 
   "account.details.header": "Account details",
   "account.username": "Username",
   "account.email": "Email address",
   "account.password": "Password",
+  "account.confirmPassword": "Confirm password",
   "account.firstName": "First name",
   "account.lastName": "Last name",
   "account.accessLevels": "Access levels",
@@ -48,9 +51,11 @@
   "account.confirmed": "Confirmed",
   "account.notConfirmed": "Not confirmed",
   "account.qrCode": "QR code",
+  "account.resend.confirmation.email": "Resend confirmation email",
 
   "account.add.success": "Account added successfully",
   "account.edit.success": "Account edited successfully",
+  "account.resend.success": "Confirmation email resent successfully",
 
   "car.number": "Car number",
   "car.make": "Make",

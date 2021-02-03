@@ -178,7 +178,7 @@ export const EditOwnAccount = props => {
                             </Form>
                             <ButtonToolbar className="justify-content-center">
                                 <Button id="back"
-                                        onClick={() => props.history.goBack()}>{t("navigation.back")}</Button>
+                                        onClick={() => props.history.push("/ownAccountDetails")}>{t("navigation.back")}</Button>
                                 <Button id="edit"
                                         onClick={handleSubmit}>{t("navigation.submit")}</Button>
                             </ButtonToolbar>
