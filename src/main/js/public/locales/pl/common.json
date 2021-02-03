@@ -52,10 +52,11 @@
   "account.notConfirmed": "Niepotwierdzony",
   "account.qrCode": "Kod QR",
   "account.resend.confirmation.email": "Wyślij ponownie email potwierdzający",
+  "account.resend.qrCode.email": "Wyślij ponownie email z kodem QR",
 
   "account.add.success": "Konto dodane pomyślnie",
   "account.edit.success": "Konto edytowane pomyślnie",
-  "account.resend.success": "Email potwierdzający wysłany pomyślnie",
+  "account.resend.success": "Email wysłany pomyślnie",
 
   "car.number": "Numer samochodu",
   "car.make": "Marka",
@@ -83,6 +84,12 @@
   "login.clear": "Wyczyść",
   "login.last.success": "Ostatnie udane uwierzytelnienie: ",
   "login.last.failure": "Ostatnie nieudane uwierzytelnienie: ",
+  "login.last.ipAddress": "Adres IP ostatniego uwierzytelnienia: ",
+  "login.password.forgot": "Zapomniałem hasła",
+  "login.otp.lost": "Zgubiłem telefon z jednorazowymi kodami",
+  "login.password.reset.header": "Resetuj hasło",
+  "login.password.reset.text": "Wyślij wiadomość z linkiem umożliwiającym reset hasła",
+  "login.otp.lost.header": "Skontaktuj się z administratorem pod adresem email: securentalapp@gmail.com",
 
   "register.header": "Rejestracja",
   "register.password.header": "To są ostatnie znaki twojego hasła",

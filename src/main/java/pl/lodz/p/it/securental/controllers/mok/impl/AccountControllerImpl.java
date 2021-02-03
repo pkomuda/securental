@@ -47,7 +47,7 @@ public class AccountControllerImpl implements AccountController {
     @GetMapping("/qrCode/{username}")
     @PreAuthorize("hasAuthority('regenerateOwnQrCode') and #username == authentication.principal.username")
     public RegistrationResponse regenerateOwnQrCode(@PathVariable String username) throws ApplicationBaseException {
-        return accountService.regenerateOwnQrCode(username);
+        return accountService.regenerateQrCode(username);
     }
 
     @Override
@@ -141,7 +141,7 @@ public class AccountControllerImpl implements AccountController {
     @PutMapping("/changePassword/{username}")
     @PreAuthorize("hasAuthority('changePassword')")
     public RegistrationResponse changePassword(@PathVariable String username,
-                               @RequestBody ChangePasswordRequest changePasswordRequest) throws ApplicationBaseException {
+                                               @RequestBody ChangePasswordRequest changePasswordRequest) throws ApplicationBaseException {
         return accountService.changePassword(username, changePasswordRequest);
     }
 
@@ -169,6 +169,14 @@ public class AccountControllerImpl implements AccountController {
     @PreAuthorize("hasAuthority('resendConfirmationEmail')")
     public void resendConfirmationEmail(@PathVariable String username) throws ApplicationBaseException {
         accountService.sendConfirmationEmail(username);
+    }
+
+    @Override
+    @OtpAuthorizationRequired
+    @GetMapping("/resendQrCodeEmail/{username}")
+    @PreAuthorize("hasAuthority('resendQrCodeEmail')")
+    public void resendQrCodeEmail(@PathVariable String username) throws ApplicationBaseException {
+        accountService.sendQrCodeEmail(username);
     }
 
     private String resolvePropertyName(String property) {

@@ -31,4 +31,5 @@ public interface AccountController {
     RegistrationResponse changeOwnPassword(String username, ChangePasswordRequest changePasswordRequest) throws ApplicationBaseException;
     RegistrationResponse resetOwnPassword(String hash, ChangePasswordRequest changePasswordRequest) throws ApplicationBaseException;
     void resendConfirmationEmail(String username) throws ApplicationBaseException;
+    void resendQrCodeEmail(String username) throws ApplicationBaseException;
 }

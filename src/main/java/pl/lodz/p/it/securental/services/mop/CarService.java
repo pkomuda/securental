@@ -2,6 +2,7 @@ package pl.lodz.p.it.securental.services.mop;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.adapters.mop.CarAdapter;
 import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
@@ -10,6 +11,7 @@ import pl.lodz.p.it.securental.dto.model.mop.CarDto;
 import pl.lodz.p.it.securental.entities.mop.Car;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.ApplicationOptimisticLockException;
+import pl.lodz.p.it.securental.exceptions.db.DatabaseConnectionException;
 import pl.lodz.p.it.securental.exceptions.db.PropertyNotFoundException;
 import pl.lodz.p.it.securental.exceptions.mop.CarNotFoundException;
 import pl.lodz.p.it.securental.exceptions.mop.CarNumberNotMatchingException;
@@ -22,6 +24,7 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 @RequiresNewTransaction
+@Retryable(DatabaseConnectionException.class)
 public class CarService {
 
     private final CarAdapter carAdapter;

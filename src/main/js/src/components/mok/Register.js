@@ -74,7 +74,7 @@ export const Register = props => {
                 .then(response => {
                     const alerts = [];
                     alerts.push({
-                        title: t("register.password.header"),
+                        titleText: t("register.password.header"),
                         html:
                             <div>
                                 <p>{t("register.password.text1") + response.data.lastPasswordCharacters}</p>
@@ -83,7 +83,7 @@ export const Register = props => {
                         icon: "info"
                     });
                     alerts.push({
-                        title: t("register.success.header"),
+                        titleText: t("register.success.header"),
                         html:
                             <div>
                                 <p>{t("register.success.text1")}</p>

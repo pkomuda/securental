@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useContext, useState } from "react";
 import { Button, ButtonToolbar, Col, Form, FormControl, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { object, string } from "yup";
@@ -127,6 +128,7 @@ export const Login = props => {
                         <div>
                             <p>{t("login.last.success") + formatDate(response.data.lastSuccessfulAuthentication)}</p>
                             <p>{t("login.last.failure") + formatDate(response.data.lastFailedAuthentication)}</p>
+                            <p>{t("login.last.ipAddress") + response.data.lastAuthenticationIpAddress}</p>
                         </div>,
                     icon: "success"
                 }).then(() => {});
@@ -173,14 +175,30 @@ export const Login = props => {
     };
 
     const handleForgotPassword = () => {
-        axios.put(`/initializeResetPassword/${authRequest.username}`, {}, {headers: {"Accept-Language": window.navigator.language}})
-            .then(() => {
-                handleSuccess("reset.mail.sent", "");
-                props.history.push("/");
-            }).catch(error => {
-                handleError(error);
-                props.history.push("/");
-        })
+        Swal.fire({
+            titleText: t("login.password.reset.header"),
+            text: t("login.password.reset.text"),
+            icon: "info"
+        }).then(result => {
+            if (result.isConfirmed) {
+                axios.put(`/initializeResetPassword/${authRequest.username}`, {}, {headers: {"Accept-Language": window.navigator.language}})
+                    .then(() => {
+                        handleSuccess("reset.mail.sent", "");
+                        props.history.push("/");
+                    }).catch(error => {
+                    handleError(error);
+                        props.history.push("/");
+                });
+            }
+        });
+    };
+
+    const handleLostOtp = () => {
+        Swal.fire({
+            titleText: t("login.otp.lost.header"),
+            text: "",
+            icon: "info"
+        }).then(() => {});
     };
 
     const renderSecondStage = () => {
@@ -221,9 +239,10 @@ export const Login = props => {
                             <Button id="submit2"
                                     onClick={handleSecondStage}>{t("navigation.next")}</Button>
                         </ButtonToolbar>
-                        <a href="#"
-                           onClick={handleForgotPassword}
-                           className="text-center">{t("password.forgot")}</a>
+                        <div className="text-center" style={{marginTop: "1em"}}>
+                            <Link to="#"
+                                  onClick={handleForgotPassword}>{t("login.password.forgot")}</Link>
+                        </div>
                     </Form>
                 </div>
             );
@@ -248,6 +267,10 @@ export const Login = props => {
                         <Button id="submit3"
                                 onClick={handleThirdStage}>{t("login.sign.in")}</Button>
                     </ButtonToolbar>
+                    <div className="text-center" style={{marginTop: "1em"}}>
+                        <Link to="#"
+                              onClick={handleLostOtp}>{t("login.otp.lost")}</Link>
+                    </div>
                 </Col>
             );
         }

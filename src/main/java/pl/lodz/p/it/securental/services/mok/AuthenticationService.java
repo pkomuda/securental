@@ -1,6 +1,7 @@
 package pl.lodz.p.it.securental.services.mok;
 
 import lombok.AllArgsConstructor;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.adapters.BlacklistedJwtAdapter;
 import pl.lodz.p.it.securental.adapters.mok.AccountAdapter;
@@ -11,13 +12,16 @@ import pl.lodz.p.it.securental.entities.mok.AccessLevel;
 import pl.lodz.p.it.securental.entities.mok.Account;
 import pl.lodz.p.it.securental.entities.mok.AuthenticationToken;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
+import pl.lodz.p.it.securental.exceptions.db.DatabaseConnectionException;
 import pl.lodz.p.it.securental.exceptions.mok.AccountNotFoundException;
 import pl.lodz.p.it.securental.utils.ApplicationProperties;
+import pl.lodz.p.it.securental.utils.EmailSender;
 import pl.lodz.p.it.securental.utils.StringUtils;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -26,10 +30,12 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 @RequiresNewTransaction
+@Retryable(DatabaseConnectionException.class)
 public class AuthenticationService {
 
     private final AccountAdapter accountAdapter;
     private final BlacklistedJwtAdapter blacklistedJwtAdapter;
+    private final EmailSender emailSender;
 
     public List<Integer> initializeLogin(String username) throws ApplicationBaseException {
         List<Integer> randomCombination = StringUtils.randomCombination(
@@ -49,24 +55,40 @@ public class AuthenticationService {
         return randomCombination;
     }
 
-    public AuthenticationResponse.AuthenticationResponseBuilder finalizeLogin(String username, boolean successful) throws ApplicationBaseException {
+    public AuthenticationResponse.AuthenticationResponseBuilder finalizeLogin(String username, String ipAddress, boolean successful) throws ApplicationBaseException {
         Optional<Account> accountOptional = accountAdapter.getAccount(username);
         if (accountOptional.isPresent()) {
             Account account = accountOptional.get();
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss");
+            String previousSuccessfulAuthentication = StringUtils.localDateTimeToString(account.getLastSuccessfulAuthentication());
+            String previousFailedAuthentication = StringUtils.localDateTimeToString(account.getLastFailedAuthentication());
+            String previousAuthenticationIpAddress = account.getLastAuthenticationIpAddress();
             if (successful) {
-                account.setLastSuccessfulAuthentication(LocalDateTime.now());
+                account.setLastSuccessfulAuthentication(now);
                 account.setFailedAuthenticationCounter(0);
                 account.setLoginInitializationCounter(0);
+                account.setLastAuthenticationIpAddress(ipAddress);
+                if (getUserFrontendRoles(account).contains(ApplicationProperties.ACCESS_LEVEL_ADMIN)) {
+                    String subject = StringUtils.getTranslatedText("admin.subject", "pl") + "/" + StringUtils.getTranslatedText("admin.subject", "en");
+                    String text = "ENGLISH VERSION BELOW<br/><br/>"
+                            + StringUtils.getTranslatedText("admin.date", "pl") + ": " + now.format(formatter) + "<br/>"
+                            + StringUtils.getTranslatedText("admin.ipAddress", "pl") + ": " + ipAddress + "<br/><br/>"
+                            + StringUtils.getTranslatedText("admin.date", "en") + ": " + now.format(formatter) + "<br/>"
+                            + StringUtils.getTranslatedText("admin.ipAddress", "en") + ": " + ipAddress;
+                    emailSender.sendMessage(account.getEmail(), subject, text);
+                }
             } else {
-                account.setLastFailedAuthentication(LocalDateTime.now());
+                account.setLastFailedAuthentication(now);
                 account.setFailedAuthenticationCounter(account.getFailedAuthenticationCounter() + 1);
                 if (account.getFailedAuthenticationCounter() >= ApplicationProperties.FAILED_AUTHENTICATION_MAX_COUNTER) {
                     account.setActive(false);
                 }
             }
             return AuthenticationResponse.builder()
-                    .lastSuccessfulAuthentication(StringUtils.localDateTimeToString(account.getLastSuccessfulAuthentication()))
-                    .lastFailedAuthentication(StringUtils.localDateTimeToString(account.getLastFailedAuthentication()));
+                    .lastSuccessfulAuthentication(previousSuccessfulAuthentication)
+                    .lastFailedAuthentication(previousFailedAuthentication)
+                    .lastAuthenticationIpAddress(previousAuthenticationIpAddress);
         } else {
             throw new AccountNotFoundException();
         }

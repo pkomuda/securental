@@ -12,6 +12,7 @@ import com.warrenstrange.googleauth.GoogleAuthenticatorQRGenerator;
 import lombok.AllArgsConstructor;
 import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.adapters.mok.AccountAdapter;
@@ -24,6 +25,7 @@ import pl.lodz.p.it.securental.dto.model.mok.RegistrationResponse;
 import pl.lodz.p.it.securental.entities.mok.*;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.ApplicationOptimisticLockException;
+import pl.lodz.p.it.securental.exceptions.db.DatabaseConnectionException;
 import pl.lodz.p.it.securental.exceptions.db.PropertyNotFoundException;
 import pl.lodz.p.it.securental.exceptions.mok.*;
 import pl.lodz.p.it.securental.utils.*;
@@ -37,6 +39,7 @@ import java.util.stream.IntStream;
 @Service
 @AllArgsConstructor
 @RequiresNewTransaction
+@Retryable(DatabaseConnectionException.class)
 public class AccountService {
 
     private final AccountAdapter accountAdapter;
@@ -114,6 +117,20 @@ public class AccountService {
         }
     }
 
+    public void sendQrCodeEmail(String username) throws ApplicationBaseException {
+        Optional<Account> accountOptional = accountAdapter.getAccount(username);
+        if (accountOptional.isPresent()) {
+            Account account = accountOptional.get();
+            String subject = StringUtils.getTranslatedText("qrCode.subject", "pl") + "/" + StringUtils.getTranslatedText("qrCode.subject", "en");
+            String text = "ENGLISH VERSION BELOW<br/><br/>"
+                    + StringUtils.getTranslatedText("created.text", "pl") + "<br/><br/>" + StringUtils.getTranslatedText("created.text", "en")
+                    + "<img src='data:image/png;base64," + regenerateQrCode(username).getQrCode() + "'/>";
+            emailSender.sendMessage(account.getEmail(), subject, text);
+        } else {
+            throw new AccountNotFoundException();
+        }
+    }
+
     public RegistrationResponse addAccount(AccountDto accountDto, String language) throws ApplicationBaseException {
         GoogleAuthenticatorKey key = googleAuthenticator.createCredentials(accountDto.getUsername());
         String lastPasswordCharacters = generateLastPasswordCharacters();
@@ -125,7 +142,7 @@ public class AccountService {
         if (otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).isPresent()) {
             account.setOtpCredentials(otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).get());
             String subject = StringUtils.getTranslatedText("created.subject", language);
-            String text = StringUtils.getTranslatedText("confirm.text", language) + "<img src='data:image/png;base64," + generateQrCode(accountDto.getUsername(), key) + "'/>";
+            String text = StringUtils.getTranslatedText("created.text", language) + "<img src='data:image/png;base64," + generateQrCode(accountDto.getUsername(), key) + "'/>";
             emailSender.sendMessage(account.getEmail(), subject, text);
         } else {
             throw new AccountNotFoundException();
@@ -240,7 +257,7 @@ public class AccountService {
         }
     }
 
-    public RegistrationResponse regenerateOwnQrCode(String username) throws ApplicationBaseException {
+    public RegistrationResponse regenerateQrCode(String username) throws ApplicationBaseException {
         GoogleAuthenticatorKey key = new GoogleAuthenticatorKey.Builder(otpCredentialsAdapter.getSecretKey(username))
                 .setConfig(new GoogleAuthenticatorConfig())
                 .setVerificationCode(0)

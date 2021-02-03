@@ -7,7 +7,6 @@ import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
 import { handleError, handleSuccess } from "../../utils/Alerts";
-import { RESERVATION_STATUS_FINISHED } from "../../utils/Constants";
 import { FlatFormGroup } from "../common/FlatFormGroup";
 import { Spinner } from "../common/Spinner";
 
@@ -45,6 +44,21 @@ export const AccountDetails = props => {
             input: "password",
             preConfirm: otpCode => {
                 axios.get(`/resendConfirmationEmail/${account.username}`, {headers: {"Otp-Code": otpCode}})
+                    .then(() => {
+                        handleSuccess("account.resend.success", "");
+                    }).catch(error => {
+                        handleError(error);
+                });
+            }
+        }).then(() => {});
+    };
+
+    const handleResendQrCodeEmail = () => {
+        Swal.fire({
+            titleText: t("login.otp.code"),
+            input: "password",
+            preConfirm: otpCode => {
+                axios.get(`/resendQrCodeEmail/${account.username}`, {headers: {"Otp-Code": otpCode}})
                     .then(() => {
                         handleSuccess("account.resend.success", "");
                     }).catch(error => {
@@ -116,6 +130,8 @@ export const AccountDetails = props => {
                                     <Dropdown.Item id="resendConfirmationEmail"
                                                    onClick={handleResendConfirmationEmail}
                                                    disabled={account.confirmed}>{t("account.resend.confirmation.email")}</Dropdown.Item>
+                                    <Dropdown.Item id="resendQrCodeEmail"
+                                                   onClick={handleResendQrCodeEmail}>{t("account.resend.qrCode.email")}</Dropdown.Item>
                                 </DropdownButton>
                             </ButtonToolbar>
                         </Col>

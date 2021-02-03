@@ -88,7 +88,7 @@ export const OwnAccountDetails = props => {
             .then(response => {
                 const alerts = [];
                 alerts.push({
-                    title: t("register.success.header"),
+                    titleText: t("register.success.header"),
                     html:
                         <div>
                             <p>{t("register.success.text1")}</p>

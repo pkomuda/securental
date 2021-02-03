@@ -2,6 +2,7 @@ package pl.lodz.p.it.securental.services.mor;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.adapters.mok.AccessLevelAdapter;
 import pl.lodz.p.it.securental.adapters.mop.CarAdapter;
@@ -16,6 +17,7 @@ import pl.lodz.p.it.securental.entities.mor.Reservation;
 import pl.lodz.p.it.securental.entities.mor.Status;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.ApplicationOptimisticLockException;
+import pl.lodz.p.it.securental.exceptions.db.DatabaseConnectionException;
 import pl.lodz.p.it.securental.exceptions.db.PropertyNotFoundException;
 import pl.lodz.p.it.securental.exceptions.mok.AccountNotFoundException;
 import pl.lodz.p.it.securental.exceptions.mok.UsernameNotMatchingException;
@@ -36,6 +38,7 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 @RequiresNewTransaction
+@Retryable(DatabaseConnectionException.class)
 public class ReservationService {
 
     private final ReservationAdapter reservationAdapter;

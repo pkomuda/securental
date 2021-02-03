@@ -19,6 +19,7 @@ public @Data class AuthenticationResponse {
     private long tokenExpiration;
     private String lastSuccessfulAuthentication;
     private String lastFailedAuthentication;
+    private String lastAuthenticationIpAddress;
 
     public AuthenticationResponse unauthenticated() {
         username = "";
@@ -27,6 +28,7 @@ public @Data class AuthenticationResponse {
         tokenExpiration = 0;
         lastSuccessfulAuthentication = "";
         lastFailedAuthentication = "";
+        lastAuthenticationIpAddress = "";
         return this;
     }
 }
