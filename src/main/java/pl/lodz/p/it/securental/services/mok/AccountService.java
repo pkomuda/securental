@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.retry.annotation.Retryable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.adapters.mok.AccountAdapter;
@@ -101,6 +102,7 @@ public class AccountService {
         return maskedPasswords;
     }
 
+    //@PreAuthorize("hasAuthority('resendConfirmationEmail')")
     public void sendConfirmationEmail(String username) throws ApplicationBaseException {
         Optional<Account> accountOptional = accountAdapter.getAccount(username);
         if (accountOptional.isPresent()) {
@@ -117,6 +119,8 @@ public class AccountService {
         }
     }
 
+    //TODO
+    //@PreAuthorize("hasAuthority('resendQrCodeEmail')")
     public void sendQrCodeEmail(String username) throws ApplicationBaseException {
         Optional<Account> accountOptional = accountAdapter.getAccount(username);
         if (accountOptional.isPresent()) {
@@ -131,11 +135,15 @@ public class AccountService {
         }
     }
 
+    //@PreAuthorize("hasAuthority('addAccount')")
     public RegistrationResponse addAccount(AccountDto accountDto, String language) throws ApplicationBaseException {
         GoogleAuthenticatorKey key = googleAuthenticator.createCredentials(accountDto.getUsername());
         String lastPasswordCharacters = generateLastPasswordCharacters();
         Account account = AccountMapper.toAccount(accountDto);
         account.setConfirmed(true);
+        account.setLastAuthenticationIpAddress("");
+        account.setLoginInitializationCounter(0);
+        account.setFailedAuthenticationCounter(0);
         account.setCredentials(new Credentials(generateMaskedPasswords(accountDto.getPassword() + lastPasswordCharacters)));
         account.setAuthenticationToken(new AuthenticationToken(new ArrayList<>(), LocalDateTime.now()));
         account.setResetPasswordToken(new ResetPasswordToken(LocalDateTime.now(), StringUtils.randomBase64Url(), true));
@@ -153,12 +161,16 @@ public class AccountService {
                 .build();
     }
 
+    //@PreAuthorize("permitAll()")
     public RegistrationResponse register(AccountDto accountDto, String language) throws ApplicationBaseException {
         GoogleAuthenticatorKey key = googleAuthenticator.createCredentials(accountDto.getUsername());
         String lastPasswordCharacters = generateLastPasswordCharacters();
         Account account = AccountMapper.toAccount(accountDto);
         account.setActive(true);
         account.setConfirmed(false);
+        account.setLastAuthenticationIpAddress("");
+        account.setLoginInitializationCounter(0);
+        account.setFailedAuthenticationCounter(0);
         account.setConfirmationToken(StringUtils.randomBase64Url());
         account.setCredentials(new Credentials(generateMaskedPasswords(accountDto.getPassword() + lastPasswordCharacters)));
         account.setAuthenticationToken(new AuthenticationToken(new ArrayList<>(), LocalDateTime.now()));
@@ -180,6 +192,7 @@ public class AccountService {
                 .build();
     }
 
+    //@PreAuthorize("permitAll()")
     public void initializeResetPassword(String username, String language) throws ApplicationBaseException {
         Optional<Account> accountOptional = accountAdapter.getAccount(username);
         if (accountOptional.isPresent()) {
@@ -197,6 +210,7 @@ public class AccountService {
         }
     }
 
+    //@PreAuthorize("hasAuthority('changePassword')")
     public RegistrationResponse changePassword(String username, ChangePasswordRequest changePasswordRequest) throws ApplicationBaseException {
         if (changePasswordRequest.getPassword().equals(changePasswordRequest.getConfirmPassword())) {
             Optional<Account> accountOptional = accountAdapter.getAccount(username);
@@ -215,6 +229,7 @@ public class AccountService {
         }
     }
 
+    //@PreAuthorize("hasAuthority('changeOwnPassword')")
     public RegistrationResponse changeOwnPassword(String username, ChangePasswordRequest changePasswordRequest) throws ApplicationBaseException {
         if (changePasswordRequest.getPassword().equals(changePasswordRequest.getConfirmPassword())) {
             Optional<Account> accountOptional = accountAdapter.getAccount(username);
@@ -233,6 +248,7 @@ public class AccountService {
         }
     }
 
+    //@PreAuthorize("permitAll()")
     public RegistrationResponse resetOwnPassword(String hash, ChangePasswordRequest changePasswordRequest) throws ApplicationBaseException {
         if (changePasswordRequest.getPassword().equals(changePasswordRequest.getConfirmPassword())) {
             Optional<Account> accountOptional = accountAdapter.getAccountByResetPasswordTokenHash(hash);
@@ -257,6 +273,8 @@ public class AccountService {
         }
     }
 
+    //TODO
+    //@PreAuthorize("hasAuthority('regenerateOwnQrCode')")
     public RegistrationResponse regenerateQrCode(String username) throws ApplicationBaseException {
         GoogleAuthenticatorKey key = new GoogleAuthenticatorKey.Builder(otpCredentialsAdapter.getSecretKey(username))
                 .setConfig(new GoogleAuthenticatorConfig())
@@ -284,6 +302,7 @@ public class AccountService {
         return accessLevels;
     }
 
+    //@PreAuthorize("permitAll()")
     public void confirmAccount(String token) throws ApplicationBaseException {
         Optional<Account> accountOptional = accountAdapter.getAccountByConfirmationToken(token);
         if (accountOptional.isPresent()) {
@@ -294,6 +313,7 @@ public class AccountService {
         }
     }
 
+    //@PreAuthorize("hasAnyAuthority('getAccount', 'getOwnAccount')")
     public AccountDto getAccount(String username) throws ApplicationBaseException {
         Optional<Account> accountOptional = accountAdapter.getAccount(username);
         if (accountOptional.isPresent()) {
@@ -303,6 +323,7 @@ public class AccountService {
         }
     }
 
+    //@PreAuthorize("hasAnyAuthority('getAllAccounts', 'getSortedAccounts')")
     public Page<AccountDto> getAllAccounts(PagingHelper pagingHelper) throws ApplicationBaseException {
         try {
             return AccountMapper.toAccountDtos(accountAdapter.getAllAccounts(pagingHelper.withSorting()));
@@ -311,6 +332,7 @@ public class AccountService {
         }
     }
 
+    //@PreAuthorize("hasAnyAuthority('filterAccounts', 'filterSortedAccounts')")
     public Page<AccountDto> filterAccounts(String filter, PagingHelper pagingHelper) throws ApplicationBaseException {
         try {
             return AccountMapper.toAccountDtos(accountAdapter.filterAccounts(filter, pagingHelper.withSorting()));
@@ -319,6 +341,7 @@ public class AccountService {
         }
     }
 
+    //@PreAuthorize("hasAuthority('editAccount')")
     public void editAccount(String username, AccountDto accountDto) throws ApplicationBaseException {
         if (username.equals(accountDto.getUsername())) {
             Optional<Account> accountOptional = accountAdapter.getAccount(username);
@@ -340,6 +363,7 @@ public class AccountService {
         }
     }
 
+    //@PreAuthorize("hasAuthority('editOwnAccount')")
     public void editOwnAccount(String username, AccountDto accountDto) throws ApplicationBaseException {
         if (username.equals(accountDto.getUsername())) {
             Optional<Account> accountOptional = accountAdapter.getAccount(username);

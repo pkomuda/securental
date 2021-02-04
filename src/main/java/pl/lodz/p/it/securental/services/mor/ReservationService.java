@@ -3,6 +3,7 @@ package pl.lodz.p.it.securental.services.mor;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.retry.annotation.Retryable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.adapters.mok.AccessLevelAdapter;
 import pl.lodz.p.it.securental.adapters.mop.CarAdapter;
@@ -48,6 +49,7 @@ public class ReservationService {
     private final ReservationMapper reservationMapper;
     private final SignatureUtils signatureUtils;
 
+    //@PreAuthorize("hasAuthority('addReservation')")
     public void addReservation(String username, ReservationDto reservationDto) throws ApplicationBaseException {
         Reservation reservation = ReservationMapper.toReservation(reservationDto);
 
@@ -79,6 +81,7 @@ public class ReservationService {
         reservationAdapter.addReservation(reservation);
     }
 
+    //@PreAuthorize("hasAuthority('getReservation')")
     public ReservationDto getReservation(String number) throws ApplicationBaseException {
         Optional<Reservation> reservationOptional = reservationAdapter.getReservation(number);
         if (reservationOptional.isPresent()) {
@@ -88,6 +91,7 @@ public class ReservationService {
         }
     }
 
+    //@PreAuthorize("hasAuthority('getOwnReservation')")
     public ReservationDto getOwnReservation(String username, String number) throws ApplicationBaseException {
         Optional<Reservation> reservationOptional = reservationAdapter.getOwnReservation(username, number);
         if (reservationOptional.isPresent()) {
@@ -97,6 +101,7 @@ public class ReservationService {
         }
     }
 
+    //@PreAuthorize("hasAuthority('editOwnReservation')")
     public void editOwnReservation(String username, String number, ReservationDto reservationDto) throws ApplicationBaseException {
         if (number.equals(reservationDto.getNumber())) {
             Optional<Reservation> reservationOptional = reservationAdapter.getOwnReservation(username, number);
@@ -123,6 +128,7 @@ public class ReservationService {
         }
     }
 
+    //@PreAuthorize("hasAuthority('changeReservationStatus')")
     public void changeReservationStatus(String number, ReservationDto reservationDto) throws ApplicationBaseException {
         if (number.equals(reservationDto.getNumber())) {
             Optional<Reservation> reservationOptional = reservationAdapter.getReservation(number);
@@ -142,6 +148,7 @@ public class ReservationService {
         }
     }
 
+    //@PreAuthorize("hasAuthority('changeOwnReservationStatus')")
     public void changeOwnReservationStatus(String username, String number, ReservationDto reservationDto) throws ApplicationBaseException {
         if (number.equals(reservationDto.getNumber())) {
             Optional<Reservation> reservationOptional = reservationAdapter.getOwnReservation(username, number);
@@ -165,6 +172,7 @@ public class ReservationService {
         }
     }
 
+    //@PreAuthorize("hasAnyAuthority('getAllReservations', 'getSortedReservations')")
     public Page<ReservationDto> getAllReservations(PagingHelper pagingHelper) throws ApplicationBaseException {
         try {
             return ReservationMapper.toReservationDtos(reservationAdapter.getAllReservations(pagingHelper.withSorting()));
@@ -173,6 +181,7 @@ public class ReservationService {
         }
     }
 
+    //@PreAuthorize("hasAnyAuthority('filterReservations', 'filterSortedReservations')")
     public Page<ReservationDto> filterReservations(String filter, PagingHelper pagingHelper) throws ApplicationBaseException {
         try {
             return ReservationMapper.toReservationDtos(reservationAdapter.filterReservations(filter, pagingHelper.withSorting()));
@@ -181,6 +190,7 @@ public class ReservationService {
         }
     }
 
+    //@PreAuthorize("hasAnyAuthority('getOwnReservations', 'getOwnSortedReservations')")
     public Page<ReservationDto> getOwnReservations(String username, PagingHelper pagingHelper) throws ApplicationBaseException {
         try {
             return ReservationMapper.toReservationDtos(reservationAdapter.getOwnReservations(username, pagingHelper.withSorting()));
@@ -189,6 +199,7 @@ public class ReservationService {
         }
     }
 
+    //@PreAuthorize("hasAnyAuthority('filterOwnReservations', 'filterOwnSortedReservations')")
     public Page<ReservationDto> filterOwnReservations(String username, String filter, PagingHelper pagingHelper) throws ApplicationBaseException {
         try {
             return ReservationMapper.toReservationDtos(reservationAdapter.filterOwnReservations(username, filter, pagingHelper.withSorting()));

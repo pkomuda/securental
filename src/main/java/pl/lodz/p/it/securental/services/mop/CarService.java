@@ -3,6 +3,7 @@ package pl.lodz.p.it.securental.services.mop;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.retry.annotation.Retryable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.adapters.mop.CarAdapter;
 import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
@@ -31,12 +32,14 @@ public class CarService {
     private final CarMapper carMapper;
     private final SignatureUtils signatureUtils;
 
+    //@PreAuthorize("hasAuthority('addCar')")
     public void addCar(CarDto carDto) throws ApplicationBaseException {
         Car car = CarMapper.toCar(carDto);
         car.setNumber(StringUtils.randomBase64Url());
         carAdapter.addCar(car);
     }
 
+    //@PreAuthorize("permitAll()")
     public CarDto getCar(String number) throws ApplicationBaseException {
         Optional<Car> carOptional = carAdapter.getCar(number);
         if (carOptional.isPresent()) {
@@ -46,6 +49,7 @@ public class CarService {
         }
     }
 
+    //@PreAuthorize("hasAuthority('editCar')")
     public void editCar(String number, CarDto carDto) throws ApplicationBaseException {
         if (number.equals(carDto.getNumber())) {
             Optional<Car> carOptional = carAdapter.getCar(number);
@@ -69,6 +73,7 @@ public class CarService {
         }
     }
 
+    //@PreAuthorize("permitAll()")
     public Page<CarDto> getAllCars(PagingHelper pagingHelper) throws ApplicationBaseException {
         try {
             return CarMapper.toCarDtos(carAdapter.getAllCars(pagingHelper.withSorting()));
@@ -77,6 +82,7 @@ public class CarService {
         }
     }
 
+    //@PreAuthorize("permitAll()")
     public Page<CarDto> filterCars(String filter, PagingHelper pagingHelper) throws ApplicationBaseException {
         try {
             return CarMapper.toCarDtos(carAdapter.filterCars(filter, pagingHelper.withSorting()));

@@ -22,7 +22,6 @@ public class AccountMapper {
     public static Account toAccount(AccountDto accountDto) {
         Account account = Account.builder()
                 .email(accountDto.getEmail())
-                .fullPassword(accountDto.getPassword())
                 .firstName(accountDto.getFirstName())
                 .lastName(accountDto.getLastName())
                 .active(accountDto.getActive())

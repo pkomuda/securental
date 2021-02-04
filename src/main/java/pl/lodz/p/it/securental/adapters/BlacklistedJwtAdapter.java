@@ -2,12 +2,13 @@ package pl.lodz.p.it.securental.adapters;
 
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataAccessException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.aop.annotations.MandatoryTransaction;
-import pl.lodz.p.it.securental.entities.BlacklistedJwt;
+import pl.lodz.p.it.securental.entities.mok.BlacklistedJwt;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.db.DatabaseConnectionException;
-import pl.lodz.p.it.securental.repositories.BlacklistedJwtRepository;
+import pl.lodz.p.it.securental.repositories.mok.BlacklistedJwtRepository;
 
 import javax.persistence.PersistenceException;
 import java.util.Optional;
@@ -19,6 +20,7 @@ public class BlacklistedJwtAdapter {
 
     private final BlacklistedJwtRepository blacklistedJwtRepository;
 
+    //@PreAuthorize("hasAuthority('logout')")
     public void addBlacklistedJwt(BlacklistedJwt blacklistedJwt) throws ApplicationBaseException {
         try {
             blacklistedJwtRepository.saveAndFlush(blacklistedJwt);

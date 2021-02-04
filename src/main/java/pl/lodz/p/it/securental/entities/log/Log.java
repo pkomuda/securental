@@ -1,9 +1,10 @@
-package pl.lodz.p.it.securental.entities;
+package pl.lodz.p.it.securental.entities.log;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import pl.lodz.p.it.securental.entities.BaseEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

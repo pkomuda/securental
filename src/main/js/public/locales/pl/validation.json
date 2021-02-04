@@ -9,14 +9,17 @@
   "account.firstName.required": "Imię jest wymagane",
   "account.firstName.min": "Imię jest zbyt krótkie",
   "account.firstName.max": "Imię jest zbyt długie",
+  "account.firstName.invalid": "Imię jest nieprawidłowe",
 
   "account.lastName.required": "Nazwisko jest wymagane",
   "account.lastName.min": "Nazwisko jest zbyt krótkie",
   "account.lastName.max": "Nazwisko jest zbyt długie",
+  "account.lastName.invalid": "Nazwisko jest nieprawidłowe",
 
   "account.password.required": "Hasło jest wymagane",
   "account.password.min": "Hasło jest zbyt krótkie",
   "account.password.max": "Hasło jest zbyt długie",
+  "account.password.invalid": "Hasło musi zawierać małą literę, wielką literę, cyfrę i znak specjalny ze zbioru !@#$%",
   "account.passwords.match": "Hasło i potwierdzenie hasła muszą być takie same",
 
   "account.accessLevels.required": "Przynajmniej jeden poziom dostępu jest wymagany",

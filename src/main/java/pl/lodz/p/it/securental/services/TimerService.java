@@ -7,9 +7,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
-import pl.lodz.p.it.securental.entities.Log;
-import pl.lodz.p.it.securental.repositories.BlacklistedJwtRepository;
-import pl.lodz.p.it.securental.repositories.LogRepository;
+import pl.lodz.p.it.securental.entities.log.Log;
+import pl.lodz.p.it.securental.repositories.mok.BlacklistedJwtRepository;
+import pl.lodz.p.it.securental.repositories.log.LogRepository;
 
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;

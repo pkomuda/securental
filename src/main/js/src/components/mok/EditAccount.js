@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 import { array, bool, mixed, object, string } from "yup";
 import { handleError, handleSuccess } from "../../utils/Alerts";
 import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_CLIENT, ACCESS_LEVEL_EMPLOYEE } from "../../utils/Constants";
-import { EMAIL_REGEX, validate } from "../../utils/Validation";
+import { EMAIL_REGEX, NAME_REGEX, validate } from "../../utils/Validation";
 import { EditFormGroup } from "../common/EditFormGroup";
 import { Spinner } from "../common/Spinner";
 
@@ -19,8 +19,8 @@ export const EditAccount = props => {
     const schema = object().shape({
         username: string().required("account.username.required").min(1, "account.username.min").max(32, "account.username.max"),
         email: string().required("account.email.required").matches(EMAIL_REGEX, "account.email.invalid"),
-        firstName: string().required("account.firstName.required").min(1, "account.firstName.min").max(32, "account.firstName.max"),
-        lastName: string().required("account.lastName.required").min(1, "account.lastName.min").max(32, "account.lastName.max"),
+        firstName: string().required("account.firstName.required").min(1, "account.firstName.min").max(32, "account.firstName.max").matches(NAME_REGEX, "account.firstName.invalid"),
+        lastName: string().required("account.lastName.required").min(1, "account.lastName.min").max(32, "account.lastName.max").matches(NAME_REGEX, "account.lastName.invalid"),
         active: bool(),
         confirmed: bool(),
         accessLevels: array(),

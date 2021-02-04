@@ -18,6 +18,12 @@ import java.lang.annotation.Target;
 @Transactional
 public @interface RequiresNewTransaction {
 
+    @AliasFor(annotation = Transactional.class, attribute = "transactionManager")
+    String value() default "";
+
+    @AliasFor(annotation = Transactional.class, attribute = "value")
+    String transactionManager() default "";
+
     @AliasFor(annotation = Transactional.class, attribute = "propagation")
     Propagation propagation() default Propagation.REQUIRES_NEW;
 

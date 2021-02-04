@@ -9,14 +9,17 @@
   "account.firstName.required": "First name is required",
   "account.firstName.min": "First name is too short",
   "account.firstName.max": "First name is too long",
+  "account.firstName.invalid": "First name is invalid",
 
   "account.lastName.required": "Last name is required",
   "account.lastName.min": "Last name is too short",
   "account.lastName.max": "Last name is too long",
+  "account.lastName.invalid": "Last name is invalid",
 
   "account.password.required": "Password is required",
   "account.password.min": "Password is too short",
   "account.password.max": "Password is too long",
+  "account.password.invalid": "Password must contain a small letter, a big letter, a digit and a special character from the set !@#$%",
   "account.passwords.match": "Password and its confirmation must be the same",
 
   "account.accessLevels.required": "At least one access level is required",

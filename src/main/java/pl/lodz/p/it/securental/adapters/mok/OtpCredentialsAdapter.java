@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.entities.mok.OtpCredentials;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
@@ -19,7 +20,6 @@ import java.util.Optional;
 @Slf4j
 @Service
 @AllArgsConstructor
-//@MandatoryTransaction
 public class OtpCredentialsAdapter implements ICredentialRepository {
 
     private final OtpCredentialsRepository otpCredentialsRepository;
@@ -50,6 +50,7 @@ public class OtpCredentialsAdapter implements ICredentialRepository {
         }
     }
 
+    //@PreAuthorize("permitAll()")
     public Optional<OtpCredentials> getOtpCredentials(String username) throws ApplicationBaseException {
         try {
             return otpCredentialsRepository.findByUsername(username);

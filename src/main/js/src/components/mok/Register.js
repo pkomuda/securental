@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { array, object, string } from "yup";
 import { handleError } from "../../utils/Alerts";
-import { EMAIL_REGEX, validate } from "../../utils/Validation";
+import { EMAIL_REGEX, NAME_REGEX, PASSWORD_REGEX, validate } from "../../utils/Validation";
 import { Captcha } from "../common/Captcha";
 import { EditFormGroup } from "../common/EditFormGroup";
 
@@ -18,9 +18,10 @@ export const Register = props => {
     const schema = object().shape({
         username: string().required("account.username.required").min(1, "account.username.min").max(32, "account.username.max"),
         email: string().required("account.email.required").matches(EMAIL_REGEX, "account.email.invalid"),
-        firstName: string().required("account.firstName.required").min(1, "account.firstName.min").max(32, "account.firstName.max"),
-        lastName: string().required("account.lastName.required").min(1, "account.lastName.min").max(32, "account.lastName.max"),
-        password: string().required("account.password.required").min(8, "account.password.min").max(8, "account.password.max"),
+        firstName: string().required("account.firstName.required").min(1, "account.firstName.min").max(32, "account.firstName.max").matches(NAME_REGEX, "account.firstName.invalid"),
+        lastName: string().required("account.lastName.required").min(1, "account.lastName.min").max(32, "account.lastName.max").matches(NAME_REGEX, "account.lastName.invalid"),
+        password: string().required("account.password.required").length(8, "account.password.min").max(8, "account.password.max").matches(PASSWORD_REGEX, "account.password.invalid"),
+        confirmPassword: string().required("account.password.required").length(8, "account.password.min").max(8, "account.password.max").matches(PASSWORD_REGEX, "account.password.invalid"),
         accessLevels: array(),
     });
     const [account, setAccount] = useState({
@@ -66,8 +67,18 @@ export const Register = props => {
         }
     };
 
+    const validatePasswords = () => {
+        if (account.password === account.confirmPassword) {
+            document.getElementById("passwordsFeedback").style.display = "none";
+            return true;
+        } else {
+            document.getElementById("passwordsFeedback").style.display = "block";
+            return false;
+        }
+    };
+
     const handleSecondStage = () => {
-        if (!!(validate({password: account.password}, errors, setErrors, schema) & validateCaptcha(captcha))) {
+        if (!!(validate({password: account.password}, errors, setErrors, schema) & validateCaptcha(captcha) & validatePasswords())) {
             axios.post("/register",
                 account,
                 {headers: {"Accept-Language": window.navigator.language, "Captcha-Response": captcha}})
@@ -140,6 +151,11 @@ export const Register = props => {
                                        label="account.password"
                                        type="password"
                                        required/>
+                        <EditFormGroup id="confirmPassword"
+                                       label="account.confirmPassword"
+                                       type="password"
+                                       required/>
+                        <p id="passwordsFeedback" className="invalid" style={{display: "none"}}>{t("validation:account.passwords.match")}</p>
                     </Form>
                     <ButtonToolbar className="justify-content-center">
                         <Button id="back2"

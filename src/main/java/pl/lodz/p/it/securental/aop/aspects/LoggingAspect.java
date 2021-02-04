@@ -11,8 +11,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
-import pl.lodz.p.it.securental.entities.Log;
-import pl.lodz.p.it.securental.repositories.LogRepository;
+import pl.lodz.p.it.securental.entities.log.Log;
+import pl.lodz.p.it.securental.repositories.log.LogRepository;
 import pl.lodz.p.it.securental.utils.ApplicationProperties;
 
 import java.time.LocalDateTime;

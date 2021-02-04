@@ -93,7 +93,7 @@
 
   "register.header": "Registration",
   "register.password.header": "These are the last characters of your password",
-  "register.password.text1": "The following characters have been appended to your password: ",
+  "register.password.text1": "The following characters have been appended to the password: ",
   "register.password.text2": "Remember them to sign in to your account.",
   "register.success.header": "Registered successfully",
   "register.success.text1": "A confirmation email has been sent to the provided address.",

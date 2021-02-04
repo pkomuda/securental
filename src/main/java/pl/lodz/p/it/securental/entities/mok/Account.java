@@ -26,10 +26,6 @@ public @Data class Account extends BaseAuditEntity {
     private String email;
 
     @NotNull
-    @Column(nullable = false)
-    private String fullPassword; //TODO usunac
-
-    @NotNull
     @Size(min = 1, max = 32)
     @Column(nullable = false, length = 32)
     private String firstName;
