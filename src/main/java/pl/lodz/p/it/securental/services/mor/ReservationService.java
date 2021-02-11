@@ -3,12 +3,12 @@ package pl.lodz.p.it.securental.services.mor;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.retry.annotation.Retryable;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import pl.lodz.p.it.securental.adapters.mok.AccessLevelAdapter;
 import pl.lodz.p.it.securental.adapters.mop.CarAdapter;
 import pl.lodz.p.it.securental.adapters.mor.ReservationAdapter;
-import pl.lodz.p.it.securental.adapters.mor.StatusAdapter;
+//import pl.lodz.p.it.securental.adapters.mor.StatusAdapter;
 import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.dto.mappers.mor.ReservationMapper;
 import pl.lodz.p.it.securental.dto.model.mor.ReservationDto;
@@ -24,16 +24,14 @@ import pl.lodz.p.it.securental.exceptions.mok.AccountNotFoundException;
 import pl.lodz.p.it.securental.exceptions.mok.UsernameNotMatchingException;
 import pl.lodz.p.it.securental.exceptions.mop.CarNotFoundException;
 import pl.lodz.p.it.securental.exceptions.mor.*;
-import pl.lodz.p.it.securental.utils.ApplicationProperties;
-import pl.lodz.p.it.securental.utils.PagingHelper;
-import pl.lodz.p.it.securental.utils.SignatureUtils;
-import pl.lodz.p.it.securental.utils.StringUtils;
+import pl.lodz.p.it.securental.utils.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -43,11 +41,12 @@ import java.util.Optional;
 public class ReservationService {
 
     private final ReservationAdapter reservationAdapter;
-    private final StatusAdapter statusAdapter;
+//    private final StatusAdapter statusAdapter;
     private final AccessLevelAdapter accessLevelAdapter;
     private final CarAdapter carAdapter;
     private final ReservationMapper reservationMapper;
     private final SignatureUtils signatureUtils;
+    private final AmazonClient amazonClient;
 
     //@PreAuthorize("hasAuthority('addReservation')")
     public void addReservation(String username, ReservationDto reservationDto) throws ApplicationBaseException {
@@ -73,7 +72,7 @@ public class ReservationService {
             throw new ApplicationOptimisticLockException();
         }
 
-        reservation.setStatus(getStatus(ApplicationProperties.RESERVATION_STATUS_NEW));
+        reservation.setStatus(Status.NEW);
         reservation.setPrice(calculateReservationPrice(reservation));
         reservation.setNumber(StringUtils.randomBase64Url());
         car.getReservations().add(reservation);
@@ -102,7 +101,7 @@ public class ReservationService {
     }
 
     //@PreAuthorize("hasAuthority('editOwnReservation')")
-    public void editOwnReservation(String username, String number, ReservationDto reservationDto) throws ApplicationBaseException {
+    public void editOwnReservationDates(String username, String number, ReservationDto reservationDto) throws ApplicationBaseException {
         if (number.equals(reservationDto.getNumber())) {
             Optional<Reservation> reservationOptional = reservationAdapter.getOwnReservation(username, number);
             if (reservationOptional.isPresent()) {
@@ -128,15 +127,62 @@ public class ReservationService {
         }
     }
 
+    public void receiveOwnReservation(String username, String number, String signature, Map<String, MultipartFile> images) throws ApplicationBaseException {
+        if (images.size() != 4) {
+            throw new ReservationImagesAmountIncorrectException();
+        }
+
+        Optional<Reservation> reservationOptional = reservationAdapter.getOwnReservation(username, number);
+        if (reservationOptional.isEmpty()) {
+            throw new ReservationNotFoundException();
+        }
+
+        Reservation reservation = reservationOptional.get();
+        if (!signatureUtils.verify(reservation.toSignString(), signature)) {
+            throw new ApplicationOptimisticLockException();
+        }
+        if (!reservation.getStatus().equals(Status.NEW)) {
+            throw new IncorrectStatusException();
+        }
+        if (reservation.getStartDate().isAfter(LocalDateTime.now())) {
+            throw new ReservationStartAfterNowException();
+        }
+
+        List<String> receivedImageUrls = new ArrayList<>();
+        for (Map.Entry<String, MultipartFile> entry : images.entrySet()) {
+            receivedImageUrls.add(amazonClient.uploadFile(entry.getKey(), entry.getValue()));
+        }
+        reservation.setStatus(Status.RECEIVED);
+        reservation.setReceivedImageUrls(receivedImageUrls);
+    }
+
+//    public List<String> s3(MultipartFile[] images) throws ApplicationBaseException {
+//        List<String> receivedImageUrls = new ArrayList<>();
+//        for (MultipartFile image : images) {
+//            receivedImageUrls.add(amazonClient.uploadFile(image));
+//        }
+//        return receivedImageUrls;
+//    }
+
+//    public List<String> s3(MultipartFile images) throws ApplicationBaseException {
+//        List<String> receivedImageUrls = new ArrayList<>();
+//        receivedImageUrls.add(amazonClient.uploadFile(images));
+//        return receivedImageUrls;
+//    }
+
+    public void finishOwnReservation(String username, String number, ReservationDto reservationDto, MultipartFile images) throws ApplicationBaseException {
+
+    }
+
     //@PreAuthorize("hasAuthority('changeReservationStatus')")
-    public void changeReservationStatus(String number, ReservationDto reservationDto) throws ApplicationBaseException {
+    public void changeReservationStatus(String number, ReservationDto reservationDto) throws ApplicationBaseException { // new -> cancelled LUB received -> finished
         if (number.equals(reservationDto.getNumber())) {
             Optional<Reservation> reservationOptional = reservationAdapter.getReservation(number);
             if (reservationOptional.isPresent()) {
                 Reservation reservation = reservationOptional.get();
                 if (signatureUtils.verify(reservation.toSignString(), reservationDto.getSignature())) {
-                    validateStatuses(reservation.getStatus().getName(), reservationDto.getStatus());
-                    reservation.setStatus(getStatus(reservationDto.getStatus()));
+//                    validateStatuses(reservation.getStatus().name(), reservationDto.getStatus());
+//                    reservation.setStatus(getStatus(reservationDto.getStatus()));
                 } else {
                     throw new ApplicationOptimisticLockException();
                 }
@@ -149,15 +195,15 @@ public class ReservationService {
     }
 
     //@PreAuthorize("hasAuthority('changeOwnReservationStatus')")
-    public void changeOwnReservationStatus(String username, String number, ReservationDto reservationDto) throws ApplicationBaseException {
+    public void cancelOwnReservation(String username, String number, ReservationDto reservationDto) throws ApplicationBaseException {
         if (number.equals(reservationDto.getNumber())) {
             Optional<Reservation> reservationOptional = reservationAdapter.getOwnReservation(username, number);
             if (reservationOptional.isPresent()) {
                 Reservation reservation = reservationOptional.get();
                 if (signatureUtils.verify(reservation.toSignString(), reservationDto.getSignature())) {
-                    if (reservation.getStatus().getName().equals(ApplicationProperties.RESERVATION_STATUS_NEW)
+                    if (reservation.getStatus().name().equals(ApplicationProperties.RESERVATION_STATUS_NEW)
                             && reservationDto.getStatus().equals(ApplicationProperties.RESERVATION_STATUS_CANCELLED)) {
-                        reservation.setStatus(getStatus(reservationDto.getStatus()));
+//                        reservation.setStatus(getStatus(reservationDto.getStatus()));
                     } else {
                         throw new IncorrectStatusException();
                     }
@@ -208,14 +254,14 @@ public class ReservationService {
         }
     }
 
-    private Status getStatus(String name) throws ApplicationBaseException {
-        Optional<Status> statusOptional = statusAdapter.getStatus(name);
-        if (statusOptional.isPresent()) {
-            return statusOptional.get();
-        } else {
-            throw new StatusNotFoundException();
-        }
-    }
+//    private Status getStatus(String name) throws ApplicationBaseException {
+//        Optional<Status> statusOptional = statusAdapter.getStatus(name);
+//        if (statusOptional.isPresent()) {
+//            return statusOptional.get();
+//        } else {
+//            throw new StatusNotFoundException();
+//        }
+//    }
 
     private Client getClient(String username) throws ApplicationBaseException {
         Optional<Client> clientOptional = accessLevelAdapter.getClient(username);
@@ -245,22 +291,20 @@ public class ReservationService {
         }
     }
 
-    private List<String> getAvailableStatuses(String status) {
-        switch (status) {
-            case ApplicationProperties.RESERVATION_STATUS_NEW:
-                return List.of(ApplicationProperties.RESERVATION_STATUS_CANCELLED, ApplicationProperties.RESERVATION_STATUS_FINISHED);
-            case ApplicationProperties.RESERVATION_STATUS_CANCELLED:
-                return Collections.singletonList(ApplicationProperties.RESERVATION_STATUS_FINISHED);
-            default:
-                return Collections.emptyList();
-        }
-    }
+//    private List<Status> getAvailableStatuses(Status status) {
+//        switch (status) {
+//            case NEW:
+//                return List.of(Status.CANCELLED, Status.RECEIVED);
+//            default:
+//                return Collections.emptyList();
+//        }
+//    }
 
-    private void validateStatuses(String reservationStatus, String reservationDtoStatus) throws ApplicationBaseException {
-        if (!getAvailableStatuses(reservationStatus).contains(reservationDtoStatus)) {
-            throw new IncorrectStatusException();
-        }
-    }
+//    private void validateStatuses(String reservationStatus, String reservationDtoStatus) throws ApplicationBaseException {
+//        if (!getAvailableStatuses(reservationStatus).contains(reservationDtoStatus)) {
+//            throw new IncorrectStatusException();
+//        }
+//    }
 
     private BigDecimal calculateReservationPrice(Reservation reservation) {
         long minutes = ChronoUnit.MINUTES.between(reservation.getStartDate(), reservation.getEndDate());

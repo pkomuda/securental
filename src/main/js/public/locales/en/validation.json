@@ -51,5 +51,8 @@
   "reservation.date.start.not.before.end": "Start date must be before end date",
   "reservation.date.before.now": "Dates must be in the future",
 
-  "captcha.required": "reCAPTCHA form must be filled out"
+  "captcha.required": "reCAPTCHA form must be filled out",
+
+  "file.amount.invalid": "You must select all files",
+  "file.size.max": "File is too large"
 }

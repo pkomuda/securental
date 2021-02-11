@@ -19,6 +19,11 @@ public class ApplicationProperties {
     public static final String RESERVATION_STATUS_CANCELLED = "CANCELLED";
     public static final String RESERVATION_STATUS_FINISHED = "FINISHED";
 
+    public static final String IMAGE_FRONT = "front";
+    public static final String IMAGE_RIGHT = "right";
+    public static final String IMAGE_BACK = "back";
+    public static final String IMAGE_LEFT = "left";
+
     public static final String DATETIME_REGEX = "^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d$";
     public static final String EMAIL_REGEX = "^[a-zA-Z0-9-_]+(\\.[a-zA-Z0-9-_]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9]+)*(\\.[a-zA-Z]{2,})$";
     public static final String MONEY_REGEX = "^(?=.*[1-9])[0-9]*[.,]?[0-9]{1,2}$";
@@ -27,7 +32,7 @@ public class ApplicationProperties {
     public static final String STRING_REGEX = "^[a-zA-Z0-9!@#$%^ąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+$";
 
     public static final String LOG_CACHE_NAME = "log-cache";
-    public static final String[] PUBLIC_ROUTES = {"/api/register", "/api/confirmAccount", "/api/initializeLogin/*", "/api/login", "/api/car/*", "/api/cars/**", "/api/initializeResetPassword/*", "/api/resetOwnPassword/*"};
+    public static final String[] PUBLIC_ROUTES = {"/api/register", "/api/confirmAccount", "/api/initializeLogin/*", "/api/login", "/api/car/*", "/api/cars/**", "/api/initializeResetPassword/*", "/api/resetOwnPassword/*", "/api/s3"};
 
     public static Integer ADMIN_OTP_CODE;
     public static String ADMIN_PRINCIPAL;

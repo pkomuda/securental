@@ -3,7 +3,7 @@ import React, { Suspense, useEffect, useState } from "react";
 import { Button, DropdownButton } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Error } from "./components/common/Error";
-import ErrorBoundary from "./components/common/ErrorBoundary";
+// import ErrorBoundary from "./components/common/ErrorBoundary";
 import { Home } from "./components/common/Home";
 import { NavigationBar } from "./components/common/NavigationBar";
 import { NoAccess } from "./components/common/NoAccess";
@@ -31,6 +31,7 @@ import { AddReservation } from "./components/mor/AddReservation";
 import { EditOwnReservation } from "./components/mor/EditOwnReservation";
 import { ListOwnReservations } from "./components/mor/ListOwnReservations";
 import { ListReservations } from "./components/mor/ListReservations";
+import { OwnReservation } from "./components/mor/OwnReservation";
 import { OwnReservationDetails } from "./components/mor/OwnReservationDetails";
 import { ReservationDetails } from "./components/mor/ReservationDetails";
 import { AuthenticationContext, isAuthenticated } from "./utils/AuthenticationContext";
@@ -72,7 +73,6 @@ export const App = () => {
     };
 
     return (
-        <ErrorBoundary>
             <AuthenticationContext.Provider value={value}>
                 <Router>
                     <Suspense fallback={<Spinner/>}>
@@ -100,6 +100,7 @@ export const App = () => {
                             <PrivateRoute accessLevels={[ACCESS_LEVEL_CLIENT]} exact path="/addReservation/:number" component={AddReservation}/>
                             <PrivateRoute accessLevels={[ACCESS_LEVEL_CLIENT]} exact path="/listOwnReservations" component={ListOwnReservations}/>
                             <PrivateRoute accessLevels={[ACCESS_LEVEL_CLIENT]} exact path="/ownReservationDetails/:number" component={OwnReservationDetails}/>
+                            <PrivateRoute accessLevels={[ACCESS_LEVEL_CLIENT]} exact path="/ownReservation/:action/:number" component={OwnReservation}/>
                             <PrivateRoute accessLevels={[ACCESS_LEVEL_CLIENT]} exact path="/editOwnReservation/:number" component={EditOwnReservation}/>
                             <Route exact path="/noAccess" component={NoAccess}/>
                             <Route exact path="/error" component={Error}/>
@@ -108,6 +109,5 @@ export const App = () => {
                     </Suspense>
                 </Router>
             </AuthenticationContext.Provider>
-        </ErrorBoundary>
     );
 };

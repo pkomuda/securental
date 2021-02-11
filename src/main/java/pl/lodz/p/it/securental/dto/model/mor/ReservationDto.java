@@ -6,8 +6,11 @@ import pl.lodz.p.it.securental.dto.model.mok.ClientDto;
 import pl.lodz.p.it.securental.dto.model.mop.CarDto;
 import pl.lodz.p.it.securental.utils.ApplicationProperties;
 
+import javax.persistence.ElementCollection;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 public @Data class ReservationDto {
@@ -33,6 +36,10 @@ public @Data class ReservationDto {
     private ClientDto clientDto;
 
     private CarDto carDto;
+
+    private List<String> receivedImageUrls;
+
+    private List<String> finishedImageUrls;
 
     private String signature;
 }

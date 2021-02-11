@@ -5,11 +5,12 @@ import pl.lodz.p.it.securental.entities.BaseAuditEntity;
 import pl.lodz.p.it.securental.entities.mok.Client;
 import pl.lodz.p.it.securental.entities.mop.Car;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import javax.validation.constraints.Future;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Builder
@@ -21,15 +22,15 @@ public @Data class Reservation extends BaseAuditEntity {
     @EqualsAndHashCode.Include
     private String number;
 
-    @Future
+//    @Future
     private LocalDateTime startDate;
 
-    @Future
+//    @Future
     private LocalDateTime endDate;
 
     private BigDecimal price;
 
-    @ManyToOne
+    @Enumerated(EnumType.ORDINAL)
     private Status status;
 
     @ManyToOne
@@ -37,6 +38,12 @@ public @Data class Reservation extends BaseAuditEntity {
 
     @ManyToOne
     private Car car;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> receivedImageUrls = new ArrayList<>();
+
+    @ElementCollection
+    private List<String> finishedImageUrls = new ArrayList<>();
 
     public String toSignString() {
         return String.join(",", number, Long.toString(getVersion()));

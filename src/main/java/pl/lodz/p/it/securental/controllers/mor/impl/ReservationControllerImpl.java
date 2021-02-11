@@ -4,13 +4,18 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pl.lodz.p.it.securental.aop.annotations.NeverTransaction;
 import pl.lodz.p.it.securental.aop.annotations.OtpAuthorizationRequired;
 import pl.lodz.p.it.securental.controllers.mor.ReservationController;
 import pl.lodz.p.it.securental.dto.model.mor.ReservationDto;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.services.mor.ReservationService;
+import pl.lodz.p.it.securental.utils.ApplicationProperties;
 import pl.lodz.p.it.securental.utils.PagingHelper;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -50,7 +55,7 @@ public class ReservationControllerImpl implements ReservationController {
     public void editOwnReservation(@PathVariable String username,
                                    @PathVariable String number,
                                    @RequestBody ReservationDto reservationDto) throws ApplicationBaseException {
-        reservationService.editOwnReservation(username, number, reservationDto);
+        reservationService.editOwnReservationDates(username, number, reservationDto);
     }
 
     @Override
@@ -69,7 +74,7 @@ public class ReservationControllerImpl implements ReservationController {
     public void changeOwnReservationStatus(@PathVariable String username,
                                            @PathVariable String number,
                                            @RequestBody ReservationDto reservationDto) throws ApplicationBaseException {
-        reservationService.changeOwnReservationStatus(username, number, reservationDto);
+        reservationService.cancelOwnReservation(username, number, reservationDto);
     }
 
     @Override
@@ -151,6 +156,43 @@ public class ReservationControllerImpl implements ReservationController {
                                                             @PathVariable String order) throws ApplicationBaseException {
         return reservationService.filterOwnReservations(username, filter, new PagingHelper(page, size, resolvePropertyName(property), order));
     }
+
+    @Override
+    @OtpAuthorizationRequired
+    @PutMapping("/receiveReservation/{username}/{number}")
+    @PreAuthorize("hasAuthority('receiveOwnReservation') and #username == authentication.principal.username")
+    public void receiveOwnReservation(@PathVariable String username,
+                                      @PathVariable String number,
+                                      @RequestParam("signature") String signature,
+                                      @RequestParam(ApplicationProperties.IMAGE_FRONT) MultipartFile front,
+                                      @RequestParam(ApplicationProperties.IMAGE_RIGHT) MultipartFile right,
+                                      @RequestParam(ApplicationProperties.IMAGE_BACK) MultipartFile back,
+                                      @RequestParam(ApplicationProperties.IMAGE_LEFT) MultipartFile left) throws ApplicationBaseException {
+        Map<String, MultipartFile> images = Map.of(
+                ApplicationProperties.IMAGE_FRONT, front,
+                ApplicationProperties.IMAGE_RIGHT, right,
+                ApplicationProperties.IMAGE_BACK, back,
+                ApplicationProperties.IMAGE_LEFT, left
+        );
+        reservationService.receiveOwnReservation(username, number, signature, images);
+    }
+
+    @Override
+    @OtpAuthorizationRequired
+    @PutMapping("/finishReservation/{username}/{number}")
+    @PreAuthorize("hasAuthority('finishOwnReservation') and #username == authentication.principal.username")
+    public void finishOwnReservation(String username, String number, ReservationDto reservationDto, MultipartFile[] images) throws ApplicationBaseException {
+
+    }
+
+//    @PutMapping("/s3")
+//    @PreAuthorize("permitAll()")
+//    public List<String> s3(@RequestParam("front") MultipartFile front,
+//                           @RequestParam("right") MultipartFile right,
+//                           @RequestParam("rear") MultipartFile rear,
+//                           @RequestParam("left") MultipartFile left) throws ApplicationBaseException {
+//        return reservationService.s3(images);
+//    }
 
     private String resolvePropertyName(String property) {
         switch (property) {

@@ -51,5 +51,8 @@
   "reservation.date.start.not.before.end": "Data rozpoczęcia musi być przed datą zakończenia",
   "reservation.date.before.now": "Daty muszą być przyszłe",
 
-  "captcha.required": "Formularz reCAPTCHA musi być wypełniony"
+  "captcha.required": "Formularz reCAPTCHA musi być wypełniony",
+
+  "file.amount.invalid": "Należy wybrać wszystkie pliki",
+  "file.size.max": "Plik jest zbyt duży"
 }

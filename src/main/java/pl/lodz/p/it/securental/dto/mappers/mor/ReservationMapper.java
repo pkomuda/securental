@@ -34,9 +34,11 @@ public class ReservationMapper {
                 .startDate(StringUtils.localDateTimeToString(reservation.getStartDate()))
                 .endDate(StringUtils.localDateTimeToString(reservation.getEndDate()))
                 .price(StringUtils.bigDecimalToString(reservation.getPrice()))
-                .status(reservation.getStatus().getName())
+                .status(reservation.getStatus().name())
                 .clientDto(ClientMapper.toClientDto(reservation.getClient()))
                 .carDto(carMapper.toCarDtoWithSignature(reservation.getCar()))
+                .receivedImageUrls(reservation.getReceivedImageUrls())
+//                .finishedImageUrls(reservation.getFinishedImageUrls())
                 .signature(signatureUtils.sign(reservation.toSignString()))
                 .build();
     }
@@ -47,9 +49,11 @@ public class ReservationMapper {
                 .startDate(StringUtils.localDateTimeToString(reservation.getStartDate()))
                 .endDate(StringUtils.localDateTimeToString(reservation.getEndDate()))
                 .price(StringUtils.bigDecimalToString(reservation.getPrice()))
-                .status(reservation.getStatus().getName())
+                .status(reservation.getStatus().name())
                 .clientDto(ClientMapper.toClientDto(reservation.getClient()))
                 .carDto(CarMapper.toCarDtoWithoutSignature(reservation.getCar()))
+                .receivedImageUrls(reservation.getReceivedImageUrls())
+//                .finishedImageUrls(reservation.getFinishedImageUrls())
                 .build();
     }
 

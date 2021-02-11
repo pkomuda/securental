@@ -6,9 +6,10 @@ import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormControl, F
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import { handleError, handleSuccess } from "../../utils/Alerts";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
-import { CURRENCY, RESERVATION_STATUS_CANCELLED, RESERVATION_STATUS_NEW } from "../../utils/Constants";
+import { ACTION_FINISH, ACTION_RECEIVE, CURRENCY, RESERVATION_STATUS_CANCELLED, RESERVATION_STATUS_NEW, RESERVATION_STATUS_RECEIVED } from "../../utils/Constants";
 import { formatDate } from "../../utils/DateTime";
 import { FlatFormGroup } from "../common/FlatFormGroup";
 import { Spinner } from "../common/Spinner";
@@ -16,6 +17,7 @@ import { Spinner } from "../common/Spinner";
 export const OwnReservationDetails = props => {
 
     const {t} = useTranslation();
+    const popup = withReactContent(Swal);
     const [userInfo] = useContext(AuthenticationContext);
     const [reservation, setReservation] = useState({
         number: "",
@@ -24,6 +26,8 @@ export const OwnReservationDetails = props => {
         price: "",
         status: "",
         carDto: {},
+        receivedImageUrls: [],
+        // finishedImageUrls: [],
         clientDto: {}
     });
     const [loaded, setLoaded] = useState(false);
@@ -71,6 +75,60 @@ export const OwnReservationDetails = props => {
         }
     };
 
+    const renderActionButton = () => {
+        const now = new Date().getTime();
+        const start = new Date(reservation.startDate).getTime();
+        const end = new Date(reservation.endDate).getTime();
+        if (reservation.status === RESERVATION_STATUS_NEW && start <= now && now < end) {
+            return <Button id="receive"
+                           onClick={() => props.history.push(`/ownReservation/${ACTION_RECEIVE}/${reservation.number}`)}>{t("reservation.receive")}</Button>;
+        } else if (reservation.status === RESERVATION_STATUS_RECEIVED && end <= now) {
+            return <Button id="finish"
+                           onClick={() => props.history.push(`/ownReservation/${ACTION_FINISH}/${reservation.number}`)}>{t("reservation.finish")}</Button>;
+        }
+    };
+
+    const handleReceivedImages = () => {
+        popup.fire({
+            html:
+                <div>
+                    <img id="frontImage" src={reservation.receivedImageUrls[0]} alt="frontAlt" style={{margin: "0 auto", maxWidth: "400px", maxHeight: "200px"}}/>
+                    <img id="backImage" src={reservation.receivedImageUrls[1]} alt="backAlt" style={{margin: "0 auto", maxWidth: "400px", maxHeight: "200px"}}/>
+                    <img id="rightImage" src={reservation.receivedImageUrls[2]} alt="rightAlt" style={{margin: "0 auto", maxWidth: "400px", maxHeight: "200px"}}/>
+                    <img id="leftImage" src={reservation.receivedImageUrls[3]} alt="leftAlt" style={{margin: "0 auto", maxWidth: "400px", maxHeight: "200px"}}/>
+                </div>
+        }).then(() => {});
+    };
+
+    // const handleFinishedImages = () => {
+    //     popup.fire({
+    //         html:
+    //             <div>
+    //                 <img id="frontImage" src={reservation.finishedImageUrls[0]} alt="frontAlt" style={{margin: "0 auto", maxWidth: "400px", maxHeight: "200px"}}/>
+    //                 <img id="backImage" src={reservation.finishedImageUrls[1]} alt="backAlt" style={{margin: "0 auto", maxWidth: "400px", maxHeight: "200px"}}/>
+    //                 <img id="rightImage" src={reservation.finishedImageUrls[2]} alt="rightAlt" style={{margin: "0 auto", maxWidth: "400px", maxHeight: "200px"}}/>
+    //                 <img id="leftImage" src={reservation.finishedImageUrls[3]} alt="leftAlt" style={{margin: "0 auto", maxWidth: "400px", maxHeight: "200px"}}/>
+    //             </div>
+    //     }).then(() => {});
+    // };
+
+    const renderImagesButtons = () => {
+        const buttons = [];
+        if (reservation.receivedImageUrls.length !== 0) {
+            buttons.push(
+                <Button id="received"
+                        onClick={handleReceivedImages}>{t("reservation.images.received")}</Button>
+            );
+        }
+        // if (reservation.finishedImageUrls.length !== 0) {
+        //     buttons.push(
+        //         <Button id="received"
+        //                 onClick={handleFinishedImages}>{t("reservation.images.finished")}</Button>
+        //     );
+        // }
+        return buttons;
+    };
+
     if (loaded) {
         return (
             <React.Fragment>
@@ -103,7 +161,7 @@ export const OwnReservationDetails = props => {
                                 </FormGroup>
                                 <FormGroup>
                                     <FormLabel className="flat-form-label">{t("reservation.startDate")}</FormLabel>
-                                    <FormControl id="car"
+                                    <FormControl id="startDate"
                                                  value={formatDate(reservation.startDate)}
                                                  disabled
                                                  plaintext/>
@@ -111,7 +169,7 @@ export const OwnReservationDetails = props => {
                                 </FormGroup>
                                 <FormGroup>
                                     <FormLabel className="flat-form-label">{t("reservation.endDate")}</FormLabel>
-                                    <FormControl id="car"
+                                    <FormControl id="endDate"
                                                  value={formatDate(reservation.endDate)}
                                                  disabled
                                                  plaintext/>
@@ -119,7 +177,7 @@ export const OwnReservationDetails = props => {
                                 </FormGroup>
                                 <FormGroup>
                                     <FormLabel className="flat-form-label">{t("reservation.status")}</FormLabel>
-                                    <FormControl id="car"
+                                    <FormControl id="status"
                                                  value={t(reservation.status)}
                                                  disabled
                                                  plaintext/>
@@ -134,6 +192,8 @@ export const OwnReservationDetails = props => {
                                 <Button id="back"
                                         onClick={() => props.history.push("/listReservations")}>{t("navigation.back")}</Button>
                                 {renderCancelButton()}
+                                {renderActionButton()}
+                                {renderImagesButtons()}
                                 <Button id="edit"
                                         onClick={() => props.history.push(`/editOwnReservation/${reservation.number}`)}>{t("navigation.edit")}</Button>
                             </ButtonToolbar>

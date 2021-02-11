@@ -114,6 +114,8 @@ export const AddReservation = props => {
                     tempReservation.endDate = isoDate(tempReservation.endDate);
                     tempReservation.price = tempReservation.price.replaceAll(",", ".");
                     tempReservation.clientDto.username = userInfo.username;
+                    tempReservation.carDto.number = car.number;
+                    tempReservation.carDto.signature = car.signature;
                     axios.post(`/reservation/${userInfo.username}`,
                         tempReservation,
                         {headers: {"Otp-Code": otpCode}})
@@ -121,7 +123,7 @@ export const AddReservation = props => {
                             handleSuccess("reservation.add.success", "");
                             props.history.push(`/carDetails/${car.number}`);
                         }).catch(error => {
-                        handleError(error);
+                            handleError(error);
                     });
                 }
             }).then(() => {});

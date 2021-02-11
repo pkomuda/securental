@@ -1,6 +1,7 @@
 package pl.lodz.p.it.securental.controllers.mor;
 
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 import pl.lodz.p.it.securental.dto.model.mor.ReservationDto;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 
@@ -20,4 +21,6 @@ public interface ReservationController {
     Page<ReservationDto> getOwnSortedReservations(String username, int page, int size, String property, String order) throws ApplicationBaseException;
     Page<ReservationDto> filterOwnReservations(String username, String filter, int page, int size) throws ApplicationBaseException;
     Page<ReservationDto> filterOwnSortedReservations(String username, String filter, int page, int size, String property, String order) throws ApplicationBaseException;
+    void receiveOwnReservation(String username, String number, String signature, MultipartFile front, MultipartFile right, MultipartFile back, MultipartFile left) throws ApplicationBaseException;
+    void finishOwnReservation(String username, String number, ReservationDto reservationDto, MultipartFile[] images) throws ApplicationBaseException;
 }
