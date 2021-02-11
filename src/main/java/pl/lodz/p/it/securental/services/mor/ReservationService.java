@@ -144,9 +144,11 @@ public class ReservationService {
         if (!reservation.getStatus().equals(Status.NEW)) {
             throw new IncorrectStatusException();
         }
-        if (reservation.getStartDate().isAfter(LocalDateTime.now())) {
-            throw new ReservationStartAfterNowException();
-        }
+
+        //todo
+//        if (reservation.getStartDate().isAfter(LocalDateTime.now())) {
+//            throw new ReservationStartAfterNowException();
+//        }
 
         List<String> receivedImageUrls = new ArrayList<>();
         for (Map.Entry<String, MultipartFile> entry : images.entrySet()) {
