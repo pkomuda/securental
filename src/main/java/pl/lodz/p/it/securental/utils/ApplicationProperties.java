@@ -29,7 +29,7 @@ public class ApplicationProperties {
     public static final String MONEY_REGEX = "^(?=.*[1-9])[0-9]*[.,]?[0-9]{1,2}$";
     public static final String NAME_REGEX = "^[A-ZĄĆĘŁŃÓŚŹŻ][a-ząćęłńóśźż]+$";
     public static final String STATUS_REGEX = "^(" + RESERVATION_STATUS_NEW + "|" + RESERVATION_STATUS_CANCELLED + "|" + RESERVATION_STATUS_FINISHED + ")$";
-    public static final String STRING_REGEX = "^[a-zA-Z0-9!@#$%^ąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+$";
+    public static final String STRING_REGEX = "^[a-zA-Z0-9!@#$%ąćęłńóśźżĄĆĘŁŃÓŚŹŻ,. ]+$";
 
     public static final String LOG_CACHE_NAME = "log-cache";
     public static final String[] PUBLIC_ROUTES = {"/api/register", "/api/confirmAccount", "/api/initializeLogin/*", "/api/login", "/api/car/*", "/api/cars/**", "/api/initializeResetPassword/*", "/api/resetOwnPassword/*", "/api/s3"};
