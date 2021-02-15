@@ -4,7 +4,7 @@ import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.nio.charset.StandardCharsets;
+import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -59,8 +59,14 @@ public final class StringUtils {
         return Base64.getUrlDecoder().decode(base64);
     }
 
-    public static String randomBase64Url() {
-        return encodeBase64Url(UUID.randomUUID().toString().getBytes(StandardCharsets.UTF_8));
+    public static String randomIdentifier() {
+        UUID uuid = UUID.randomUUID();
+        ByteBuffer byteBuffer = ByteBuffer.allocate(16);
+        byteBuffer.putLong(uuid.getMostSignificantBits());
+        byteBuffer.putLong(uuid.getLeastSignificantBits());
+        return Base64.getUrlEncoder()
+                .withoutPadding()
+                .encodeToString(byteBuffer.array());
     }
 
     public static List<Integer> randomCombination(int full, int min, int max) {

@@ -185,15 +185,6 @@ public class ReservationControllerImpl implements ReservationController {
 
     }
 
-//    @PutMapping("/s3")
-//    @PreAuthorize("permitAll()")
-//    public List<String> s3(@RequestParam("front") MultipartFile front,
-//                           @RequestParam("right") MultipartFile right,
-//                           @RequestParam("rear") MultipartFile rear,
-//                           @RequestParam("left") MultipartFile left) throws ApplicationBaseException {
-//        return reservationService.s3(images);
-//    }
-
     private String resolvePropertyName(String property) {
         switch (property) {
             case "clientDto.username":

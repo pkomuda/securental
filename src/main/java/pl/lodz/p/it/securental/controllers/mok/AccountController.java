@@ -1,11 +1,7 @@
 package pl.lodz.p.it.securental.controllers.mok;
 
 import org.springframework.data.domain.Page;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
+import pl.lodz.p.it.securental.dto.model.log.LogDto;
 import pl.lodz.p.it.securental.dto.model.mok.AccountDto;
 import pl.lodz.p.it.securental.dto.model.mok.ChangePasswordRequest;
 import pl.lodz.p.it.securental.dto.model.mok.ConfirmAccountRequest;
@@ -32,4 +28,6 @@ public interface AccountController {
     RegistrationResponse resetOwnPassword(String hash, ChangePasswordRequest changePasswordRequest) throws ApplicationBaseException;
     void resendConfirmationEmail(String username) throws ApplicationBaseException;
     void resendQrCodeEmail(String username) throws ApplicationBaseException;
+    Page<LogDto> getAllLogs(int page, int size) throws ApplicationBaseException;
+    Page<LogDto> filterLogs(String filter, int page, int size) throws ApplicationBaseException;
 }

@@ -9,12 +9,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.aop.annotations.MandatoryTransaction;
 import pl.lodz.p.it.securental.entities.mop.Car;
+import pl.lodz.p.it.securental.entities.mop.Category;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.db.DatabaseConnectionException;
 import pl.lodz.p.it.securental.exceptions.db.PropertyNotFoundException;
 import pl.lodz.p.it.securental.repositories.mop.CarRepository;
 
 import javax.persistence.PersistenceException;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -43,9 +45,9 @@ public class CarAdapter {
     }
 
     //@PreAuthorize("permitAll()")
-    public Page<Car> getAllCars(Pageable pageable) throws ApplicationBaseException {
+    public Page<Car> getAllCars(List<Category> categories, Pageable pageable) throws ApplicationBaseException {
         try {
-            return carRepository.findAll(pageable);
+            return carRepository.findAllByCategoryIn(categories, pageable);
         } catch (PropertyReferenceException e) {
             throw new PropertyNotFoundException(e);
         } catch (PersistenceException | DataAccessException e) {
@@ -54,10 +56,11 @@ public class CarAdapter {
     }
 
     //@PreAuthorize("permitAll()")
-    public Page<Car> filterCars(String filter, Pageable pageable) throws ApplicationBaseException {
+    public Page<Car> filterCars(String filter, List<Category> categories, Pageable pageable) throws ApplicationBaseException {
         try {
-            return carRepository.findAllByMakeContainsIgnoreCaseOrModelContainsIgnoreCase(filter,
+            return carRepository.findAllByMakeContainsIgnoreCaseOrModelContainsIgnoreCaseAndCategoryIn(filter,
                     filter,
+                    categories,
                     pageable);
         } catch (PropertyReferenceException e) {
             throw new PropertyNotFoundException(e);

@@ -13,16 +13,18 @@ import lombok.AllArgsConstructor;
 import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.retry.annotation.Retryable;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pl.lodz.p.it.securental.adapters.LogAdapter;
 import pl.lodz.p.it.securental.adapters.mok.AccountAdapter;
 import pl.lodz.p.it.securental.adapters.mok.OtpCredentialsAdapter;
 import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.dto.mappers.mok.AccountMapper;
+import pl.lodz.p.it.securental.dto.model.log.LogDto;
 import pl.lodz.p.it.securental.dto.model.mok.AccountDto;
 import pl.lodz.p.it.securental.dto.model.mok.ChangePasswordRequest;
 import pl.lodz.p.it.securental.dto.model.mok.RegistrationResponse;
+import pl.lodz.p.it.securental.entities.log.Log;
 import pl.lodz.p.it.securental.entities.mok.*;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.ApplicationOptimisticLockException;
@@ -47,6 +49,7 @@ public class AccountService {
     private final PasswordEncoder passwordEncoder;
     private final GoogleAuthenticator googleAuthenticator;
     private final OtpCredentialsAdapter otpCredentialsAdapter;
+    private final LogAdapter logAdapter;
     private final EmailSender emailSender;
     private final SignatureUtils signatureUtils;
     private final AccountMapper accountMapper;
@@ -146,7 +149,7 @@ public class AccountService {
         account.setFailedAuthenticationCounter(0);
         account.setCredentials(new Credentials(generateMaskedPasswords(accountDto.getPassword() + lastPasswordCharacters)));
         account.setAuthenticationToken(new AuthenticationToken(new ArrayList<>(), LocalDateTime.now()));
-        account.setResetPasswordToken(new ResetPasswordToken(LocalDateTime.now(), StringUtils.randomBase64Url(), true));
+        account.setResetPasswordToken(new ResetPasswordToken(LocalDateTime.now(), StringUtils.randomIdentifier(), true));
         if (otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).isPresent()) {
             account.setOtpCredentials(otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).get());
             String subject = StringUtils.getTranslatedText("created.subject", language);
@@ -171,10 +174,10 @@ public class AccountService {
         account.setLastAuthenticationIpAddress("");
         account.setLoginInitializationCounter(0);
         account.setFailedAuthenticationCounter(0);
-        account.setConfirmationToken(StringUtils.randomBase64Url());
+        account.setConfirmationToken(StringUtils.randomIdentifier());
         account.setCredentials(new Credentials(generateMaskedPasswords(accountDto.getPassword() + lastPasswordCharacters)));
         account.setAuthenticationToken(new AuthenticationToken(new ArrayList<>(), LocalDateTime.now()));
-        account.setResetPasswordToken(new ResetPasswordToken(LocalDateTime.now(), StringUtils.randomBase64Url(), true));
+        account.setResetPasswordToken(new ResetPasswordToken(LocalDateTime.now(), StringUtils.randomIdentifier(), true));
         account.setAccessLevels(generateClientAccessLevels(account));
         if (otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).isPresent()) {
             account.setOtpCredentials(otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).get());
@@ -199,7 +202,7 @@ public class AccountService {
             Account account = accountOptional.get();
             ResetPasswordToken resetPasswordToken = account.getResetPasswordToken();
             resetPasswordToken.setExpiration(LocalDateTime.now().plusMinutes(ApplicationProperties.RESET_PASSWORD_TOKEN_EXPIRATION));
-            resetPasswordToken.setHash(StringUtils.randomBase64Url());
+            resetPasswordToken.setHash(StringUtils.randomIdentifier());
             resetPasswordToken.setUsed(false);
             String subject = StringUtils.getTranslatedText("reset.subject", language);
             String text = "<a href=\"" + ApplicationProperties.FRONTEND_ORIGIN + "/resetPassword/" + resetPasswordToken.getHash() + "\">"
@@ -381,6 +384,18 @@ public class AccountService {
         } else {
             throw new UsernameNotMatchingException();
         }
+    }
+
+    public Page<LogDto> getAllLogs(PagingHelper pagingHelper) throws ApplicationBaseException {
+        return logAdapter
+                .getAllLogs(pagingHelper.withoutSorting())
+                .map(log -> LogDto.of(log.getMessage()));
+    }
+
+    public Page<LogDto> filterLogs(String filter, PagingHelper pagingHelper) throws ApplicationBaseException {
+        return logAdapter
+                .filterLogs(filter, pagingHelper.withoutSorting())
+                .map(log -> LogDto.of(log.getMessage()));
     }
 
     private String generateQrCode(String username, GoogleAuthenticatorKey key) throws ApplicationBaseException {

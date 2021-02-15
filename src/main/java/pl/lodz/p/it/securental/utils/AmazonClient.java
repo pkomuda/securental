@@ -44,7 +44,7 @@ public class AmazonClient {
 
     public String uploadFile(String name, MultipartFile multipartFile) throws ApplicationBaseException {
         File file = multipartToFile(multipartFile);
-        String fileName = Instant.now().toEpochMilli() + "-" + name + "-" + StringUtils.randomBase64Url();
+        String fileName = Instant.now().toEpochMilli() + "-" + name + "-" + StringUtils.randomIdentifier();
         String fileUrl = endpointUrl + "/" + bucketName + "/" + fileName;
         uploadFileToS3(fileName, file);
         if (!file.delete()) {

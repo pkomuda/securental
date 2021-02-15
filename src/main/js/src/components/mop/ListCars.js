@@ -2,13 +2,13 @@ import { faHome, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Button, Container, FormControl, InputGroup } from "react-bootstrap";
+import { Breadcrumb, Button, Container, FormCheck, FormControl, FormGroup, FormLabel, InputGroup } from "react-bootstrap";
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from 'react-router-bootstrap';
 import { handleError } from "../../utils/Alerts";
-import { CURRENCY, PAGINATION_SIZES } from "../../utils/Constants";
+import { CAR_CATEGORIES, CURRENCY, PAGINATION_SIZES } from "../../utils/Constants";
 import { formatDecimal } from "../../utils/i18n";
 import { Spinner } from "../common/Spinner";
 
@@ -16,6 +16,7 @@ export const ListCars = props => {
 
     const {t} = useTranslation();
     const [cars, setCars] = useState([]);
+    const [categories, setCategories] = useState(CAR_CATEGORIES);
     const [page, setPage] = useState(1);
     const [sizePerPage, setSizePerPage] = useState(10);
     const [totalSize, setTotalSize] = useState(0);
@@ -31,6 +32,13 @@ export const ListCars = props => {
         dataField: "model",
         text: t("car.model"),
         sort: true
+    }, {
+        dataField: "category",
+        text: t("car.category"),
+        sort: true,
+        formatter: (cell, row) => {
+            return t(row["category"]);
+        }
     }, {
         dataField: "productionYear",
         text: t("car.productionYear"),
@@ -70,7 +78,7 @@ export const ListCars = props => {
                 }
             }
         };
-        axios.get(url())
+        axios.get(url(), {params: {"categories": categories.join(",")}})
             .then(response => {
                 if (response.data.empty) {
                     if (response.data.totalPages === 0) {
@@ -85,13 +93,39 @@ export const ListCars = props => {
             }).catch(error => {
                 handleError(error);
         });
-    }, [filter, page, sizePerPage, sortField, sortOrder, t]);
+    }, [categories, filter, page, sizePerPage, sortField, sortOrder, t]);
 
     const handleTableChange = (type, { page, sizePerPage, sortField, sortOrder }) => {
         setPage(page);
         setSizePerPage(sizePerPage);
         setSortField(sortField);
         setSortOrder(sortOrder);
+    };
+
+    const handleChangeCategory = (event, category) => {
+        if (categories.includes(category)) {
+            setCategories(categories.filter(element => element !== category));
+        } else {
+            setCategories([...categories, category]);
+        }
+    };
+
+    const renderCategorySelect = () => {
+        const categories = [];
+        for (let category of CAR_CATEGORIES) {
+            categories.push(
+                <FormCheck inline
+                           defaultChecked
+                           label={t(category)}
+                           onChange={event => handleChangeCategory(event, category)}/>
+            );
+        }
+        return (
+            <FormGroup>
+                <FormLabel className="flat-form-label" style={{marginRight: "1em"}}>{t("car.category")}</FormLabel>
+                {categories}
+            </FormGroup>
+        );
     };
 
     if (loaded) {
@@ -106,6 +140,7 @@ export const ListCars = props => {
                     <Breadcrumb.Item active>{t("breadcrumbs.listCars")}</Breadcrumb.Item>
                 </Breadcrumb>
                 <Container>
+                    {renderCategorySelect()}
                     <InputGroup>
                         <InputGroup.Prepend>
                             <InputGroup.Text>

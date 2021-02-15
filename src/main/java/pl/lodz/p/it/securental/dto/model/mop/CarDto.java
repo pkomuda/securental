@@ -41,6 +41,8 @@ public @Data class CarDto {
     @NotNull(message = "car.active.required")
     private Boolean active;
 
+    private String category;
+
     @ToString.Exclude
     private List<ReservationDto> reservations;
 

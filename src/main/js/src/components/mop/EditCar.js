@@ -2,13 +2,13 @@ import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormCheck, FormGroup, FormLabel, Row } from "react-bootstrap";
+import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormCheck, FormControl, FormGroup, FormLabel, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
 import { array, bool, object, string } from "yup";
 import { handleError, handleSuccess } from "../../utils/Alerts";
-import { CURRENCY } from "../../utils/Constants";
+import { CAR_CATEGORIES, CURRENCY } from "../../utils/Constants";
 import { MONEY_REGEX, STRING_REGEX, validate, YEAR_REGEX } from "../../utils/Validation";
 import { EditFormGroup } from "../common/EditFormGroup";
 import { Spinner } from "../common/Spinner";
@@ -23,6 +23,7 @@ export const EditCar = props => {
         description: string().required("car.description.required").min(1, "car.description.min").max(255, "car.description.max").matches(STRING_REGEX, "car.description.invalid"),
         productionYear: string().required("car.productionYear.required").matches(YEAR_REGEX, "car.productionYear.invalid"),
         price: string().required("car.price.required").matches(MONEY_REGEX, "car.price.invalid"),
+        category: string().required("car.category.required"),
         active: bool(),
         reservations: array(),
         signature: string()
@@ -82,6 +83,48 @@ export const EditCar = props => {
         }
     };
 
+    const validateCategory = object => {
+        if (object.category) {
+            document.getElementById("category").classList.remove("is-invalid");
+            document.getElementById("categoryFeedback").style.display = "none";
+            return true;
+        } else {
+            document.getElementById("category").classList.add("is-invalid");
+            document.getElementById("categoryFeedback").style.display = "block";
+            return false;
+        }
+    };
+
+    const handleChangeCategory = event => {
+        const temp = {...car, "category": event.target.value};
+        setCar(temp);
+        validateCategory(temp);
+    };
+
+    const renderCategorySelect = () => {
+        const options = [];
+        options.push(
+            <option label={t("navigation.select")} selected disabled hidden/>
+        );
+        for (let category of CAR_CATEGORIES) {
+            options.push(
+                <option label={t(category)}>{category}</option>
+            );
+        }
+        return (
+            <FormGroup>
+                <FormLabel className="font-weight-bold">{t("car.category")}</FormLabel>
+                <FormControl id="category"
+                             as="select"
+                             value={car.category}
+                             onChange={handleChangeCategory}>
+                    {options}
+                </FormControl>
+                <p id="categoryFeedback" className="invalid" style={{display: "none"}}>{t("validation:car.category.required")}</p>
+            </FormGroup>
+        );
+    };
+
     if (loaded) {
         return (
             <React.Fragment>
@@ -122,6 +165,7 @@ export const EditCar = props => {
                                                type="number"
                                                suffix={CURRENCY}
                                                required/>
+                                {renderCategorySelect()}
                                 <FormGroup>
                                     <FormLabel className="font-weight-bold">{t("car.activity")}</FormLabel>
                                     <FormCheck id="active" label={t("car.active")} onChange={handleChangeActive} defaultChecked={car.active}/>

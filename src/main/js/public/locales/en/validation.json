@@ -48,6 +48,8 @@
   "car.price.required": "Price is required",
   "car.price.invalid": "Price is invalid",
 
+  "car.category.required": "Category is required",
+
   "reservation.date.start.not.before.end": "Start date must be before end date",
   "reservation.date.before.now": "Dates must be in the future",
 

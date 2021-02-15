@@ -11,6 +11,7 @@
   "navigation.noAccess": "Nie masz dostępu do tej strony",
   "navigation.success": "Sukces",
   "navigation.more": "Więcej",
+  "navigation.select": "Wybierz",
 
   "navbar.login": "Zaloguj się",
   "navbar.register": "Zarejestruj",
@@ -37,6 +38,9 @@
   "breadcrumbs.changePassword": "Zmień hasło",
   "breadcrumbs.receiveReservation": "Odbierz rezerwację",
   "breadcrumbs.finishReservation": "Zakończ rezerwację",
+  "breadcrumbs.listLogs": "Lista logów",
+
+  "log.message": "Wywołanie metody biznesowej",
 
   "account.details.header": "Szczegóły konta",
   "account.username": "Nazwa użytkownika",
@@ -60,13 +64,14 @@
   "account.edit.success": "Konto edytowane pomyślnie",
   "account.resend.success": "Email wysłany pomyślnie",
 
-  "car.number": "Numer samochodu",
+  "car.number": "Identyfikator samochodu",
   "car.make": "Marka",
   "car.model": "Model",
   "car.description": "Opis",
   "car.productionYear": "Rok produkcji",
   "car.list.price": "Cena wynajmu",
   "car.details.price": "Cena wynajmu (za każdą rozpoczętą godzinę)",
+  "car.category": "Kategoria",
   "car.activity": "Aktywność",
   "car.active": "Aktywny",
   "car.inactive": "Nieaktywny",
@@ -77,6 +82,13 @@
   "ADMIN": "Administrator",
   "EMPLOYEE": "Pracownik",
   "CLIENT": "Klient",
+
+  "SEDAN": "Sedan",
+  "KOMBI": "Kombi",
+  "HATCHBACK": "Hatchback",
+  "COUPE": "Coupe",
+  "CABRIO": "Kabriolet",
+  "SUV": "SUV",
 
   "login.header": "Logowanie",
   "login.password.characters": "Znaki hasła",
@@ -106,7 +118,7 @@
 
   "reservation.reserve": "Zarezerwuj",
   "reservation.car": "Samochód",
-  "reservation.number": "Numer rezerwacji",
+  "reservation.number": "Identyfikator rezerwacji",
   "reservation.date": "Data",
   "reservation.startDate": "Data rozpoczęcia",
   "reservation.endDate": "Data zakończenia",

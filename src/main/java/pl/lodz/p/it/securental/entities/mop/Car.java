@@ -5,6 +5,8 @@ import pl.lodz.p.it.securental.entities.BaseAuditEntity;
 import pl.lodz.p.it.securental.entities.mor.Reservation;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -31,6 +33,9 @@ public @Data class Car extends BaseAuditEntity {
     private BigDecimal price;
 
     private Boolean active;
+
+    @Enumerated(EnumType.STRING)
+    private Category category;
 
     @OneToMany
     @ToString.Exclude

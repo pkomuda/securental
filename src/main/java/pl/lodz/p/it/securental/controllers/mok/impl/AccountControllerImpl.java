@@ -9,6 +9,7 @@ import pl.lodz.p.it.securental.aop.annotations.CaptchaRequired;
 import pl.lodz.p.it.securental.aop.annotations.NeverTransaction;
 import pl.lodz.p.it.securental.aop.annotations.OtpAuthorizationRequired;
 import pl.lodz.p.it.securental.controllers.mok.AccountController;
+import pl.lodz.p.it.securental.dto.model.log.LogDto;
 import pl.lodz.p.it.securental.dto.model.mok.AccountDto;
 import pl.lodz.p.it.securental.dto.model.mok.ChangePasswordRequest;
 import pl.lodz.p.it.securental.dto.model.mok.ConfirmAccountRequest;
@@ -177,6 +178,23 @@ public class AccountControllerImpl implements AccountController {
     @PreAuthorize("hasAuthority('resendQrCodeEmail')")
     public void resendQrCodeEmail(@PathVariable String username) throws ApplicationBaseException {
         accountService.sendQrCodeEmail(username);
+    }
+
+    @Override
+    @GetMapping("/logs/{page}/{size}")
+    @PreAuthorize("hasAuthority('getAllLogs')")
+    public Page<LogDto> getAllLogs(@PathVariable int page,
+                                   @PathVariable int size) throws ApplicationBaseException {
+        return accountService.getAllLogs(new PagingHelper(page, size));
+    }
+
+    @Override
+    @GetMapping("/logs/{filter}/{page}/{size}")
+    @PreAuthorize("hasAuthority('filterLogs')")
+    public Page<LogDto> filterLogs(@PathVariable String filter,
+                                   @PathVariable int page,
+                                   @PathVariable int size) throws ApplicationBaseException {
+        return accountService.filterLogs(filter, new PagingHelper(page, size));
     }
 
     private String resolvePropertyName(String property) {

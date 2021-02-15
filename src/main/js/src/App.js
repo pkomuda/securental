@@ -3,7 +3,7 @@ import React, { Suspense, useEffect, useState } from "react";
 import { Button, DropdownButton } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Error } from "./components/common/Error";
-// import ErrorBoundary from "./components/common/ErrorBoundary";
+// import ErrorBoundary from "./components/common/ErrorBoundary"; //todo
 import { Home } from "./components/common/Home";
 import { NavigationBar } from "./components/common/NavigationBar";
 import { NoAccess } from "./components/common/NoAccess";
@@ -19,6 +19,7 @@ import { ConfirmAccount } from "./components/mok/ConfirmAccount";
 import { EditAccount } from "./components/mok/EditAccount";
 import { EditOwnAccount } from "./components/mok/EditOwnAccount";
 import { ListAccounts } from "./components/mok/ListAccounts";
+import { ListLogs } from "./components/mok/ListLogs";
 import { Login } from "./components/mok/Login";
 import { OwnAccountDetails } from "./components/mok/OwnAccountDetails";
 import { Register } from "./components/mok/Register";
@@ -93,6 +94,7 @@ export const App = () => {
                             <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN]} exact path="/accountDetails/:username" component={AccountDetails}/>
                             <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN]} exact path="/editAccount/:username" component={EditAccount}/>
                             <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN]} exact path="/changePassword/:username" component={ChangePassword}/>
+                            <PrivateRoute accessLevels={[ACCESS_LEVEL_ADMIN]} exact path="/listLogs" component={ListLogs}/>
                             <PrivateRoute accessLevels={[ACCESS_LEVEL_EMPLOYEE]} exact path="/addCar" component={AddCar}/>
                             <PrivateRoute accessLevels={[ACCESS_LEVEL_EMPLOYEE]} exact path="/editCar/:number" component={EditCar}/>
                             <PrivateRoute accessLevels={[ACCESS_LEVEL_EMPLOYEE]} exact path="/listReservations" component={ListReservations}/>

@@ -32,7 +32,7 @@ public class ApplicationProperties {
     public static final String STRING_REGEX = "^[a-zA-Z0-9!@#$%ąćęłńóśźżĄĆĘŁŃÓŚŹŻ,. ]+$";
 
     public static final String LOG_CACHE_NAME = "log-cache";
-    public static final String[] PUBLIC_ROUTES = {"/api/register", "/api/confirmAccount", "/api/initializeLogin/*", "/api/login", "/api/car/*", "/api/cars/**", "/api/initializeResetPassword/*", "/api/resetOwnPassword/*", "/api/s3"};
+    public static final String[] PUBLIC_ROUTES = {"/api/register", "/api/confirmAccount", "/api/initializeLogin/*", "/api/login", "/api/car/*", "/api/cars/**", "/api/initializeResetPassword/*", "/api/resetOwnPassword/*"};
 
     public static Integer ADMIN_OTP_CODE;
     public static String ADMIN_PRINCIPAL;

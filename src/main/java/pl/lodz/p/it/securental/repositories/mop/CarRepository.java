@@ -8,7 +8,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Repository;
 import pl.lodz.p.it.securental.aop.annotations.MandatoryTransaction;
 import pl.lodz.p.it.securental.entities.mop.Car;
+import pl.lodz.p.it.securental.entities.mop.Category;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -17,8 +19,7 @@ public interface CarRepository extends JpaRepository<Car, Long> {
 
     Optional<Car> findByNumber(String number);
 
-    @NonNull
-    Page<Car> findAll(@NonNull Pageable pageable);
+    Page<Car> findAllByCategoryIn(List<Category> categories, Pageable pageable);
 
-    Page<Car> findAllByMakeContainsIgnoreCaseOrModelContainsIgnoreCase(String make, String model, Pageable pageable);
+    Page<Car> findAllByMakeContainsIgnoreCaseOrModelContainsIgnoreCaseAndCategoryIn(String make, String model, List<Category> categories, Pageable pageable);
 }

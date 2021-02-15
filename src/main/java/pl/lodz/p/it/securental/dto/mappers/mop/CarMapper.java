@@ -7,6 +7,7 @@ import pl.lodz.p.it.securental.dto.mappers.mor.ReservationMapper;
 import pl.lodz.p.it.securental.dto.model.mop.CarDto;
 import pl.lodz.p.it.securental.dto.model.mor.ReservationDto;
 import pl.lodz.p.it.securental.entities.mop.Car;
+import pl.lodz.p.it.securental.entities.mop.Category;
 import pl.lodz.p.it.securental.entities.mor.Reservation;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.utils.SignatureUtils;
@@ -31,6 +32,7 @@ public class CarMapper {
                 .productionYear(carDto.getProductionYear())
                 .price(StringUtils.stringToBigDecimal(carDto.getPrice()))
                 .active(carDto.getActive())
+                .category(Category.valueOf(carDto.getCategory()))
                 .reservations(new ArrayList<>())
                 .build();
     }
@@ -44,6 +46,7 @@ public class CarMapper {
                 .productionYear(car.getProductionYear())
                 .price(StringUtils.bigDecimalToString(car.getPrice()))
                 .active(car.getActive())
+                .category(car.getCategory().name())
                 .reservations(toReservationDtosWithDatesOnly(car.getReservations()))
                 .signature(signatureUtils.sign(car.toSignString()))
                 .build();
@@ -58,6 +61,7 @@ public class CarMapper {
                 .productionYear(car.getProductionYear())
                 .price(StringUtils.bigDecimalToString(car.getPrice()))
                 .active(car.getActive())
+                .category(car.getCategory().name())
                 .reservations(toReservationDtosWithDatesOnly(car.getReservations()))
                 .build();
     }

@@ -11,6 +11,7 @@
   "navigation.noAccess": "You have no access to this page",
   "navigation.success": "Success",
   "navigation.more": "More",
+  "navigation.select": "Select",
 
   "navbar.login": "Sign in",
   "navbar.register": "Register",
@@ -37,6 +38,9 @@
   "breadcrumbs.changePassword": "Change password",
   "breadcrumbs.receiveReservation": "Receive reservation",
   "breadcrumbs.finishReservation": "Finish reservation",
+  "breadcrumbs.listLogs": "Log list",
+
+  "log.message": "Business method invocation",
 
   "account.details.header": "Account details",
   "account.username": "Username",
@@ -60,13 +64,14 @@
   "account.edit.success": "Account edited successfully",
   "account.resend.success": "Email resent successfully",
 
-  "car.number": "Car number",
+  "car.number": "Car identifier",
   "car.make": "Make",
   "car.model": "Model",
   "car.description": "Description",
   "car.productionYear": "Production year",
   "car.list.price": "Rental price",
   "car.details.price": "Rental price (for each started hour)",
+  "car.category": "Category",
   "car.activity": "Activity",
   "car.active": "Active",
   "car.inactive": "Inactive",
@@ -77,6 +82,13 @@
   "ADMIN": "Admin",
   "EMPLOYEE": "Employee",
   "CLIENT": "Client",
+
+  "SEDAN": "Sedan",
+  "KOMBI": "Kombi",
+  "HATCHBACK": "Hatchback",
+  "COUPE": "Coupe",
+  "CABRIO": "Cabriolet",
+  "SUV": "SUV",
 
   "login.header": "Sign in",
   "login.password.characters": "Password characters",
@@ -106,7 +118,7 @@
 
   "reservation.reserve": "Reserve",
   "reservation.car": "Car",
-  "reservation.number": "Reservation number",
+  "reservation.number": "Reservation identifier",
   "reservation.date": "Date",
   "reservation.startDate": "Start date",
   "reservation.endDate": "End date",

@@ -48,8 +48,9 @@ public class CarControllerImpl implements CarController {
     @GetMapping("/cars/{page}/{size}")
     @PreAuthorize("permitAll()")
     public Page<CarDto> getAllCars(@PathVariable int page,
-                                   @PathVariable int size) throws ApplicationBaseException {
-        return carService.getAllCars(new PagingHelper(page, size));
+                                   @PathVariable int size,
+                                   @RequestParam("categories") String[] categories) throws ApplicationBaseException {
+        return carService.getAllCars(categories, new PagingHelper(page, size));
     }
 
     @Override
@@ -58,8 +59,9 @@ public class CarControllerImpl implements CarController {
     public Page<CarDto> getSortedCars(@PathVariable int page,
                                       @PathVariable int size,
                                       @PathVariable String property,
-                                      @PathVariable String order) throws ApplicationBaseException {
-        return carService.getAllCars(new PagingHelper(page, size, property, order));
+                                      @PathVariable String order,
+                                      @RequestParam("categories") String[] categories) throws ApplicationBaseException {
+        return carService.getAllCars(categories, new PagingHelper(page, size, property, order));
     }
 
     @Override
@@ -67,8 +69,9 @@ public class CarControllerImpl implements CarController {
     @PreAuthorize("permitAll()")
     public Page<CarDto> filterCars(@PathVariable String filter,
                                    @PathVariable int page,
-                                   @PathVariable int size) throws ApplicationBaseException {
-        return carService.filterCars(filter, new PagingHelper(page, size));
+                                   @PathVariable int size,
+                                   @RequestParam("categories") String[] categories) throws ApplicationBaseException {
+        return carService.filterCars(filter, categories, new PagingHelper(page, size));
     }
 
     @Override
@@ -78,7 +81,8 @@ public class CarControllerImpl implements CarController {
                                          @PathVariable int page,
                                          @PathVariable int size,
                                          @PathVariable String property,
-                                         @PathVariable String order) throws ApplicationBaseException {
-        return carService.filterCars(filter, new PagingHelper(page, size, property, order));
+                                         @PathVariable String order,
+                                         @RequestParam("categories") String[] categories) throws ApplicationBaseException {
+        return carService.filterCars(filter, categories, new PagingHelper(page, size, property, order));
     }
 }

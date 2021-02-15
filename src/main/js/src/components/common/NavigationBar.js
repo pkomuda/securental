@@ -108,6 +108,9 @@ export const NavigationBar = () => {
                     <LinkContainer to="/addAccount">
                         <NavDropdown.Item>{t("breadcrumbs.addAccount")}</NavDropdown.Item>
                     </LinkContainer>
+                    <LinkContainer to="/listLogs">
+                        <NavDropdown.Item>{t("breadcrumbs.listLogs")}</NavDropdown.Item>
+                    </LinkContainer>
                 </React.Fragment>
             );
         }

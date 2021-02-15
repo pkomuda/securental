@@ -74,7 +74,7 @@ public class ReservationService {
 
         reservation.setStatus(Status.NEW);
         reservation.setPrice(calculateReservationPrice(reservation));
-        reservation.setNumber(StringUtils.randomBase64Url());
+        reservation.setNumber(StringUtils.randomIdentifier());
         car.getReservations().add(reservation);
 
         reservationAdapter.addReservation(reservation);
