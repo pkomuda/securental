@@ -8,6 +8,7 @@ import { LinkContainer } from "react-router-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 import { AuthenticationContext, isAuthenticated } from "../../utils/AuthenticationContext";
 import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_CLIENT, ACCESS_LEVEL_EMPLOYEE } from "../../utils/Constants";
+import i18n from "../../utils/i18n";
 import { Spinner } from "./Spinner";
 
 export const NavigationBar = () => {
@@ -33,6 +34,8 @@ export const NavigationBar = () => {
             username: "",
             accessLevels: [],
             currentAccessLevel: "",
+            preferredLanguage: "",
+            preferredColorTheme: "light",
             tokenPresent: false,
             tokenExpiration: 0
         });
@@ -55,6 +58,13 @@ export const NavigationBar = () => {
         });
     };
 
+    const handleChangeLanguage = language => {
+        i18n.changeLanguage(language).then(() => {});
+        axios.put(`/language/${userInfo.username}/${language}`)
+            .then(() => {})
+            .catch(() => {});
+    };
+
     const carList = () => {
         return (
             <Nav.Item>
@@ -64,6 +74,19 @@ export const NavigationBar = () => {
                     </div>
                 </LinkContainer>
             </Nav.Item>
+        );
+    };
+
+    const languageSelector = () => {
+        return (
+            <NavDropdown id="languages" title={t("navbar.language")} alignRight style={{marginLeft: "1em"}}>
+                <NavDropdown.Item onClick={() => handleChangeLanguage("pl")}>
+                    <span role="img" aria-label="pl">🇵🇱 {t("navbar.language.polish")}</span>
+                </NavDropdown.Item>
+                <NavDropdown.Item onClick={() => handleChangeLanguage("en")}>
+                    <span role="img" aria-label="en">🇬🇧 {t("navbar.language.english")}</span>
+                </NavDropdown.Item>
+            </NavDropdown>
         );
     };
 
@@ -148,6 +171,7 @@ export const NavigationBar = () => {
             return (
                 <Nav className="ml-auto">
                     {carList()}
+                    {languageSelector()}
                     {accessLevelsDropdown()}
                     <NavDropdown id="profile" title={authenticatedDropdownTitle()} alignRight style={{marginLeft: "1em"}}>
                         <LinkContainer to="/ownAccountDetails">
@@ -192,10 +216,10 @@ export const NavigationBar = () => {
         return (
             <Navbar expand="lg" className="navbar-dark">
                 <Navbar.Brand id="home" as={Link} to="/">Securental</Navbar.Brand>
-                {/*<Navbar.Toggle id="toggle" aria-controls="basic-navbar-nav"/>*/}
-                {/*<Navbar.Collapse id="basic-navbar-nav">*/}
-                {renderNav()}
-                {/*</Navbar.Collapse>*/}
+                <Navbar.Toggle id="toggle" aria-controls="basic-navbar-nav"/>
+                <Navbar.Collapse id="basic-navbar-nav">
+                    {renderNav()}
+                </Navbar.Collapse>
             </Navbar>
         );
     }

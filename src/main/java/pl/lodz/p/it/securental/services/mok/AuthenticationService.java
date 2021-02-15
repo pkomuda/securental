@@ -89,6 +89,7 @@ public class AuthenticationService {
                 }
             }
             return AuthenticationResponse.builder()
+                    .preferredLanguage(account.getPreferredLanguage())
                     .lastSuccessfulAuthentication(previousSuccessfulAuthentication)
                     .lastFailedAuthentication(previousFailedAuthentication)
                     .lastAuthenticationIpAddress(previousAuthenticationIpAddress);
@@ -106,7 +107,8 @@ public class AuthenticationService {
             return AuthenticationResponse.builder()
                     .username(username)
                     .accessLevels(accessLevels)
-                    .currentAccessLevel(getHighestFrontendRole(accessLevels));
+                    .currentAccessLevel(getHighestFrontendRole(accessLevels))
+                    .preferredLanguage(account.getPreferredLanguage());
         } else {
             throw new AccountNotFoundException();
         }

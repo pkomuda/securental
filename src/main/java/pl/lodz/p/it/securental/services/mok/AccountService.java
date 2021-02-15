@@ -24,7 +24,6 @@ import pl.lodz.p.it.securental.dto.model.log.LogDto;
 import pl.lodz.p.it.securental.dto.model.mok.AccountDto;
 import pl.lodz.p.it.securental.dto.model.mok.ChangePasswordRequest;
 import pl.lodz.p.it.securental.dto.model.mok.RegistrationResponse;
-import pl.lodz.p.it.securental.entities.log.Log;
 import pl.lodz.p.it.securental.entities.mok.*;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.ApplicationOptimisticLockException;
@@ -383,6 +382,16 @@ public class AccountService {
             }
         } else {
             throw new UsernameNotMatchingException();
+        }
+    }
+
+    public void changePreferredLanguage(String username, String language) throws ApplicationBaseException {
+        Optional<Account> accountOptional = accountAdapter.getAccount(username);
+        if (accountOptional.isPresent()) {
+            Account account = accountOptional.get();
+            account.setPreferredLanguage(language);
+        } else {
+            throw new AccountNotFoundException();
         }
     }
 

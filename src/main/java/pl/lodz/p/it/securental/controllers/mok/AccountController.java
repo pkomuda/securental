@@ -28,6 +28,7 @@ public interface AccountController {
     RegistrationResponse resetOwnPassword(String hash, ChangePasswordRequest changePasswordRequest) throws ApplicationBaseException;
     void resendConfirmationEmail(String username) throws ApplicationBaseException;
     void resendQrCodeEmail(String username) throws ApplicationBaseException;
+    void changePreferredLanguage(String username, String language) throws ApplicationBaseException;
     Page<LogDto> getAllLogs(int page, int size) throws ApplicationBaseException;
     Page<LogDto> filterLogs(String filter, int page, int size) throws ApplicationBaseException;
 }

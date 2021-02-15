@@ -55,6 +55,10 @@ public @Data class Account extends BaseAuditEntity {
 
     private String lastAuthenticationIpAddress;
 
+    private String preferredLanguage;
+
+    private String preferredColorTheme;
+
     @ToString.Exclude
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Credentials credentials;

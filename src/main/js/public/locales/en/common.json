@@ -17,6 +17,9 @@
   "navbar.register": "Register",
   "navbar.logout": "Log out",
   "navbar.cars": "Cars",
+  "navbar.language": "Language",
+  "navbar.language.polish": "Polish",
+  "navbar.language.english": "English",
 
   "home.header": "Car rental company that values your privacy.",
   "home.paragraph1": "",
@@ -89,6 +92,7 @@
   "COUPE": "Coupe",
   "CABRIO": "Cabriolet",
   "SUV": "SUV",
+  "OTHER": "Other",
 
   "login.header": "Sign in",
   "login.password.characters": "Password characters",

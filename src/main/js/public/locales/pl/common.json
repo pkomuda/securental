@@ -17,6 +17,9 @@
   "navbar.register": "Zarejestruj",
   "navbar.logout": "Wyloguj się",
   "navbar.cars": "Samochody",
+  "navbar.language": "Język",
+  "navbar.language.polish": "Polski",
+  "navbar.language.english": "Angielski",
 
   "home.header": "Wypożyczalnia samochodów, która ceni twoją prywatność.",
   "home.paragraph1": "",
@@ -89,6 +92,7 @@
   "COUPE": "Coupe",
   "CABRIO": "Kabriolet",
   "SUV": "SUV",
+  "OTHER": "Inne",
 
   "login.header": "Logowanie",
   "login.password.characters": "Znaki hasła",

@@ -37,6 +37,7 @@ import { OwnReservationDetails } from "./components/mor/OwnReservationDetails";
 import { ReservationDetails } from "./components/mor/ReservationDetails";
 import { AuthenticationContext, isAuthenticated } from "./utils/AuthenticationContext";
 import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_CLIENT, ACCESS_LEVEL_EMPLOYEE } from "./utils/Constants";
+import i18n from "./utils/i18n";
 
 export const App = () => {
 
@@ -44,6 +45,8 @@ export const App = () => {
         username: "",
         accessLevels: [],
         currentAccessLevel: "",
+        preferredLanguage: "",
+        preferredColorTheme: "light",
         tokenPresent: true,
         tokenExpiration: 0
     });
@@ -56,6 +59,7 @@ export const App = () => {
                     const tempUserInfo = response.data;
                     tempUserInfo.tokenPresent = true;
                     setUserInfo(tempUserInfo);
+                    i18n.changeLanguage(tempUserInfo.preferredLanguage).then(() => {});
                 }).catch(() => {
                     const tempUserInfo = {...userInfo};
                     tempUserInfo.tokenPresent = false;

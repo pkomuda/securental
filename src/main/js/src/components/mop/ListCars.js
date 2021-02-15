@@ -102,7 +102,7 @@ export const ListCars = props => {
         setSortOrder(sortOrder);
     };
 
-    const handleChangeCategory = (event, category) => {
+    const handleChangeCategory = category => {
         if (categories.includes(category)) {
             setCategories(categories.filter(element => element !== category));
         } else {
@@ -117,7 +117,7 @@ export const ListCars = props => {
                 <FormCheck inline
                            defaultChecked
                            label={t(category)}
-                           onChange={event => handleChangeCategory(event, category)}/>
+                           onChange={() => handleChangeCategory(category)}/>
             );
         }
         return (

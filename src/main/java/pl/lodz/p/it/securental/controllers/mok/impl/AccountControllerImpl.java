@@ -2,7 +2,6 @@ package pl.lodz.p.it.securental.controllers.mok.impl;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.securental.aop.annotations.CaptchaRequired;
@@ -15,14 +14,12 @@ import pl.lodz.p.it.securental.dto.model.mok.ChangePasswordRequest;
 import pl.lodz.p.it.securental.dto.model.mok.ConfirmAccountRequest;
 import pl.lodz.p.it.securental.dto.model.mok.RegistrationResponse;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
-import pl.lodz.p.it.securental.exceptions.db.DatabaseConnectionException;
 import pl.lodz.p.it.securental.services.mok.AccountService;
 import pl.lodz.p.it.securental.utils.PagingHelper;
 
 @RestController
 @AllArgsConstructor
 @NeverTransaction
-@Retryable(DatabaseConnectionException.class)
 public class AccountControllerImpl implements AccountController {
 
     private final AccountService accountService;
@@ -178,6 +175,14 @@ public class AccountControllerImpl implements AccountController {
     @PreAuthorize("hasAuthority('resendQrCodeEmail')")
     public void resendQrCodeEmail(@PathVariable String username) throws ApplicationBaseException {
         accountService.sendQrCodeEmail(username);
+    }
+
+    @Override
+    @PutMapping("/language/{username}/{language}")
+    @PreAuthorize("hasAuthority('changePreferredLanguage')")
+    public void changePreferredLanguage(@PathVariable String username,
+                                        @PathVariable String language) throws ApplicationBaseException {
+        accountService.changePreferredLanguage(username, language);
     }
 
     @Override

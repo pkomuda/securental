@@ -9,6 +9,7 @@ import { object, string } from "yup";
 import { handleError, handleSuccess } from "../../utils/Alerts";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
 import { formatDate } from "../../utils/DateTime";
+import i18n from "../../utils/i18n";
 import { EditFormGroup } from "../common/EditFormGroup";
 
 export const Login = props => {
@@ -122,6 +123,7 @@ export const Login = props => {
         axios.post("/login", tempAuthRequest)
             .then(response => {
                 setUserInfo(response.data);
+                i18n.changeLanguage(response.data.preferredLanguage).then(() => {});
                 popup.fire({
                     titleText: t("navigation.success"),
                     html:
