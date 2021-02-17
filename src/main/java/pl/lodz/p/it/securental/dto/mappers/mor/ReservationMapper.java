@@ -59,6 +59,7 @@ public class ReservationMapper {
 
     public static ReservationDto toReservationDtoWithDatesOnly(Reservation reservation) {
         return ReservationDto.builder()
+                .status(reservation.getStatus().name())
                 .startDate(StringUtils.localDateTimeToString(reservation.getStartDate()))
                 .endDate(StringUtils.localDateTimeToString(reservation.getEndDate()))
                 .build();

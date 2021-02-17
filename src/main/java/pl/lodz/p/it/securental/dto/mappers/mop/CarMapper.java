@@ -10,6 +10,7 @@ import pl.lodz.p.it.securental.entities.mop.Car;
 import pl.lodz.p.it.securental.entities.mop.Category;
 import pl.lodz.p.it.securental.entities.mor.Reservation;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
+import pl.lodz.p.it.securental.utils.ApplicationProperties;
 import pl.lodz.p.it.securental.utils.SignatureUtils;
 import pl.lodz.p.it.securental.utils.StringUtils;
 
@@ -72,6 +73,7 @@ public class CarMapper {
 
     private static List<ReservationDto> toReservationDtosWithDatesOnly(List<Reservation> reservations) {
         return reservations.stream()
+                .filter(reservation -> ApplicationProperties.ACTIVE_STATUSES.contains(reservation.getStatus()))
                 .map(ReservationMapper::toReservationDtoWithDatesOnly)
                 .collect(Collectors.toList());
     }

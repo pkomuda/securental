@@ -17,12 +17,14 @@
   "navbar.register": "Zarejestruj",
   "navbar.logout": "Wyloguj się",
   "navbar.cars": "Samochody",
-  "navbar.language": "Język",
-  "navbar.language.polish": "Polski",
-  "navbar.language.english": "Angielski",
+  "navbar.language": "Preferowana wersja językowa",
+  "navbar.language.polish": "Polska",
+  "navbar.language.english": "Angielska",
+  "navbar.theme": "Preferowany motyw kolorystyczny",
+  "navbar.theme.light": "Jasny",
+  "navbar.theme.dark": "Ciemny",
 
   "home.header": "Wypożyczalnia samochodów, która ceni twoją prywatność.",
-  "home.paragraph1": "",
 
   "breadcrumbs.login": "Logowanie",
   "breadcrumbs.register": "Rejestracja",

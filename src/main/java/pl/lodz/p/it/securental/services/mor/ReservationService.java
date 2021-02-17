@@ -203,8 +203,8 @@ public class ReservationService {
             if (reservationOptional.isPresent()) {
                 Reservation reservation = reservationOptional.get();
                 if (signatureUtils.verify(reservation.toSignString(), reservationDto.getSignature())) {
-                    if (reservation.getStatus().name().equals(ApplicationProperties.RESERVATION_STATUS_NEW)
-                            && reservationDto.getStatus().equals(ApplicationProperties.RESERVATION_STATUS_CANCELLED)) {
+                    if (reservation.getStatus().equals(Status.NEW)
+                            && reservationDto.getStatus().equals(Status.CANCELLED.name())) {
 //                        reservation.setStatus(getStatus(reservationDto.getStatus()));
                     } else {
                         throw new IncorrectStatusException();

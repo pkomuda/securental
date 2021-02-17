@@ -17,12 +17,14 @@
   "navbar.register": "Register",
   "navbar.logout": "Log out",
   "navbar.cars": "Cars",
-  "navbar.language": "Language",
+  "navbar.language": "Preferred language",
   "navbar.language.polish": "Polish",
   "navbar.language.english": "English",
+  "navbar.theme": "Preferred color theme",
+  "navbar.theme.light": "Light",
+  "navbar.theme.dark": "Dark",
 
   "home.header": "Car rental company that values your privacy.",
-  "home.paragraph1": "",
 
   "breadcrumbs.login": "Login",
   "breadcrumbs.register": "Register",

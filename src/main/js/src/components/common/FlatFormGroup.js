@@ -1,16 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FormControl, FormGroup, FormLabel } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
+import { AuthenticationContext } from "../../utils/AuthenticationContext";
 import { CURRENCY } from "../../utils/Constants";
 import { formatDecimal } from "../../utils/i18n";
 
 export const FlatFormGroup = props => {
 
     const {t} = useTranslation();
+    const [userInfo] = useContext(AuthenticationContext);
 
     const value = () => {
         if (props.suffix === CURRENCY) {
-            return formatDecimal(property()) + suffix();
+            return formatDecimal(property(), userInfo) + suffix();
         } else {
             return property() + suffix();
         }

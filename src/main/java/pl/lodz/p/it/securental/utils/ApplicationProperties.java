@@ -2,6 +2,7 @@ package pl.lodz.p.it.securental.utils;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import pl.lodz.p.it.securental.entities.mor.Status;
 
 import java.util.List;
 
@@ -15,9 +16,7 @@ public class ApplicationProperties {
     public static final String ACCESS_LEVEL_CLIENT = "CLIENT";
     public static final List<String> ACCESS_LEVEL_ORDER = List.of(ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_EMPLOYEE, ACCESS_LEVEL_CLIENT);
 
-    public static final String RESERVATION_STATUS_NEW = "NEW";
-    public static final String RESERVATION_STATUS_CANCELLED = "CANCELLED";
-    public static final String RESERVATION_STATUS_FINISHED = "FINISHED";
+    public static final List<Status> ACTIVE_STATUSES = List.of(Status.NEW, Status.RECEIVED);
 
     public static final String IMAGE_FRONT = "front";
     public static final String IMAGE_RIGHT = "right";
@@ -28,7 +27,7 @@ public class ApplicationProperties {
     public static final String EMAIL_REGEX = "^[a-zA-Z0-9-_]+(\\.[a-zA-Z0-9-_]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9]+)*(\\.[a-zA-Z]{2,})$";
     public static final String MONEY_REGEX = "^(?=.*[1-9])[0-9]*[.,]?[0-9]{1,2}$";
     public static final String NAME_REGEX = "^[A-ZĄĆĘŁŃÓŚŹŻ][a-ząćęłńóśźż]+$";
-    public static final String STATUS_REGEX = "^(" + RESERVATION_STATUS_NEW + "|" + RESERVATION_STATUS_CANCELLED + "|" + RESERVATION_STATUS_FINISHED + ")$";
+//    public static final String STATUS_REGEX = "^(" + Status.NEW.name() + "|" + Status.CANCELLED.name() + "|" + Status.RECEIVED.name() + "|" + Status.FINISHED.name() + ")$";
     public static final String STRING_REGEX = "^[a-zA-Z0-9!@#$%ąćęłńóśźżĄĆĘŁŃÓŚŹŻ,. ]+$";
 
     public static final String LOG_CACHE_NAME = "log-cache";

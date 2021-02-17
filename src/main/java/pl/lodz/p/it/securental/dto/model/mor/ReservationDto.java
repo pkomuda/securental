@@ -6,10 +6,8 @@ import pl.lodz.p.it.securental.dto.model.mok.ClientDto;
 import pl.lodz.p.it.securental.dto.model.mop.CarDto;
 import pl.lodz.p.it.securental.utils.ApplicationProperties;
 
-import javax.persistence.ElementCollection;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
-import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -30,7 +28,7 @@ public @Data class ReservationDto {
     private String price;
 
     @NotEmpty(message = "reservation.status.required")
-    @Pattern(regexp = ApplicationProperties.STATUS_REGEX, message = "reservation.status.invalid")
+//    @Pattern(regexp = ApplicationProperties.STATUS_REGEX, message = "reservation.status.invalid")
     private String status;
 
     private ClientDto clientDto;

@@ -21,12 +21,6 @@ import { Spinner } from "../common/Spinner";
 
 export const EditOwnReservation = props => {
 
-    if (isLanguagePolish()) {
-        registerLocale("pl", pl);
-    } else {
-        registerLocale("en", en);
-    }
-
     const {t} = useTranslation();
     const [userInfo] = useContext(AuthenticationContext);
     const schema = object().shape({
@@ -45,6 +39,11 @@ export const EditOwnReservation = props => {
     });
     const [loaded, setLoaded] = useState(false);
     const [errors, setErrors] = useState({});
+    if (isLanguagePolish(userInfo)) {
+        registerLocale("pl", pl);
+    } else {
+        registerLocale("en", en);
+    }
     FlatFormGroup.defaultProps = {
         values: reservation
     };
@@ -162,7 +161,7 @@ export const EditOwnReservation = props => {
                                         <DatePicker selected={reservation.startDate}
                                                     onChange={date => handleChangeDate(date, "startDate")}
                                                     timeCaption={t("reservation.time")}
-                                                    locale={getLocale()}
+                                                    locale={getLocale(userInfo)}
                                                     dateFormat={getDateFormat()}
                                                     timeFormat={getTimeFormat()}
                                                     timeIntervals={60}
@@ -176,7 +175,7 @@ export const EditOwnReservation = props => {
                                         <DatePicker selected={reservation.endDate}
                                                     onChange={date => handleChangeDate(date, "endDate")}
                                                     timeCaption={t("reservation.time")}
-                                                    locale={getLocale()}
+                                                    locale={getLocale(userInfo)}
                                                     dateFormat={getDateFormat()}
                                                     timeFormat={getTimeFormat()}
                                                     timeIntervals={60}
