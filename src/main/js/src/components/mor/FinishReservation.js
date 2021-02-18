@@ -62,7 +62,7 @@ export const FinishReservation = props => {
                         {headers: {"Otp-Code": otpCode}})
                         .then(() => {
                             handleSuccess(`reservation.finish.success`, "");
-                            props.history.push(`/ownReservationDetails/${reservation.number}`);
+                            props.history.push(`/reservationDetails/${reservation.number}`);
                         }).catch(error => {
                         handleError(error);
                     });

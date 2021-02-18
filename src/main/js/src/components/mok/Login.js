@@ -188,7 +188,7 @@ export const Login = props => {
             icon: "info"
         }).then(result => {
             if (result.isConfirmed) {
-                axios.put(`/initializeResetPassword/${authRequest.username}`, {}, {headers: {"Accept-Language": window.navigator.language}})
+                axios.put(`/initializeResetPassword/${authRequest.username}`, {})
                     .then(() => {
                         handleSuccess("reset.mail.sent", "");
                         props.history.push("/");

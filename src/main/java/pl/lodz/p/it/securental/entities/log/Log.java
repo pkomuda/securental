@@ -15,6 +15,6 @@ import javax.persistence.Entity;
 @EqualsAndHashCode(callSuper = true)
 public @Data class Log extends BaseEntity {
 
-    @Column(length = 1024)
+    @Column(length = 2048)
     private String message;
 }

@@ -34,7 +34,6 @@ import pl.lodz.p.it.securental.utils.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.IntStream;
@@ -110,12 +109,10 @@ public class AccountService {
         Optional<Account> accountOptional = accountAdapter.getAccount(username);
         if (accountOptional.isPresent()) {
             Account account = accountOptional.get();
-            String subject = StringUtils.getTranslatedText("confirm.subject", "pl") + "/" + StringUtils.getTranslatedText("confirm.subject", "en");
-            String text = "ENGLISH VERSION BELOW<br/><br/>"
-                    + "<a href=\"" + ApplicationProperties.FRONTEND_ORIGIN + "/confirmAccount/" + account.getConfirmationToken() + "\">"
-                    + StringUtils.getTranslatedText("common.link", "pl") + "</a>" + StringUtils.getTranslatedText("confirm.text", "pl") + "<br/><br/>"
-                    + "<a href=\"" + ApplicationProperties.FRONTEND_ORIGIN + "/confirmAccount/" + account.getConfirmationToken() + "\">"
-                    + StringUtils.getTranslatedText("common.link", "en") + "</a>" + StringUtils.getTranslatedText("confirm.text", "en");
+            String language = account.getPreferredLanguage();
+            String subject = StringUtils.getTranslatedText("confirm.subject", language);
+            String text = "<a href=\"" + ApplicationProperties.FRONTEND_ORIGIN + "/confirmAccount/" + account.getConfirmationToken() + "\">"
+                    + StringUtils.getTranslatedText("common.link", language) + "</a>" + StringUtils.getTranslatedText("confirm.text", language);
             emailSender.sendMessage(account.getEmail(), subject, text);
         } else {
             throw new AccountNotFoundException();
@@ -128,10 +125,9 @@ public class AccountService {
         Optional<Account> accountOptional = accountAdapter.getAccount(username);
         if (accountOptional.isPresent()) {
             Account account = accountOptional.get();
-            String subject = StringUtils.getTranslatedText("qrCode.subject", "pl") + "/" + StringUtils.getTranslatedText("qrCode.subject", "en");
-            String text = "ENGLISH VERSION BELOW<br/><br/>"
-                    + StringUtils.getTranslatedText("created.text", "pl") + "<br/><br/>" + StringUtils.getTranslatedText("created.text", "en")
-                    + "<img src='data:image/png;base64," + regenerateQrCode(username).getQrCode() + "'/>";
+            String language = account.getPreferredLanguage();
+            String subject = StringUtils.getTranslatedText("qrCode.subject", language);
+            String text = StringUtils.getTranslatedText("created.text", language) + "<img src='data:image/png;base64," + regenerateQrCode(username).getQrCode() + "'/>";
             emailSender.sendMessage(account.getEmail(), subject, text);
         } else {
             throw new AccountNotFoundException();
@@ -143,6 +139,8 @@ public class AccountService {
         GoogleAuthenticatorKey key = googleAuthenticator.createCredentials(accountDto.getUsername());
         String lastPasswordCharacters = generateLastPasswordCharacters();
         Account account = AccountMapper.toAccount(accountDto);
+        account.setPreferredLanguage(language);
+        account.setPreferredColorTheme("light");
         account.setConfirmed(true);
         account.setLastAuthenticationIpAddress("");
         account.setLoginInitializationCounter(0);
@@ -169,6 +167,8 @@ public class AccountService {
         GoogleAuthenticatorKey key = googleAuthenticator.createCredentials(accountDto.getUsername());
         String lastPasswordCharacters = generateLastPasswordCharacters();
         Account account = AccountMapper.toAccount(accountDto);
+        account.setPreferredLanguage(language);
+        account.setPreferredColorTheme("light");
         account.setActive(true);
         account.setConfirmed(false);
         account.setLastAuthenticationIpAddress("");

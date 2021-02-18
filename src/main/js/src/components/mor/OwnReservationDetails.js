@@ -126,6 +126,17 @@ export const OwnReservationDetails = props => {
         return buttons;
     };
 
+    const renderEditButton = () => {
+        const now = new Date().getTime();
+        const start = new Date(reservation.startDate).getTime();
+        if (reservation.status === RESERVATION_STATUS_NEW && start <= now) {
+            return (
+                <Button id="edit"
+                        onClick={() => props.history.push(`/editOwnReservation/${reservation.number}`)}>{t("navigation.edit")}</Button>
+            );
+        }
+    }
+
     if (loaded) {
         return (
             <React.Fragment>
@@ -190,8 +201,7 @@ export const OwnReservationDetails = props => {
                                         onClick={() => props.history.push("/listReservations")}>{t("navigation.back")}</Button>
                                 {renderCancelButton()}
                                 {renderActionButton()}
-                                <Button id="edit"
-                                        onClick={() => props.history.push(`/editOwnReservation/${reservation.number}`)}>{t("navigation.edit")}</Button>
+                                {renderEditButton()}
                                 {renderImagesButtons()}
                             </ButtonToolbar>
                         </Col>

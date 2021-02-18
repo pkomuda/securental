@@ -111,6 +111,7 @@
   "login.password.reset.text": "Send email with link that allows password reset",
   "reset.mail.sent": "Email sent successfully",
   "login.otp.lost.header": "Contact the administrator via email: securentalapp@gmail.com",
+  "reset.header": "Reset password",
 
   "register.header": "Registration",
   "register.password.header": "These are the last characters of your password",

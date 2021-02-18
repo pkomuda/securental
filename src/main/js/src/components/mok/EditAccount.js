@@ -25,7 +25,8 @@ export const EditAccount = props => {
         confirmed: bool(),
         accessLevels: array(),
         signature: string(),
-        password: mixed().nullable()
+        password: mixed().nullable(),
+        confirmPassword: mixed().nullable()
     });
     const [account, setAccount] = useState({
         username: "",

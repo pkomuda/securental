@@ -8,13 +8,11 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.lodz.p.it.securental.adapters.mok.AccessLevelAdapter;
 import pl.lodz.p.it.securental.adapters.mop.CarAdapter;
 import pl.lodz.p.it.securental.adapters.mor.ReservationAdapter;
-//import pl.lodz.p.it.securental.adapters.mor.StatusAdapter;
 import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.dto.mappers.mor.ReservationMapper;
 import pl.lodz.p.it.securental.dto.model.mor.ReservationDto;
 import pl.lodz.p.it.securental.entities.mok.Client;
 import pl.lodz.p.it.securental.entities.mop.Car;
-import pl.lodz.p.it.securental.entities.mop.Category;
 import pl.lodz.p.it.securental.entities.mor.Reservation;
 import pl.lodz.p.it.securental.entities.mor.Status;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
@@ -25,7 +23,10 @@ import pl.lodz.p.it.securental.exceptions.mok.AccountNotFoundException;
 import pl.lodz.p.it.securental.exceptions.mok.UsernameNotMatchingException;
 import pl.lodz.p.it.securental.exceptions.mop.CarNotFoundException;
 import pl.lodz.p.it.securental.exceptions.mor.*;
-import pl.lodz.p.it.securental.utils.*;
+import pl.lodz.p.it.securental.utils.AmazonClient;
+import pl.lodz.p.it.securental.utils.PagingHelper;
+import pl.lodz.p.it.securental.utils.SignatureUtils;
+import pl.lodz.p.it.securental.utils.StringUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -156,9 +157,9 @@ public class ReservationService {
         }
 
         //todo
-        if (reservation.getStartDate().isBefore(LocalDateTime.now())) {
-            throw new ReservationStartAfterNowException();
-        }
+//        if (reservation.getStartDate().isAfter(LocalDateTime.now())) {
+//            throw new ReservationStartAfterNowException();
+//        }
 
         List<String> receivedImageUrls = new ArrayList<>();
         for (Map.Entry<String, MultipartFile> entry : images.entrySet()) {
@@ -187,15 +188,15 @@ public class ReservationService {
         }
 
         //todo
-        if (reservation.getEndDate().isAfter(LocalDateTime.now())) {
-            throw new ReservationEndBeforeNowException();
-        }
+//        if (reservation.getEndDate().isBefore(LocalDateTime.now())) {
+//            throw new ReservationEndBeforeNowException();
+//        }
 
         List<String> finishedImageUrls = new ArrayList<>();
         for (Map.Entry<String, MultipartFile> entry : images.entrySet()) {
             finishedImageUrls.add(amazonClient.uploadFile(entry.getKey(), entry.getValue()));
         }
-        reservation.setStatus(Status.RECEIVED);
+        reservation.setStatus(Status.FINISHED);
         reservation.setFinishedImageUrls(finishedImageUrls);
     }
 
@@ -208,7 +209,7 @@ public class ReservationService {
                 if (signatureUtils.verify(reservation.toSignString(), reservationDto.getSignature())) {
                     //todo
 //                    validateStatuses(reservation.getStatus().name(), reservationDto.getStatus());
-//                    reservation.setStatus(getStatus(reservationDto.getStatus()));
+                    reservation.setStatus(Status.valueOf(reservationDto.getStatus()));
                 } else {
                     throw new ApplicationOptimisticLockException(reservation);
                 }

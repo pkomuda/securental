@@ -1,13 +1,14 @@
 import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Breadcrumb, Button, ButtonToolbar, Col, Container, Dropdown, DropdownButton, Form, FormControl, FormGroup, FormLabel, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { handleError, handleSuccess } from "../../utils/Alerts";
+import { AuthenticationContext } from "../../utils/AuthenticationContext";
 import { CURRENCY, RESERVATION_STATUS_CANCELLED, RESERVATION_STATUS_FINISHED, RESERVATION_STATUS_NEW, RESERVATION_STATUS_RECEIVED } from "../../utils/Constants";
 import { formatDate } from "../../utils/DateTime";
 import { FlatFormGroup } from "../common/FlatFormGroup";
@@ -17,6 +18,7 @@ export const ReservationDetails = props => {
 
     const {t} = useTranslation();
     const popup = withReactContent(Swal);
+    const [userInfo, setUserInfo] = useContext(AuthenticationContext);
     const [reservation, setReservation] = useState({
         number: "",
         startDate: "",
@@ -62,33 +64,11 @@ export const ReservationDetails = props => {
         }).then(() => {});
     };
 
-    const renderStatusList = () => {
-        const statuses = [];
-        statuses.push(
-            <Dropdown.Item onClick={() => handleChangeStatus(RESERVATION_STATUS_NEW)}
-                           disabled={reservation.status === RESERVATION_STATUS_NEW
-                           || reservation.status === RESERVATION_STATUS_CANCELLED
-                           || reservation.status === RESERVATION_STATUS_FINISHED}>{t(RESERVATION_STATUS_NEW)}</Dropdown.Item>
-        );
-        statuses.push(
-            <Dropdown.Item onClick={() => handleChangeStatus(RESERVATION_STATUS_CANCELLED)}
-                           disabled={reservation.status === RESERVATION_STATUS_CANCELLED
-                           || reservation.status === RESERVATION_STATUS_FINISHED}>{t(RESERVATION_STATUS_CANCELLED)}</Dropdown.Item>
-        );
-        statuses.push(
-            <Dropdown.Item onClick={() => handleChangeStatus(RESERVATION_STATUS_FINISHED)}
-                           disabled={reservation.status === RESERVATION_STATUS_FINISHED}>{t(RESERVATION_STATUS_FINISHED)}</Dropdown.Item>
-        );
-        return statuses;
-    };
-
-    const renderStatusButton = () => {
-        if (reservation.status !== RESERVATION_STATUS_FINISHED) {
+    const renderCancelButton = () => {
+        if (reservation.status === RESERVATION_STATUS_NEW && reservation.clientDto.username !== userInfo.username) {
             return (
-                <DropdownButton id="statuses"
-                                title={t("reservation.status")}>
-                    {renderStatusList()}
-                </DropdownButton>
+                <Button id="cancel"
+                        onClick={() => handleChangeStatus(RESERVATION_STATUS_CANCELLED)}>{t("navigation.cancel")}</Button>
             );
         }
     };
@@ -96,7 +76,7 @@ export const ReservationDetails = props => {
     const renderActionButton = () => {
         const now = new Date().getTime();
         const end = new Date(reservation.endDate).getTime();
-        if (reservation.status === RESERVATION_STATUS_RECEIVED && end <= now) {
+        if (reservation.status === RESERVATION_STATUS_RECEIVED && end <= now && reservation.clientDto.username !== userInfo.username) {
             return <Button id="finish"
                            onClick={() => props.history.push(`/finishReservation/${reservation.number}`)}>{t("reservation.finish")}</Button>;
         }
@@ -215,10 +195,8 @@ export const ReservationDetails = props => {
                             <ButtonToolbar className="justify-content-center">
                                 <Button id="back"
                                         onClick={() => props.history.push("/listReservations")}>{t("navigation.back")}</Button>
-                                {renderStatusButton()}
+                                {renderCancelButton()}
                                 {renderActionButton()}
-                                <Button id="edit"
-                                        onClick={() => props.history.push(`/editReservation/${reservation.number}`)}>{t("navigation.edit")}</Button>
                                 {renderImagesButtons()}
                             </ButtonToolbar>
                         </Col>

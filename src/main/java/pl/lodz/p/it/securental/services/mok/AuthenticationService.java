@@ -73,12 +73,10 @@ public class AuthenticationService {
                 account.setLoginInitializationCounter(0);
                 account.setLastAuthenticationIpAddress(ipAddress);
                 if (getUserFrontendRoles(account).contains(ApplicationProperties.ACCESS_LEVEL_ADMIN)) {
-                    String subject = StringUtils.getTranslatedText("admin.subject", "pl") + "/" + StringUtils.getTranslatedText("admin.subject", "en");
-                    String text = "ENGLISH VERSION BELOW<br/><br/>"
-                            + StringUtils.getTranslatedText("admin.date", "pl") + ": " + now.format(formatter) + "<br/>"
-                            + StringUtils.getTranslatedText("admin.ipAddress", "pl") + ": " + ipAddress + "<br/><br/>"
-                            + StringUtils.getTranslatedText("admin.date", "en") + ": " + now.format(formatter) + "<br/>"
-                            + StringUtils.getTranslatedText("admin.ipAddress", "en") + ": " + ipAddress;
+                    String language = account.getPreferredLanguage();
+                    String subject = StringUtils.getTranslatedText("admin.subject", language);
+                    String text = StringUtils.getTranslatedText("admin.date", language) + ": " + now.format(formatter) + "<br/><br/>"
+                            + StringUtils.getTranslatedText("admin.ipAddress", language) + ": " + ipAddress;
                     emailSender.sendMessage(account.getEmail(), subject, text);
                 }
             } else {
