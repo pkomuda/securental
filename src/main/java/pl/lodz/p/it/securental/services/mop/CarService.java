@@ -66,7 +66,7 @@ public class CarService {
                     car.setPrice(StringUtils.stringToBigDecimal(carDto.getPrice()));
                     car.setActive(carDto.getActive());
                 } else {
-                    throw new ApplicationOptimisticLockException();
+                    throw new ApplicationOptimisticLockException(car);
                 }
             } else {
                 throw new CarNotFoundException();

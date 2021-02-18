@@ -13,14 +13,14 @@ public interface ReservationController {
     void editOwnReservation(String username, String number, ReservationDto reservationDto) throws ApplicationBaseException;
     void changeReservationStatus(String number, ReservationDto reservationDto) throws ApplicationBaseException;
     void changeOwnReservationStatus(String username, String number, ReservationDto reservationDto) throws ApplicationBaseException;
-    Page<ReservationDto> getAllReservations(int page, int size) throws ApplicationBaseException;
-    Page<ReservationDto> getSortedReservations(int page, int size, String property, String order) throws ApplicationBaseException;
-    Page<ReservationDto> filterReservations(String filter, int page, int size) throws ApplicationBaseException;
-    Page<ReservationDto> filterSortedReservations(String filter, int page, int size, String property, String order) throws ApplicationBaseException;
-    Page<ReservationDto> getOwnReservations(String username, int page, int size) throws ApplicationBaseException;
-    Page<ReservationDto> getOwnSortedReservations(String username, int page, int size, String property, String order) throws ApplicationBaseException;
-    Page<ReservationDto> filterOwnReservations(String username, String filter, int page, int size) throws ApplicationBaseException;
-    Page<ReservationDto> filterOwnSortedReservations(String username, String filter, int page, int size, String property, String order) throws ApplicationBaseException;
+    Page<ReservationDto> getAllReservations(int page, int size, String[] statuses) throws ApplicationBaseException;
+    Page<ReservationDto> getSortedReservations(int page, int size, String property, String order, String[] statuses) throws ApplicationBaseException;
+    Page<ReservationDto> filterReservations(String filter, int page, int size, String[] statuses) throws ApplicationBaseException;
+    Page<ReservationDto> filterSortedReservations(String filter, int page, int size, String property, String order, String[] statuses) throws ApplicationBaseException;
+    Page<ReservationDto> getOwnReservations(String username, int page, int size, String[] statuses) throws ApplicationBaseException;
+    Page<ReservationDto> getOwnSortedReservations(String username, int page, int size, String property, String order, String[] statuses) throws ApplicationBaseException;
+    Page<ReservationDto> filterOwnReservations(String username, String filter, int page, int size, String[] statuses) throws ApplicationBaseException;
+    Page<ReservationDto> filterOwnSortedReservations(String username, String filter, int page, int size, String property, String order, String[] statuses) throws ApplicationBaseException;
     void receiveOwnReservation(String username, String number, String signature, MultipartFile front, MultipartFile right, MultipartFile back, MultipartFile left) throws ApplicationBaseException;
-    void finishOwnReservation(String username, String number, ReservationDto reservationDto, MultipartFile[] images) throws ApplicationBaseException;
+    void finishReservation(String number, String signature, MultipartFile front, MultipartFile right, MultipartFile back, MultipartFile left) throws ApplicationBaseException;
 }

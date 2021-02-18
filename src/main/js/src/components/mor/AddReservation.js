@@ -218,7 +218,7 @@ export const AddReservation = props => {
                 <OverlayTrigger placement="right"
                                 delay={{show: 250, hide: 400}}
                                 overlay={<Tooltip id={period.startMinute}>{`${formatDate(isoDate(period.startDate))} - ${formatDate(isoDate(period.endDate))}`}</Tooltip>}>
-                    <div style={{backgroundColor: "#216ba5", border: "1px solid #333a41", width: "198px", height: `${(period.endMinute - period.startMinute)/2}px`, marginTop: `${(period.startMinute/2) + 6}px`, position: "absolute", borderRadius: "10px"}}/>
+                    <div style={{backgroundColor: "#216ba5", border: "1px solid #333a41", width: "198px", height: `${(period.endMinute - period.startMinute)/2}px`, marginTop: `${period.startMinute/2}px`, position: "absolute", borderRadius: "10px"}}/>
                 </OverlayTrigger>
             );
         }

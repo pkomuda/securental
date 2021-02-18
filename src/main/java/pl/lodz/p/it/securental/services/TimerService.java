@@ -8,10 +8,16 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.entities.log.Log;
+import pl.lodz.p.it.securental.entities.mor.Reservation;
+import pl.lodz.p.it.securental.entities.mor.Status;
 import pl.lodz.p.it.securental.repositories.mok.BlacklistedJwtRepository;
 import pl.lodz.p.it.securental.repositories.log.LogRepository;
+import pl.lodz.p.it.securental.repositories.mor.ReservationRepository;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -24,6 +30,7 @@ public class TimerService {
     private final Cache<String, String> logCache;
     private final LogRepository logRepository;
     private final BlacklistedJwtRepository blacklistedJwtRepository;
+    private final ReservationRepository reservationRepository;
 
     @Scheduled(fixedDelayString = "#{60000 * ${log.schedule}}")
     public void persistLogs() {
@@ -43,4 +50,20 @@ public class TimerService {
         blacklistedJwtRepository.deleteAllByExpirationBefore(LocalDateTime.now());
         log.info("Completed scheduled task TimerService::clearExpiredBlacklistedJwts | Execution time: " + (System.currentTimeMillis() - start)/1000.0 + "s");
     }
+
+    @Scheduled(fixedDelayString = "#{60000 * ${reservation.schedule}}")
+    public void cancelStartedReservations() {
+        long start = System.currentTimeMillis();
+        List<Reservation> reservations = reservationRepository.findAllByStartDateAfterAndStatusIn(LocalDateTime.now(), Collections.singletonList(Status.NEW));
+        for (Reservation reservation : reservations) {
+            long timeSinceStart = ChronoUnit.MINUTES.between(reservation.getStartDate(), LocalDateTime.now());
+            long reservationTime = ChronoUnit.MINUTES.between(reservation.getStartDate(), reservation.getEndDate());
+            if (((double) reservationTime/timeSinceStart) < 6) {
+                reservation.setStatus(Status.CANCELLED);
+            }
+        }
+        log.info("Completed scheduled task TimerService::cancelStartedReservations | Execution time: " + (System.currentTimeMillis() - start)/1000.0 + "s");
+    }
+
+
 }

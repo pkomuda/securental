@@ -22,13 +22,14 @@ public interface AccountController {
     Page<AccountDto> getSortedAccounts(int page, int size, String property, String order) throws ApplicationBaseException;
     Page<AccountDto> filterAccounts(String filter, int page, int size) throws ApplicationBaseException;
     Page<AccountDto> filterSortedAccounts(String filter, int page, int size, String property, String order) throws ApplicationBaseException;
-    void initializeResetPassword(String username, String language) throws ApplicationBaseException;
+    void initializeResetPassword(String username) throws ApplicationBaseException;
     RegistrationResponse changePassword(String username, ChangePasswordRequest changePasswordRequest) throws ApplicationBaseException;
     RegistrationResponse changeOwnPassword(String username, ChangePasswordRequest changePasswordRequest) throws ApplicationBaseException;
     RegistrationResponse resetOwnPassword(String hash, ChangePasswordRequest changePasswordRequest) throws ApplicationBaseException;
     void resendConfirmationEmail(String username) throws ApplicationBaseException;
     void resendQrCodeEmail(String username) throws ApplicationBaseException;
     void changePreferredLanguage(String username, String language) throws ApplicationBaseException;
+    void changePreferredColorTheme(String username, String theme) throws ApplicationBaseException;
     Page<LogDto> getAllLogs(int page, int size) throws ApplicationBaseException;
     Page<LogDto> filterLogs(String filter, int page, int size) throws ApplicationBaseException;
 }

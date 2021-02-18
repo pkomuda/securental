@@ -118,7 +118,7 @@ export const OwnAccountDetails = props => {
             document.body.style.backgroundColor = "#1a2128";
         }
         setUserInfo({...userInfo, "preferredColorTheme": theme});
-        axios.put(`/colorTheme/${userInfo.username}/${theme}`)
+        axios.put(`/theme/${userInfo.username}/${theme}`)
             .then(() => {})
             .catch(() => {});
     };

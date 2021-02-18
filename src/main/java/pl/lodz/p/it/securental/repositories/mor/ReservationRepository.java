@@ -8,7 +8,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Repository;
 import pl.lodz.p.it.securental.aop.annotations.MandatoryTransaction;
 import pl.lodz.p.it.securental.entities.mor.Reservation;
+import pl.lodz.p.it.securental.entities.mor.Status;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -19,12 +22,13 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     Optional<Reservation> findByNumberAndClientAccountOtpCredentialsUsername(String number, String username);
 
-    @NonNull
-    Page<Reservation> findAll(@NonNull Pageable pageable);
+    Page<Reservation> findAllByStatusIn(List<Status> statuses, Pageable pageable);
 
-    Page<Reservation> findAllByNumberContainsIgnoreCaseOrClientAccountOtpCredentialsUsernameContainsIgnoreCaseOrCarMakeContainsIgnoreCaseOrCarModelContainsIgnoreCase(String number, String username, String make, String model, Pageable pageable);
+    Page<Reservation> findAllByNumberContainsIgnoreCaseOrClientAccountOtpCredentialsUsernameContainsIgnoreCaseOrCarMakeContainsIgnoreCaseOrCarModelContainsIgnoreCaseAndStatusIn(String number, String username, String make, String model, List<Status> statuses, Pageable pageable);
 
-    Page<Reservation> findAllByClientAccountOtpCredentialsUsername(String username, Pageable pageable);
+    Page<Reservation> findAllByClientAccountOtpCredentialsUsernameAndStatusIn(String username, List<Status> statuses, Pageable pageable);
 
-    Page<Reservation> findAllByClientAccountOtpCredentialsUsernameAndNumberContainsIgnoreCaseOrCarMakeContainsIgnoreCaseOrCarModelContainsIgnoreCase(String username, String number, String make, String model, Pageable pageable);
+    Page<Reservation> findAllByClientAccountOtpCredentialsUsernameAndNumberContainsIgnoreCaseOrCarMakeContainsIgnoreCaseOrCarModelContainsIgnoreCaseAndStatusIn(String username, String number, String make, String model, List<Status> statuses, Pageable pageable);
+
+    List<Reservation> findAllByStartDateAfterAndStatusIn(LocalDateTime startDate, List<Status> statuses);
 }

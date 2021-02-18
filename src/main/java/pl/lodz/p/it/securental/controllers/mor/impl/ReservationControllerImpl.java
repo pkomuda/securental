@@ -14,7 +14,6 @@ import pl.lodz.p.it.securental.services.mor.ReservationService;
 import pl.lodz.p.it.securental.utils.ApplicationProperties;
 import pl.lodz.p.it.securental.utils.PagingHelper;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -81,8 +80,9 @@ public class ReservationControllerImpl implements ReservationController {
     @GetMapping("/reservations/{page}/{size}")
     @PreAuthorize("hasAuthority('getAllReservations')")
     public Page<ReservationDto> getAllReservations(@PathVariable int page,
-                                                   @PathVariable int size) throws ApplicationBaseException {
-        return reservationService.getAllReservations(new PagingHelper(page, size));
+                                                   @PathVariable int size,
+                                                   @RequestParam("statuses") String[] statuses) throws ApplicationBaseException {
+        return reservationService.getAllReservations(statuses, new PagingHelper(page, size));
     }
 
     @Override
@@ -91,8 +91,9 @@ public class ReservationControllerImpl implements ReservationController {
     public Page<ReservationDto> getSortedReservations(@PathVariable int page,
                                                       @PathVariable int size,
                                                       @PathVariable String property,
-                                                      @PathVariable String order) throws ApplicationBaseException {
-        return reservationService.getAllReservations(new PagingHelper(page, size, resolvePropertyName(property), order));
+                                                      @PathVariable String order,
+                                                      @RequestParam("statuses") String[] statuses) throws ApplicationBaseException {
+        return reservationService.getAllReservations(statuses, new PagingHelper(page, size, resolvePropertyName(property), order));
     }
 
     @Override
@@ -100,8 +101,9 @@ public class ReservationControllerImpl implements ReservationController {
     @PreAuthorize("hasAuthority('filterReservations')")
     public Page<ReservationDto> filterReservations(@PathVariable String filter,
                                                    @PathVariable int page,
-                                                   @PathVariable int size) throws ApplicationBaseException {
-        return reservationService.filterReservations(filter, new PagingHelper(page, size));
+                                                   @PathVariable int size,
+                                                   @RequestParam("statuses") String[] statuses) throws ApplicationBaseException {
+        return reservationService.filterReservations(filter, statuses, new PagingHelper(page, size));
     }
 
     @Override
@@ -111,8 +113,9 @@ public class ReservationControllerImpl implements ReservationController {
                                                          @PathVariable int page,
                                                          @PathVariable int size,
                                                          @PathVariable String property,
-                                                         @PathVariable String order) throws ApplicationBaseException {
-        return reservationService.filterReservations(filter, new PagingHelper(page, size, resolvePropertyName(property), order));
+                                                         @PathVariable String order,
+                                                         @RequestParam("statuses") String[] statuses) throws ApplicationBaseException {
+        return reservationService.filterReservations(filter, statuses, new PagingHelper(page, size, resolvePropertyName(property), order));
     }
 
     @Override
@@ -120,8 +123,9 @@ public class ReservationControllerImpl implements ReservationController {
     @PreAuthorize("hasAuthority('getOwnReservations') and #username == authentication.principal.username")
     public Page<ReservationDto> getOwnReservations(@PathVariable String username,
                                                    @PathVariable int page,
-                                                   @PathVariable int size) throws ApplicationBaseException {
-        return reservationService.getOwnReservations(username, new PagingHelper(page, size));
+                                                   @PathVariable int size,
+                                                   @RequestParam("statuses") String[] statuses) throws ApplicationBaseException {
+        return reservationService.getOwnReservations(username, statuses, new PagingHelper(page, size));
     }
 
     @Override
@@ -131,8 +135,9 @@ public class ReservationControllerImpl implements ReservationController {
                                                          @PathVariable int page,
                                                          @PathVariable int size,
                                                          @PathVariable String property,
-                                                         @PathVariable String order) throws ApplicationBaseException {
-        return reservationService.getOwnReservations(username, new PagingHelper(page, size, resolvePropertyName(property), order));
+                                                         @PathVariable String order,
+                                                         @RequestParam("statuses") String[] statuses) throws ApplicationBaseException {
+        return reservationService.getOwnReservations(username, statuses, new PagingHelper(page, size, resolvePropertyName(property), order));
     }
 
     @Override
@@ -141,8 +146,9 @@ public class ReservationControllerImpl implements ReservationController {
     public Page<ReservationDto> filterOwnReservations(@PathVariable String username,
                                                       @PathVariable String filter,
                                                       @PathVariable int page,
-                                                      @PathVariable int size) throws ApplicationBaseException {
-        return reservationService.filterOwnReservations(username, filter, new PagingHelper(page, size));
+                                                      @PathVariable int size,
+                                                      @RequestParam("statuses") String[] statuses) throws ApplicationBaseException {
+        return reservationService.filterOwnReservations(username, filter, statuses, new PagingHelper(page, size));
     }
 
     @Override
@@ -153,13 +159,14 @@ public class ReservationControllerImpl implements ReservationController {
                                                             @PathVariable int page,
                                                             @PathVariable int size,
                                                             @PathVariable String property,
-                                                            @PathVariable String order) throws ApplicationBaseException {
-        return reservationService.filterOwnReservations(username, filter, new PagingHelper(page, size, resolvePropertyName(property), order));
+                                                            @PathVariable String order,
+                                                            @RequestParam("statuses") String[] statuses) throws ApplicationBaseException {
+        return reservationService.filterOwnReservations(username, filter, statuses, new PagingHelper(page, size, resolvePropertyName(property), order));
     }
 
     @Override
     @OtpAuthorizationRequired
-    @PutMapping("/receiveReservation/{username}/{number}")
+    @PutMapping("/receiveOwnReservation/{username}/{number}")
     @PreAuthorize("hasAuthority('receiveOwnReservation') and #username == authentication.principal.username")
     public void receiveOwnReservation(@PathVariable String username,
                                       @PathVariable String number,
@@ -179,10 +186,21 @@ public class ReservationControllerImpl implements ReservationController {
 
     @Override
     @OtpAuthorizationRequired
-    @PutMapping("/finishReservation/{username}/{number}")
-    @PreAuthorize("hasAuthority('finishOwnReservation') and #username == authentication.principal.username")
-    public void finishOwnReservation(String username, String number, ReservationDto reservationDto, MultipartFile[] images) throws ApplicationBaseException {
-
+    @PutMapping("/finishReservation/{number}")
+    @PreAuthorize("hasAuthority('finishReservation')")
+    public void finishReservation(@PathVariable String number,
+                                  @RequestParam("signature") String signature,
+                                  @RequestParam(ApplicationProperties.IMAGE_FRONT) MultipartFile front,
+                                  @RequestParam(ApplicationProperties.IMAGE_RIGHT) MultipartFile right,
+                                  @RequestParam(ApplicationProperties.IMAGE_BACK) MultipartFile back,
+                                  @RequestParam(ApplicationProperties.IMAGE_LEFT) MultipartFile left) throws ApplicationBaseException {
+        Map<String, MultipartFile> images = Map.of(
+                ApplicationProperties.IMAGE_FRONT, front,
+                ApplicationProperties.IMAGE_RIGHT, right,
+                ApplicationProperties.IMAGE_BACK, back,
+                ApplicationProperties.IMAGE_LEFT, left
+        );
+        reservationService.finishReservation(number, signature, images);
     }
 
     private String resolvePropertyName(String property) {

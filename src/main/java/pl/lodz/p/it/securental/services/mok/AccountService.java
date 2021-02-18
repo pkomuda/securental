@@ -34,6 +34,7 @@ import pl.lodz.p.it.securental.utils.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.IntStream;
@@ -195,21 +196,29 @@ public class AccountService {
     }
 
     //@PreAuthorize("permitAll()")
-    public void initializeResetPassword(String username, String language) throws ApplicationBaseException {
+    public void initializeResetPassword(String username) throws ApplicationBaseException {
         Optional<Account> accountOptional = accountAdapter.getAccount(username);
         if (accountOptional.isPresent()) {
             Account account = accountOptional.get();
+            if (account.getConfirmed() == null || !account.getConfirmed()) {
+                throw new AccountNotConfirmedException();
+            }
+            String language = account.getPreferredLanguage();
             ResetPasswordToken resetPasswordToken = account.getResetPasswordToken();
             resetPasswordToken.setExpiration(LocalDateTime.now().plusMinutes(ApplicationProperties.RESET_PASSWORD_TOKEN_EXPIRATION));
             resetPasswordToken.setHash(StringUtils.randomIdentifier());
             resetPasswordToken.setUsed(false);
             String subject = StringUtils.getTranslatedText("reset.subject", language);
-            String text = "<a href=\"" + ApplicationProperties.FRONTEND_ORIGIN + "/resetPassword/" + resetPasswordToken.getHash() + "\">"
+            String text = StringUtils.getTranslatedText("reset.date", language) + " " + formatDate(LocalDateTime.now()) + "<br/>" + "<a href=\"" + ApplicationProperties.FRONTEND_ORIGIN + "/resetPassword/" + resetPasswordToken.getHash() + "\">"
                     + StringUtils.getTranslatedText("common.link", language) + "</a>" + StringUtils.getTranslatedText("reset.text", language);
             emailSender.sendMessage(account.getEmail(), subject, text);
         } else {
             throw new AccountNotFoundException();
         }
+    }
+
+    private String formatDate(LocalDateTime date) {
+        return StringUtils.localDateTimeToString(date).substring(0, 16).replaceAll("-", ".").replace("T", " ");
     }
 
     //@PreAuthorize("hasAuthority('changePassword')")
@@ -355,7 +364,7 @@ public class AccountService {
                     account.setActive(accountDto.getActive());
                     AccountMapper.updateAccessLevels(account.getAccessLevels(), accountDto.getAccessLevels());
                 } else {
-                    throw new ApplicationOptimisticLockException();
+                    throw new ApplicationOptimisticLockException(account);
                 }
             } else {
                 throw new AccountNotFoundException();
@@ -375,7 +384,7 @@ public class AccountService {
                     account.setFirstName(accountDto.getFirstName());
                     account.setLastName(accountDto.getLastName());
                 } else {
-                    throw new ApplicationOptimisticLockException();
+                    throw new ApplicationOptimisticLockException(account);
                 }
             } else {
                 throw new AccountNotFoundException();
@@ -390,6 +399,16 @@ public class AccountService {
         if (accountOptional.isPresent()) {
             Account account = accountOptional.get();
             account.setPreferredLanguage(language);
+        } else {
+            throw new AccountNotFoundException();
+        }
+    }
+
+    public void changePreferredColorTheme(String username, String theme) throws ApplicationBaseException {
+        Optional<Account> accountOptional = accountAdapter.getAccount(username);
+        if (accountOptional.isPresent()) {
+            Account account = accountOptional.get();
+            account.setPreferredColorTheme(theme);
         } else {
             throw new AccountNotFoundException();
         }

@@ -90,6 +90,7 @@ public class AuthenticationService {
             }
             return AuthenticationResponse.builder()
                     .preferredLanguage(account.getPreferredLanguage())
+                    .preferredColorTheme(account.getPreferredColorTheme())
                     .lastSuccessfulAuthentication(previousSuccessfulAuthentication)
                     .lastFailedAuthentication(previousFailedAuthentication)
                     .lastAuthenticationIpAddress(previousAuthenticationIpAddress);
@@ -108,7 +109,8 @@ public class AuthenticationService {
                     .username(username)
                     .accessLevels(accessLevels)
                     .currentAccessLevel(getHighestFrontendRole(accessLevels))
-                    .preferredLanguage(account.getPreferredLanguage());
+                    .preferredLanguage(account.getPreferredLanguage())
+                    .preferredColorTheme(account.getPreferredColorTheme());
         } else {
             throw new AccountNotFoundException();
         }

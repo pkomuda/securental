@@ -8,12 +8,12 @@ import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
 import { handleError, handleSuccess } from "../../utils/Alerts";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
-import { ACTION_FINISH, ACTION_RECEIVE, IMAGE_BACK, IMAGE_FRONT, IMAGE_LEFT, IMAGE_RIGHT, MAX_FILE_SIZE } from "../../utils/Constants";
+import { IMAGE_BACK, IMAGE_FRONT, IMAGE_LEFT, IMAGE_RIGHT, MAX_FILE_SIZE } from "../../utils/Constants";
 import { formatDate } from "../../utils/DateTime";
 import { FlatFormGroup } from "../common/FlatFormGroup";
 import { Spinner } from "../common/Spinner";
 
-export const OwnReservation = props => {
+export const ReceiveOwnReservation = props => {
 
     const {t} = useTranslation();
     const [userInfo] = useContext(AuthenticationContext);
@@ -57,11 +57,11 @@ export const OwnReservation = props => {
                     formData.append(IMAGE_RIGHT, right);
                     formData.append(IMAGE_BACK, back);
                     formData.append(IMAGE_LEFT, left);
-                    axios.put(`/receiveReservation/${userInfo.username}/${reservation.number}`,
+                    axios.put(`/receiveOwnReservation/${userInfo.username}/${reservation.number}`,
                         formData,
                         {headers: {"Otp-Code": otpCode}})
                         .then(() => {
-                            handleSuccess(`reservation.${props.match.params.action}.success`, "");
+                            handleSuccess(`reservation.receive.success`, "");
                             props.history.push(`/ownReservationDetails/${reservation.number}`);
                         }).catch(error => {
                         handleError(error);
@@ -70,16 +70,6 @@ export const OwnReservation = props => {
             }).then(() => {});
         } else {
             document.getElementById("imageAmountFeedback").style.display = "block";
-        }
-    };
-
-    const renderActiveBreadcrumb = () => {
-        if (props.match.params.action === ACTION_RECEIVE) {
-            return <Breadcrumb.Item active>{t("breadcrumbs.receiveReservation")}</Breadcrumb.Item>;
-        } else if (props.match.params.action === ACTION_FINISH) {
-            return <Breadcrumb.Item active>{t("breadcrumbs.finishReservation")}</Breadcrumb.Item>;
-        } else {
-            return <Breadcrumb.Item active/>;
         }
     };
 
@@ -130,12 +120,12 @@ export const OwnReservation = props => {
                     <LinkContainer to={`/ownReservationDetails/${reservation.number}`} exact>
                         <Breadcrumb.Item>{t("breadcrumbs.reservationDetails")}</Breadcrumb.Item>
                     </LinkContainer>
-                    {renderActiveBreadcrumb()}
+                    <Breadcrumb.Item active>{t("breadcrumbs.receiveReservation")}</Breadcrumb.Item>
                 </Breadcrumb>
                 <Container>
                     <Row className="justify-content-center">
                         <Col sm={6} className="form-container">
-                            <h1 className="text-center">{t(`breadcrumbs.${props.match.params.action}Reservation`)}</h1>
+                            <h1 className="text-center">{t(`breadcrumbs.receiveReservation`)}</h1>
                             <Form style={{marginTop: "2em"}}>
                                 <FormGroup>
                                     <FormLabel className="flat-form-label">{t("reservation.car")}</FormLabel>
@@ -203,8 +193,6 @@ export const OwnReservation = props => {
                                         onClick={() => props.history.push(`/ownReservationDetails/${reservation.number}`)}>{t("navigation.back")}</Button>
                                 <Button id="submit"
                                         onClick={handleSubmit}>{t("navigation.submit")}</Button>
-                                <Button id="log"
-                                        onClick={() => console.log(front)}>Log</Button>
                             </ButtonToolbar>
                         </Col>
                     </Row>

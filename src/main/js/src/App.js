@@ -30,9 +30,10 @@ import { EditCar } from "./components/mop/EditCar";
 import { ListCars } from "./components/mop/ListCars";
 import { AddReservation } from "./components/mor/AddReservation";
 import { EditOwnReservation } from "./components/mor/EditOwnReservation";
+import { FinishReservation } from "./components/mor/FinishReservation";
 import { ListOwnReservations } from "./components/mor/ListOwnReservations";
 import { ListReservations } from "./components/mor/ListReservations";
-import { OwnReservation } from "./components/mor/OwnReservation";
+import { ReceiveOwnReservation } from "./components/mor/ReceiveOwnReservation";
 import { OwnReservationDetails } from "./components/mor/OwnReservationDetails";
 import { ReservationDetails } from "./components/mor/ReservationDetails";
 import { AuthenticationContext, isAuthenticated } from "./utils/AuthenticationContext";
@@ -60,10 +61,21 @@ export const App = () => {
                     tempUserInfo.tokenPresent = true;
                     setUserInfo(tempUserInfo);
                     i18n.changeLanguage(tempUserInfo.preferredLanguage).then(() => {});
+                    if (tempUserInfo.preferredColorTheme === "light") {
+                        document.body.style.backgroundColor = "#ffffff";
+                    } else if (tempUserInfo.preferredColorTheme === "dark") {
+                        document.body.style.backgroundColor = "#1a2128";
+                    }
                 }).catch(() => {
                     const tempUserInfo = {...userInfo};
                     tempUserInfo.tokenPresent = false;
                     setUserInfo(tempUserInfo);
+                    i18n.changeLanguage(tempUserInfo.preferredLanguage).then(() => {});
+                    if (tempUserInfo.preferredColorTheme === "light") {
+                        document.body.style.backgroundColor = "#ffffff";
+                    } else if (tempUserInfo.preferredColorTheme === "dark") {
+                        document.body.style.backgroundColor = "#1a2128";
+                    }
             });
         }
     }, [userInfo]);
@@ -103,10 +115,11 @@ export const App = () => {
                             <PrivateRoute accessLevels={[ACCESS_LEVEL_EMPLOYEE]} exact path="/editCar/:number" component={EditCar}/>
                             <PrivateRoute accessLevels={[ACCESS_LEVEL_EMPLOYEE]} exact path="/listReservations" component={ListReservations}/>
                             <PrivateRoute accessLevels={[ACCESS_LEVEL_EMPLOYEE]} exact path="/reservationDetails/:number" component={ReservationDetails}/>
+                            <PrivateRoute accessLevels={[ACCESS_LEVEL_EMPLOYEE]} exact path="/finishReservation/:number" component={FinishReservation}/>
                             <PrivateRoute accessLevels={[ACCESS_LEVEL_CLIENT]} exact path="/addReservation/:number" component={AddReservation}/>
                             <PrivateRoute accessLevels={[ACCESS_LEVEL_CLIENT]} exact path="/listOwnReservations" component={ListOwnReservations}/>
                             <PrivateRoute accessLevels={[ACCESS_LEVEL_CLIENT]} exact path="/ownReservationDetails/:number" component={OwnReservationDetails}/>
-                            <PrivateRoute accessLevels={[ACCESS_LEVEL_CLIENT]} exact path="/ownReservation/:action/:number" component={OwnReservation}/>
+                            <PrivateRoute accessLevels={[ACCESS_LEVEL_CLIENT]} exact path="/receiveOwnReservation/:number" component={ReceiveOwnReservation}/>
                             <PrivateRoute accessLevels={[ACCESS_LEVEL_CLIENT]} exact path="/editOwnReservation/:number" component={EditOwnReservation}/>
                             <Route exact path="/noAccess" component={NoAccess}/>
                             <Route exact path="/error" component={Error}/>

@@ -29,6 +29,8 @@ public class ReservationMapper {
     }
 
     public ReservationDto toReservationDtoWithSignature(Reservation reservation) throws ApplicationBaseException {
+        reservation.getReceivedImageUrls().size();
+        reservation.getFinishedImageUrls().size();
         return ReservationDto.builder()
                 .number(reservation.getNumber())
                 .startDate(StringUtils.localDateTimeToString(reservation.getStartDate()))
@@ -38,12 +40,14 @@ public class ReservationMapper {
                 .clientDto(ClientMapper.toClientDto(reservation.getClient()))
                 .carDto(carMapper.toCarDtoWithSignature(reservation.getCar()))
                 .receivedImageUrls(reservation.getReceivedImageUrls())
-//                .finishedImageUrls(reservation.getFinishedImageUrls())
+                .finishedImageUrls(reservation.getFinishedImageUrls())
                 .signature(signatureUtils.sign(reservation.toSignString()))
                 .build();
     }
 
     public static ReservationDto toReservationDtoWithoutSignature(Reservation reservation) {
+        reservation.getReceivedImageUrls().size();
+        reservation.getFinishedImageUrls().size();
         return ReservationDto.builder()
                 .number(reservation.getNumber())
                 .startDate(StringUtils.localDateTimeToString(reservation.getStartDate()))
@@ -53,7 +57,7 @@ public class ReservationMapper {
                 .clientDto(ClientMapper.toClientDto(reservation.getClient()))
                 .carDto(CarMapper.toCarDtoWithoutSignature(reservation.getCar()))
                 .receivedImageUrls(reservation.getReceivedImageUrls())
-//                .finishedImageUrls(reservation.getFinishedImageUrls())
+                .finishedImageUrls(reservation.getFinishedImageUrls())
                 .build();
     }
 

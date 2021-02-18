@@ -1,4 +1,9 @@
 {
   "error.default": "Wystąpił błąd",
-  "error.default.text": "Spróbuj ponownie później"
+  "error.default.text": "Spróbuj ponownie później",
+  "error.account.optimistic.lock" : "To konto zostało przez kogoś zedytowane w międzyczasie. Odśwież stronę i spróbuj ponownie.",
+  "error.car.optimistic.lock" : "Ten samochód został przez kogoś zedytowany w międzyczasie. Odśwież stronę i spróbuj ponownie.",
+  "error.reservation.optimistic.lock" : "Ta rezerwacja została przez kogoś zedytowana w międzyczasie. Odśwież stronę i spróbuj ponownie.",
+  "error.date.overlap": "Wybrana data koliduje z inną rezerwacją",
+  "error.account.not.confirmed": "Konto musi być potwierdzone, aby zresetować hasło"
 }

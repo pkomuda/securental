@@ -129,9 +129,8 @@ public class AccountControllerImpl implements AccountController {
     @Override
     @PutMapping("/initializeResetPassword/{username}")
     @PreAuthorize("permitAll()")
-    public void initializeResetPassword(@PathVariable String username,
-                                        @RequestHeader("Accept-Language") String language) throws ApplicationBaseException {
-        accountService.initializeResetPassword(username, language);
+    public void initializeResetPassword(@PathVariable String username) throws ApplicationBaseException {
+        accountService.initializeResetPassword(username);
     }
 
     @Override
@@ -183,6 +182,14 @@ public class AccountControllerImpl implements AccountController {
     public void changePreferredLanguage(@PathVariable String username,
                                         @PathVariable String language) throws ApplicationBaseException {
         accountService.changePreferredLanguage(username, language);
+    }
+
+    @Override
+    @PutMapping("/theme/{username}/{theme}")
+    @PreAuthorize("hasAuthority('changePreferredColorTheme')")
+    public void changePreferredColorTheme(@PathVariable String username,
+                                          @PathVariable String theme) throws ApplicationBaseException {
+        accountService.changePreferredColorTheme(username, theme);
     }
 
     @Override

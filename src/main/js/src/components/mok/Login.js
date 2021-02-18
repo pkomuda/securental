@@ -124,6 +124,11 @@ export const Login = props => {
             .then(response => {
                 setUserInfo(response.data);
                 i18n.changeLanguage(response.data.preferredLanguage).then(() => {});
+                if (response.data.preferredColorTheme === "light") {
+                    document.body.style.backgroundColor = "#ffffff";
+                } else if (response.data.preferredColorTheme === "dark") {
+                    document.body.style.backgroundColor = "#1a2128";
+                }
                 popup.fire({
                     titleText: t("navigation.success"),
                     html:

@@ -14,6 +14,7 @@ import pl.lodz.p.it.securental.dto.mappers.mor.ReservationMapper;
 import pl.lodz.p.it.securental.dto.model.mor.ReservationDto;
 import pl.lodz.p.it.securental.entities.mok.Client;
 import pl.lodz.p.it.securental.entities.mop.Car;
+import pl.lodz.p.it.securental.entities.mop.Category;
 import pl.lodz.p.it.securental.entities.mor.Reservation;
 import pl.lodz.p.it.securental.entities.mor.Status;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
@@ -29,10 +30,8 @@ import pl.lodz.p.it.securental.utils.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -53,6 +52,7 @@ public class ReservationService {
         Reservation reservation = ReservationMapper.toReservation(reservationDto);
 
         validateDates(reservation);
+        validateDateOverlap(reservation, reservationAdapter.getAllFutureActiveReservations());
 
         if (username.equals(reservationDto.getClientDto().getUsername())) {
             reservation.setClient(
@@ -69,15 +69,24 @@ public class ReservationService {
                 throw new CarInactiveException();
             }
         } else {
-            throw new ApplicationOptimisticLockException();
+            throw new ApplicationOptimisticLockException(car);
         }
 
         reservation.setStatus(Status.NEW);
-        reservation.setPrice(calculateReservationPrice(reservation));
+//        reservation.setPrice(calculateReservationPrice(reservation));
         reservation.setNumber(StringUtils.randomIdentifier());
         car.getReservations().add(reservation);
 
         reservationAdapter.addReservation(reservation);
+    }
+
+    private void validateDateOverlap(Reservation reservation, List<Reservation> reservations) throws ApplicationBaseException {
+        for (Reservation r : reservations) {
+            if (!reservation.getStartDate().isAfter(r.getEndDate())
+                    && !r.getStartDate().isAfter(reservation.getEndDate())) {
+                throw new DateOverlapException();
+            }
+        }
     }
 
     //@PreAuthorize("hasAuthority('getReservation')")
@@ -112,12 +121,13 @@ public class ReservationService {
                     if (signatureUtils.verify(car.toSignString(), reservationDto.getCarDto().getSignature())) {
                         reservation.setStartDate(temp.getStartDate());
                         reservation.setEndDate(temp.getEndDate());
-                        reservation.setPrice(calculateReservationPrice(reservation));
+                        reservation.setPrice(StringUtils.stringToBigDecimal(reservationDto.getPrice()));
+//                        reservation.setPrice(calculateReservationPrice(reservation));
                     } else {
-                        throw new ApplicationOptimisticLockException();
+                        throw new ApplicationOptimisticLockException(car);
                     }
                 } else {
-                    throw new ApplicationOptimisticLockException();
+                    throw new ApplicationOptimisticLockException(reservation);
                 }
             } else {
                 throw new ReservationNotFoundException();
@@ -139,16 +149,16 @@ public class ReservationService {
 
         Reservation reservation = reservationOptional.get();
         if (!signatureUtils.verify(reservation.toSignString(), signature)) {
-            throw new ApplicationOptimisticLockException();
+            throw new ApplicationOptimisticLockException(reservation);
         }
         if (!reservation.getStatus().equals(Status.NEW)) {
             throw new IncorrectStatusException();
         }
 
         //todo
-//        if (reservation.getStartDate().isAfter(LocalDateTime.now())) {
-//            throw new ReservationStartAfterNowException();
-//        }
+        if (reservation.getStartDate().isBefore(LocalDateTime.now())) {
+            throw new ReservationStartAfterNowException();
+        }
 
         List<String> receivedImageUrls = new ArrayList<>();
         for (Map.Entry<String, MultipartFile> entry : images.entrySet()) {
@@ -158,22 +168,35 @@ public class ReservationService {
         reservation.setReceivedImageUrls(receivedImageUrls);
     }
 
-//    public List<String> s3(MultipartFile[] images) throws ApplicationBaseException {
-//        List<String> receivedImageUrls = new ArrayList<>();
-//        for (MultipartFile image : images) {
-//            receivedImageUrls.add(amazonClient.uploadFile(image));
-//        }
-//        return receivedImageUrls;
-//    }
+    public void finishReservation(String number, String signature, Map<String, MultipartFile> images) throws ApplicationBaseException {
+        if (images.size() != 4) {
+            throw new ReservationImagesAmountIncorrectException();
+        }
 
-//    public List<String> s3(MultipartFile images) throws ApplicationBaseException {
-//        List<String> receivedImageUrls = new ArrayList<>();
-//        receivedImageUrls.add(amazonClient.uploadFile(images));
-//        return receivedImageUrls;
-//    }
+        Optional<Reservation> reservationOptional = reservationAdapter.getReservation(number);
+        if (reservationOptional.isEmpty()) {
+            throw new ReservationNotFoundException();
+        }
 
-    public void finishOwnReservation(String username, String number, ReservationDto reservationDto, MultipartFile images) throws ApplicationBaseException {
+        Reservation reservation = reservationOptional.get();
+        if (!signatureUtils.verify(reservation.toSignString(), signature)) {
+            throw new ApplicationOptimisticLockException(reservation);
+        }
+        if (!reservation.getStatus().equals(Status.RECEIVED)) {
+            throw new IncorrectStatusException();
+        }
 
+        //todo
+        if (reservation.getEndDate().isAfter(LocalDateTime.now())) {
+            throw new ReservationEndBeforeNowException();
+        }
+
+        List<String> finishedImageUrls = new ArrayList<>();
+        for (Map.Entry<String, MultipartFile> entry : images.entrySet()) {
+            finishedImageUrls.add(amazonClient.uploadFile(entry.getKey(), entry.getValue()));
+        }
+        reservation.setStatus(Status.RECEIVED);
+        reservation.setFinishedImageUrls(finishedImageUrls);
     }
 
     //@PreAuthorize("hasAuthority('changeReservationStatus')")
@@ -183,10 +206,11 @@ public class ReservationService {
             if (reservationOptional.isPresent()) {
                 Reservation reservation = reservationOptional.get();
                 if (signatureUtils.verify(reservation.toSignString(), reservationDto.getSignature())) {
+                    //todo
 //                    validateStatuses(reservation.getStatus().name(), reservationDto.getStatus());
 //                    reservation.setStatus(getStatus(reservationDto.getStatus()));
                 } else {
-                    throw new ApplicationOptimisticLockException();
+                    throw new ApplicationOptimisticLockException(reservation);
                 }
             } else {
                 throw new ReservationNotFoundException();
@@ -205,12 +229,12 @@ public class ReservationService {
                 if (signatureUtils.verify(reservation.toSignString(), reservationDto.getSignature())) {
                     if (reservation.getStatus().equals(Status.NEW)
                             && reservationDto.getStatus().equals(Status.CANCELLED.name())) {
-//                        reservation.setStatus(getStatus(reservationDto.getStatus()));
+                        reservation.setStatus(Status.CANCELLED);
                     } else {
                         throw new IncorrectStatusException();
                     }
                 } else {
-                    throw new ApplicationOptimisticLockException();
+                    throw new ApplicationOptimisticLockException(reservation);
                 }
             } else {
                 throw new ReservationNotFoundException();
@@ -221,39 +245,45 @@ public class ReservationService {
     }
 
     //@PreAuthorize("hasAnyAuthority('getAllReservations', 'getSortedReservations')")
-    public Page<ReservationDto> getAllReservations(PagingHelper pagingHelper) throws ApplicationBaseException {
+    public Page<ReservationDto> getAllReservations(String[] statuses, PagingHelper pagingHelper) throws ApplicationBaseException {
         try {
-            return ReservationMapper.toReservationDtos(reservationAdapter.getAllReservations(pagingHelper.withSorting()));
+            return ReservationMapper.toReservationDtos(reservationAdapter.getAllReservations(toStatuses(statuses), pagingHelper.withSorting()));
         } catch (PropertyNotFoundException e) {
-            return ReservationMapper.toReservationDtos(reservationAdapter.getAllReservations(pagingHelper.withoutSorting()));
+            return ReservationMapper.toReservationDtos(reservationAdapter.getAllReservations(toStatuses(statuses), pagingHelper.withoutSorting()));
         }
     }
 
     //@PreAuthorize("hasAnyAuthority('filterReservations', 'filterSortedReservations')")
-    public Page<ReservationDto> filterReservations(String filter, PagingHelper pagingHelper) throws ApplicationBaseException {
+    public Page<ReservationDto> filterReservations(String filter, String[] statuses, PagingHelper pagingHelper) throws ApplicationBaseException {
         try {
-            return ReservationMapper.toReservationDtos(reservationAdapter.filterReservations(filter, pagingHelper.withSorting()));
+            return ReservationMapper.toReservationDtos(reservationAdapter.filterReservations(filter, toStatuses(statuses), pagingHelper.withSorting()));
         } catch (PropertyNotFoundException e) {
-            return ReservationMapper.toReservationDtos(reservationAdapter.filterReservations(filter, pagingHelper.withoutSorting()));
+            return ReservationMapper.toReservationDtos(reservationAdapter.filterReservations(filter, toStatuses(statuses), pagingHelper.withoutSorting()));
         }
     }
 
     //@PreAuthorize("hasAnyAuthority('getOwnReservations', 'getOwnSortedReservations')")
-    public Page<ReservationDto> getOwnReservations(String username, PagingHelper pagingHelper) throws ApplicationBaseException {
+    public Page<ReservationDto> getOwnReservations(String username, String[] statuses, PagingHelper pagingHelper) throws ApplicationBaseException {
         try {
-            return ReservationMapper.toReservationDtos(reservationAdapter.getOwnReservations(username, pagingHelper.withSorting()));
+            return ReservationMapper.toReservationDtos(reservationAdapter.getOwnReservations(username, toStatuses(statuses), pagingHelper.withSorting()));
         } catch (PropertyNotFoundException e) {
-            return ReservationMapper.toReservationDtos(reservationAdapter.getOwnReservations(username, pagingHelper.withoutSorting()));
+            return ReservationMapper.toReservationDtos(reservationAdapter.getOwnReservations(username, toStatuses(statuses), pagingHelper.withoutSorting()));
         }
     }
 
     //@PreAuthorize("hasAnyAuthority('filterOwnReservations', 'filterOwnSortedReservations')")
-    public Page<ReservationDto> filterOwnReservations(String username, String filter, PagingHelper pagingHelper) throws ApplicationBaseException {
+    public Page<ReservationDto> filterOwnReservations(String username, String filter, String[] statuses, PagingHelper pagingHelper) throws ApplicationBaseException {
         try {
-            return ReservationMapper.toReservationDtos(reservationAdapter.filterOwnReservations(username, filter, pagingHelper.withSorting()));
+            return ReservationMapper.toReservationDtos(reservationAdapter.filterOwnReservations(username, filter, toStatuses(statuses), pagingHelper.withSorting()));
         } catch (PropertyNotFoundException e) {
-            return ReservationMapper.toReservationDtos(reservationAdapter.filterOwnReservations(username, filter, pagingHelper.withoutSorting()));
+            return ReservationMapper.toReservationDtos(reservationAdapter.filterOwnReservations(username, filter, toStatuses(statuses), pagingHelper.withoutSorting()));
         }
+    }
+
+    private List<Status> toStatuses(String[] statuses) {
+        return Arrays.stream(statuses)
+                .map(Status::valueOf)
+                .collect(Collectors.toList());
     }
 
 //    private Status getStatus(String name) throws ApplicationBaseException {

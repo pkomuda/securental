@@ -109,6 +109,7 @@
   "login.otp.lost": "I lost my phone with one time codes",
   "login.password.reset.header": "Reset password",
   "login.password.reset.text": "Send email with link that allows password reset",
+  "reset.mail.sent": "Email sent successfully",
   "login.otp.lost.header": "Contact the administrator via email: securentalapp@gmail.com",
 
   "register.header": "Registration",
@@ -144,6 +145,7 @@
   "reservation.image.back": "Back of the car",
   "reservation.image.left": "Left size of the car",
   "reservation.images.received": "Images after reception",
+  "reservation.images.finished": "Images after finish",
 
   "NEW": "New",
   "CANCELLED": "Cancelled",

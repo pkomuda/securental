@@ -1,4 +1,9 @@
 {
   "error.default": "An error occurred",
-  "error.default.text": "Please try again later"
+  "error.default.text": "Please try again later",
+  "error.account.optimistic.lock" : "This account has been edited by someone in the meantime. Refresh and try again.",
+  "error.car.optimistic.lock" : "This car has been edited by someone in the meantime. Refresh and try again.",
+  "error.reservation.optimistic.lock" : "This reservation has been edited by someone in the meantime. Refresh and try again.",
+  "error.date.overlap": "Chosen date overlaps with another reservation",
+  "error.account.not.confirmed": "Account must be confirmed to reset password"
 }

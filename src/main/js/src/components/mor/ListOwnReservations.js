@@ -2,14 +2,15 @@ import { faHome, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
-import { Breadcrumb, Button, Container, FormControl, InputGroup } from "react-bootstrap";
+import { Breadcrumb, Button, Container, FormCheck, FormControl, FormGroup, FormLabel, InputGroup } from "react-bootstrap";
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from 'react-router-bootstrap';
 import { handleError } from "../../utils/Alerts";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
-import { PAGINATION_SIZES } from "../../utils/Constants";
+import { PAGINATION_SIZES, RESERVATION_STATUSES } from "../../utils/Constants";
+import { formatDate } from "../../utils/DateTime";
 import { Spinner } from "../common/Spinner";
 
 export const ListOwnReservations = props => {
@@ -17,6 +18,7 @@ export const ListOwnReservations = props => {
     const {t} = useTranslation();
     const [userInfo] = useContext(AuthenticationContext);
     const [reservations, setReservations] = useState([]);
+    const [statuses, setStatuses] = useState(RESERVATION_STATUSES);
     const [page, setPage] = useState(1);
     const [sizePerPage, setSizePerPage] = useState(10);
     const [totalSize, setTotalSize] = useState(0);
@@ -37,6 +39,27 @@ export const ListOwnReservations = props => {
         dataField: "carDto.model",
         text: t("reservation.carModel"),
         sort: true
+    }, {
+        dataField: "startDate",
+        text: t("reservation.startDate"),
+        sort: true,
+        formatter: (cell, row) => {
+            return formatDate(row["startDate"], userInfo);
+        }
+    }, {
+        dataField: "endDate",
+        text: t("reservation.endDate"),
+        sort: true,
+        formatter: (cell, row) => {
+            return formatDate(row["endDate"], userInfo);
+        }
+    }, {
+        dataField: "status",
+        text: t("reservation.status"),
+        sort: true,
+        formatter: (cell, row) => {
+            return t(row["status"]);
+        }
     }, {
         dataField: "details",
         text: t("navigation.details"),
@@ -65,7 +88,7 @@ export const ListOwnReservations = props => {
                 }
             }
         };
-        axios.get(url())
+        axios.get(url(), {params: {"statuses": statuses.join(",")}})
             .then(response => {
                 if (response.data.empty) {
                     if (response.data.totalPages === 0) {
@@ -80,13 +103,39 @@ export const ListOwnReservations = props => {
             }).catch(error => {
                 handleError(error);
         });
-    }, [filter, page, sizePerPage, sortField, sortOrder, t, userInfo.username]);
+    }, [filter, page, sizePerPage, sortField, sortOrder, statuses, t, userInfo.username]);
 
     const handleTableChange = (type, { page, sizePerPage, sortField, sortOrder }) => {
         setPage(page);
         setSizePerPage(sizePerPage);
         setSortField(sortField);
         setSortOrder(sortOrder);
+    };
+
+    const handleChangeStatus = status => {
+        if (statuses.includes(status)) {
+            setStatuses(statuses.filter(element => element !== status));
+        } else {
+            setStatuses([...statuses, status]);
+        }
+    };
+
+    const renderStatusSelect = () => {
+        const statuses = [];
+        for (let status of RESERVATION_STATUSES) {
+            statuses.push(
+                <FormCheck inline
+                           defaultChecked
+                           label={t(status)}
+                           onChange={() => handleChangeStatus(status)}/>
+            );
+        }
+        return (
+            <FormGroup>
+                <FormLabel className="flat-form-label" style={{marginRight: "1em"}}>{t("reservation.status")}</FormLabel>
+                {statuses}
+            </FormGroup>
+        );
     };
 
     if (loaded) {
@@ -101,6 +150,7 @@ export const ListOwnReservations = props => {
                     <Breadcrumb.Item active>{t("breadcrumbs.listReservations")}</Breadcrumb.Item>
                 </Breadcrumb>
                 <Container>
+                    {renderStatusSelect()}
                     <InputGroup>
                         <InputGroup.Prepend>
                             <InputGroup.Text>

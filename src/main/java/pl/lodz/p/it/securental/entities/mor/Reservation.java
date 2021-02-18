@@ -39,7 +39,7 @@ public @Data class Reservation extends BaseAuditEntity {
     @ManyToOne
     private Car car;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection/*(fetch = FetchType.EAGER)*/
     private List<String> receivedImageUrls = new ArrayList<>();
 
     @ElementCollection
