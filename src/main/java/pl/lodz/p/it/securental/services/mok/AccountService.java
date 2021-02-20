@@ -203,6 +203,9 @@ public class AccountService {
             if (account.getConfirmed() == null || !account.getConfirmed()) {
                 throw new AccountNotConfirmedException();
             }
+            if (account.getActive() == null || !account.getActive()) {
+                throw new AccountNotActiveException();
+            }
             String language = account.getPreferredLanguage();
             ResetPasswordToken resetPasswordToken = account.getResetPasswordToken();
             resetPasswordToken.setExpiration(LocalDateTime.now().plusMinutes(ApplicationProperties.RESET_PASSWORD_TOKEN_EXPIRATION));

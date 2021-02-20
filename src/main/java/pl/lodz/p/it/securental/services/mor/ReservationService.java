@@ -287,15 +287,6 @@ public class ReservationService {
                 .collect(Collectors.toList());
     }
 
-//    private Status getStatus(String name) throws ApplicationBaseException {
-//        Optional<Status> statusOptional = statusAdapter.getStatus(name);
-//        if (statusOptional.isPresent()) {
-//            return statusOptional.get();
-//        } else {
-//            throw new StatusNotFoundException();
-//        }
-//    }
-
     private Client getClient(String username) throws ApplicationBaseException {
         Optional<Client> clientOptional = accessLevelAdapter.getClient(username);
         if (clientOptional.isPresent() && clientOptional.get().getActive()) {
@@ -323,21 +314,6 @@ public class ReservationService {
             throw new ReservationStartNotBeforeEndException();
         }
     }
-
-//    private List<Status> getAvailableStatuses(Status status) {
-//        switch (status) {
-//            case NEW:
-//                return List.of(Status.CANCELLED, Status.RECEIVED);
-//            default:
-//                return Collections.emptyList();
-//        }
-//    }
-
-//    private void validateStatuses(String reservationStatus, String reservationDtoStatus) throws ApplicationBaseException {
-//        if (!getAvailableStatuses(reservationStatus).contains(reservationDtoStatus)) {
-//            throw new IncorrectStatusException();
-//        }
-//    }
 
     private BigDecimal calculateReservationPrice(Reservation reservation) {
         long minutes = ChronoUnit.MINUTES.between(reservation.getStartDate(), reservation.getEndDate());

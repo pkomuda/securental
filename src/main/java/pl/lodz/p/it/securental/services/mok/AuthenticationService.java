@@ -2,16 +2,15 @@ package pl.lodz.p.it.securental.services.mok;
 
 import lombok.AllArgsConstructor;
 import org.springframework.retry.annotation.Retryable;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.adapters.BlacklistedJwtAdapter;
 import pl.lodz.p.it.securental.adapters.mok.AccountAdapter;
 import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.dto.model.mok.AuthenticationResponse;
-import pl.lodz.p.it.securental.entities.mok.BlacklistedJwt;
 import pl.lodz.p.it.securental.entities.mok.AccessLevel;
 import pl.lodz.p.it.securental.entities.mok.Account;
 import pl.lodz.p.it.securental.entities.mok.AuthenticationToken;
+import pl.lodz.p.it.securental.entities.mok.BlacklistedJwt;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.db.DatabaseConnectionException;
 import pl.lodz.p.it.securental.exceptions.mok.AccountNotFoundException;

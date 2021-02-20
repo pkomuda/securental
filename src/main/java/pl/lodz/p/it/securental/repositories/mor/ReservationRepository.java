@@ -3,8 +3,6 @@ package pl.lodz.p.it.securental.repositories.mor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.lang.NonNull;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Repository;
 import pl.lodz.p.it.securental.aop.annotations.MandatoryTransaction;
 import pl.lodz.p.it.securental.entities.mor.Reservation;
@@ -31,4 +29,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     Page<Reservation> findAllByClientAccountOtpCredentialsUsernameAndNumberContainsIgnoreCaseOrCarMakeContainsIgnoreCaseOrCarModelContainsIgnoreCaseAndStatusIn(String username, String number, String make, String model, List<Status> statuses, Pageable pageable);
 
     List<Reservation> findAllByStartDateAfterAndStatusIn(LocalDateTime startDate, List<Status> statuses);
+
+    List<Reservation> findAllByStartDateBeforeAndStatusIn(LocalDateTime startDate, List<Status> statuses);
 }

@@ -6,6 +6,8 @@ import { Nav, Navbar, NavDropdown } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import { Link, useHistory } from "react-router-dom";
+import Swal from "sweetalert2";
+import { handleError } from "../../utils/Alerts";
 import { AuthenticationContext, isAuthenticated } from "../../utils/AuthenticationContext";
 import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_CLIENT, ACCESS_LEVEL_EMPLOYEE } from "../../utils/Constants";
 import { Spinner } from "./Spinner";
@@ -26,6 +28,25 @@ export const NavigationBar = () => {
             clearUserInfo();
             history.push("/login/sessionExpired");
         }, userInfo.tokenExpiration - new Date().getTime());
+        setTimeout(() => {
+            Swal.fire({
+                titleText: t("session.header"),
+                text: t("session.text"),
+                icon: "info",
+                input: "password",
+                showCancelButton: true,
+                cancelButtonText: t("navigation.cancel"),
+                preConfirm: otpCode => {
+                    axios.post("/refresh", {}, {headers: {"Otp-Code": otpCode}})
+                        .then(() => {
+                            window.location.reload();
+                        })
+                        .catch(error => {
+                            handleError(error);
+                    });
+                }
+            }).then(() => {});
+        }, userInfo.tokenExpiration - new Date().getTime() - 60000);
     }
 
     const clearUserInfo = () => {

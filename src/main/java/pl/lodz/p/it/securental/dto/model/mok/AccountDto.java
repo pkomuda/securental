@@ -5,7 +5,6 @@ import lombok.Data;
 import pl.lodz.p.it.securental.utils.ApplicationProperties;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.List;

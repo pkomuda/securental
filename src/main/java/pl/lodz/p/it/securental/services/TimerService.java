@@ -10,8 +10,8 @@ import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.entities.log.Log;
 import pl.lodz.p.it.securental.entities.mor.Reservation;
 import pl.lodz.p.it.securental.entities.mor.Status;
-import pl.lodz.p.it.securental.repositories.mok.BlacklistedJwtRepository;
 import pl.lodz.p.it.securental.repositories.log.LogRepository;
+import pl.lodz.p.it.securental.repositories.mok.BlacklistedJwtRepository;
 import pl.lodz.p.it.securental.repositories.mor.ReservationRepository;
 
 import java.time.LocalDateTime;
@@ -54,7 +54,7 @@ public class TimerService {
     @Scheduled(fixedDelayString = "#{60000 * ${reservation.schedule}}")
     public void cancelStartedReservations() {
         long start = System.currentTimeMillis();
-        List<Reservation> reservations = reservationRepository.findAllByStartDateAfterAndStatusIn(LocalDateTime.now(), Collections.singletonList(Status.NEW));
+        List<Reservation> reservations = reservationRepository.findAllByStartDateBeforeAndStatusIn(LocalDateTime.now(), Collections.singletonList(Status.NEW));
         for (Reservation reservation : reservations) {
             long timeSinceStart = ChronoUnit.MINUTES.between(reservation.getStartDate(), LocalDateTime.now());
             long reservationTime = ChronoUnit.MINUTES.between(reservation.getStartDate(), reservation.getEndDate());

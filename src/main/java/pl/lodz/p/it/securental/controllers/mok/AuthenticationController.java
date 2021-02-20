@@ -13,5 +13,6 @@ public interface AuthenticationController {
     List<Integer> initializeLogin(String username) throws ApplicationBaseException;
     AuthenticationResponse login(AuthenticationRequest authRequest, HttpServletRequest request, HttpServletResponse response) throws ApplicationBaseException;
     AuthenticationResponse currentUser(HttpServletRequest request) throws ApplicationBaseException;
+    void refreshSession(HttpServletResponse response);
     void logout(HttpServletRequest request, HttpServletResponse response) throws ApplicationBaseException;
 }

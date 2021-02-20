@@ -22,8 +22,8 @@ public class ReservationMapper {
 
     public static Reservation toReservation(ReservationDto reservationDto) {
         return Reservation.builder()
-                .startDate(LocalDateTime.parse(reservationDto.getStartDate()))
-                .endDate(LocalDateTime.parse(reservationDto.getEndDate()))
+                .startDate(parseDate(reservationDto.getStartDate()))
+                .endDate(parseDate(reservationDto.getEndDate()))
                 .price(StringUtils.stringToBigDecimal(reservationDto.getPrice()))
                 .build();
     }
@@ -71,5 +71,14 @@ public class ReservationMapper {
 
     public static Page<ReservationDto> toReservationDtos(Page<Reservation> reservations) {
         return reservations.map(ReservationMapper::toReservationDtoWithoutSignature);
+    }
+
+    private static LocalDateTime parseDate(String date) {
+        LocalDateTime localDateTime = LocalDateTime.parse(date);
+        if (localDateTime.getHour() == 0) {
+            return localDateTime.plusDays(1);
+        } else {
+            return localDateTime;
+        }
     }
 }

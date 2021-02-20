@@ -112,6 +112,8 @@
   "reset.mail.sent": "Pomyślnie wysłano wiadomość email",
   "login.otp.lost.header": "Skontaktuj się z administratorem pod adresem email: securentalapp@gmail.com",
   "reset.header": "Resetowanie hasła",
+  "session.header": "Twoja sesja wygaśnie za minutę",
+  "session.text": "Aby wydłużyć sesję wprowadź jednorazowy kod i kliknij OK",
 
   "register.header": "Rejestracja",
   "register.password.header": "To są ostatnie znaki twojego hasła",

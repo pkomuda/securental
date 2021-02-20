@@ -5,9 +5,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import pl.lodz.p.it.securental.aop.annotations.NeverTransaction;
+import pl.lodz.p.it.securental.aop.annotations.OtpAuthorizationRequired;
 import pl.lodz.p.it.securental.controllers.mok.AuthenticationController;
 import pl.lodz.p.it.securental.dto.model.mok.AuthenticationRequest;
 import pl.lodz.p.it.securental.dto.model.mok.AuthenticationResponse;
@@ -108,6 +110,23 @@ public class AuthenticationControllerImpl implements AuthenticationController {
             }
         } else {
             return new AuthenticationResponse().unauthenticated();
+        }
+    }
+
+    @Override
+    @OtpAuthorizationRequired
+    @PostMapping("/refresh")
+    @PreAuthorize("hasAuthority('refreshSession')")
+    public void refreshSession(HttpServletResponse response) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        String jwt = JwtUtils.generateToken(userDetails);
+        Cookie cookie = new Cookie("Authorization", jwt);
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(60 * ApplicationProperties.JWT_EXPIRATION_TIME);
+        response.addCookie(cookie);
+        if (ApplicationProperties.isProduction()) {
+            response.setHeader("Set-Cookie", response.getHeader("Set-Cookie") + "; SameSite=Strict; Secure");
         }
     }
 

@@ -6,7 +6,6 @@ import pl.lodz.p.it.securental.entities.mok.Client;
 import pl.lodz.p.it.securental.entities.mop.Car;
 
 import javax.persistence.*;
-import javax.validation.constraints.Future;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
