@@ -17,7 +17,6 @@ public @Data class AuthenticationResponse {
     private List<String> accessLevels;
     private String currentAccessLevel;
     private String preferredLanguage;
-    private String preferredColorTheme;
     private long tokenExpiration;
     private String lastSuccessfulAuthentication;
     private String lastFailedAuthentication;
@@ -28,7 +27,6 @@ public @Data class AuthenticationResponse {
         accessLevels = Collections.emptyList();
         currentAccessLevel = "";
         preferredLanguage = "";
-        preferredColorTheme = "light";
         tokenExpiration = 0;
         lastSuccessfulAuthentication = "";
         lastFailedAuthentication = "";

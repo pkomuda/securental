@@ -12,6 +12,7 @@
   "navigation.success": "Success",
   "navigation.more": "More",
   "navigation.select": "Select",
+  "navigation.accept": "Accept",
 
   "navbar.login": "Sign in",
   "navbar.register": "Register",
@@ -147,12 +148,13 @@
   "reservation.image.right": "Right size of the car",
   "reservation.image.back": "Back of the car",
   "reservation.image.left": "Left size of the car",
-  "reservation.images.received": "Images after reception",
+  "reservation.images.received": "Images upon reception",
   "reservation.images.finished": "Images after finish",
 
   "NEW": "New",
   "CANCELLED": "Cancelled",
-  "RECEIVED": "Received",
+  "RECEPTION_PENDING": "Pending for reception",
+  "RECEPTION_ACCEPTED": "Received",
   "FINISHED": "Finished",
 
   "reservation.add.success": "Reservation added successfully",

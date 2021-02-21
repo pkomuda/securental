@@ -29,7 +29,6 @@ public interface AccountController {
     void resendConfirmationEmail(String username) throws ApplicationBaseException;
     void resendQrCodeEmail(String username) throws ApplicationBaseException;
     void changePreferredLanguage(String username, String language) throws ApplicationBaseException;
-    void changePreferredColorTheme(String username, String theme) throws ApplicationBaseException;
     Page<LogDto> getAllLogs(int page, int size) throws ApplicationBaseException;
     Page<LogDto> filterLogs(String filter, int page, int size) throws ApplicationBaseException;
 }

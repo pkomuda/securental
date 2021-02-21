@@ -3,6 +3,7 @@ package pl.lodz.p.it.securental.services.mor;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.retry.annotation.Retryable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.lodz.p.it.securental.adapters.mok.AccessLevelAdapter;
@@ -28,9 +29,7 @@ import pl.lodz.p.it.securental.utils.PagingHelper;
 import pl.lodz.p.it.securental.utils.SignatureUtils;
 import pl.lodz.p.it.securental.utils.StringUtils;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -41,7 +40,6 @@ import java.util.stream.Collectors;
 public class ReservationService {
 
     private final ReservationAdapter reservationAdapter;
-//    private final StatusAdapter statusAdapter;
     private final AccessLevelAdapter accessLevelAdapter;
     private final CarAdapter carAdapter;
     private final ReservationMapper reservationMapper;
@@ -74,7 +72,6 @@ public class ReservationService {
         }
 
         reservation.setStatus(Status.NEW);
-//        reservation.setPrice(calculateReservationPrice(reservation));
         reservation.setNumber(StringUtils.randomIdentifier());
         car.getReservations().add(reservation);
 
@@ -123,7 +120,6 @@ public class ReservationService {
                         reservation.setStartDate(temp.getStartDate());
                         reservation.setEndDate(temp.getEndDate());
                         reservation.setPrice(StringUtils.stringToBigDecimal(reservationDto.getPrice()));
-//                        reservation.setPrice(calculateReservationPrice(reservation));
                     } else {
                         throw new ApplicationOptimisticLockException(car);
                     }
@@ -165,7 +161,7 @@ public class ReservationService {
         for (Map.Entry<String, MultipartFile> entry : images.entrySet()) {
             receivedImageUrls.add(amazonClient.uploadFile(entry.getKey(), entry.getValue()));
         }
-        reservation.setStatus(Status.RECEIVED);
+        reservation.setStatus(Status.RECEPTION_PENDING);
         reservation.setReceivedImageUrls(receivedImageUrls);
     }
 
@@ -183,7 +179,7 @@ public class ReservationService {
         if (!signatureUtils.verify(reservation.toSignString(), signature)) {
             throw new ApplicationOptimisticLockException(reservation);
         }
-        if (!reservation.getStatus().equals(Status.RECEIVED)) {
+        if (!reservation.getStatus().equals(Status.RECEPTION_ACCEPTED)) {
             throw new IncorrectStatusException();
         }
 
@@ -207,9 +203,12 @@ public class ReservationService {
             if (reservationOptional.isPresent()) {
                 Reservation reservation = reservationOptional.get();
                 if (signatureUtils.verify(reservation.toSignString(), reservationDto.getSignature())) {
-                    //todo
-//                    validateStatuses(reservation.getStatus().name(), reservationDto.getStatus());
-                    reservation.setStatus(Status.valueOf(reservationDto.getStatus()));
+                    String username = SecurityContextHolder.getContext().getAuthentication().getName();
+                    if (!reservation.getClient().getAccount().getOtpCredentials().getUsername().equals(username)) {
+                        reservation.setStatus(Status.valueOf(reservationDto.getStatus()));
+                    } else {
+                        throw new EmployeeOwnReservationException();
+                    }
                 } else {
                     throw new ApplicationOptimisticLockException(reservation);
                 }
@@ -313,11 +312,5 @@ public class ReservationService {
         } else if (!reservation.getStartDate().isBefore(reservation.getEndDate())) {
             throw new ReservationStartNotBeforeEndException();
         }
-    }
-
-    private BigDecimal calculateReservationPrice(Reservation reservation) {
-        long minutes = ChronoUnit.MINUTES.between(reservation.getStartDate(), reservation.getEndDate());
-        long hours = (long) Math.ceil(minutes/60.0);
-        return BigDecimal.valueOf(hours).multiply(reservation.getCar().getPrice());
     }
 }

@@ -91,7 +91,7 @@ export const EditOwnReservation = props => {
                 });
             }
             setUnavailableDates(temp);
-        }
+        } // eslint-disable-next-line
     }, [loaded1, loaded2]);
 
     const validateDates = object => {

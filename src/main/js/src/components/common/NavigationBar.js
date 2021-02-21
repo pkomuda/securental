@@ -25,8 +25,7 @@ export const NavigationBar = () => {
 
     if (isAuthenticated(userInfo)) {
         setTimeout(() => {
-            clearUserInfo();
-            history.push("/login/sessionExpired");
+            window.location.replace("/login/sessionExpired");
         }, userInfo.tokenExpiration - new Date().getTime());
         setTimeout(() => {
             Swal.fire({

@@ -140,7 +140,6 @@ public class AccountService {
         String lastPasswordCharacters = generateLastPasswordCharacters();
         Account account = AccountMapper.toAccount(accountDto);
         account.setPreferredLanguage(language);
-        account.setPreferredColorTheme("light");
         account.setConfirmed(true);
         account.setLastAuthenticationIpAddress("");
         account.setLoginInitializationCounter(0);
@@ -168,7 +167,6 @@ public class AccountService {
         String lastPasswordCharacters = generateLastPasswordCharacters();
         Account account = AccountMapper.toAccount(accountDto);
         account.setPreferredLanguage(language);
-        account.setPreferredColorTheme("light");
         account.setActive(true);
         account.setConfirmed(false);
         account.setLastAuthenticationIpAddress("");
@@ -402,16 +400,6 @@ public class AccountService {
         if (accountOptional.isPresent()) {
             Account account = accountOptional.get();
             account.setPreferredLanguage(language);
-        } else {
-            throw new AccountNotFoundException();
-        }
-    }
-
-    public void changePreferredColorTheme(String username, String theme) throws ApplicationBaseException {
-        Optional<Account> accountOptional = accountAdapter.getAccount(username);
-        if (accountOptional.isPresent()) {
-            Account account = accountOptional.get();
-            account.setPreferredColorTheme(theme);
         } else {
             throw new AccountNotFoundException();
         }

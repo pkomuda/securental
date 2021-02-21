@@ -185,14 +185,6 @@ public class AccountControllerImpl implements AccountController {
     }
 
     @Override
-    @PutMapping("/theme/{username}/{theme}")
-    @PreAuthorize("hasAuthority('changePreferredColorTheme')")
-    public void changePreferredColorTheme(@PathVariable String username,
-                                          @PathVariable String theme) throws ApplicationBaseException {
-        accountService.changePreferredColorTheme(username, theme);
-    }
-
-    @Override
     @GetMapping("/logs/{page}/{size}")
     @PreAuthorize("hasAuthority('getAllLogs')")
     public Page<LogDto> getAllLogs(@PathVariable int page,

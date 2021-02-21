@@ -16,7 +16,7 @@ public class ApplicationProperties {
     public static final String ACCESS_LEVEL_CLIENT = "CLIENT";
     public static final List<String> ACCESS_LEVEL_ORDER = List.of(ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_EMPLOYEE, ACCESS_LEVEL_CLIENT);
 
-    public static final List<Status> ACTIVE_STATUSES = List.of(Status.NEW, Status.RECEIVED);
+    public static final List<Status> ACTIVE_STATUSES = List.of(Status.NEW, Status.RECEPTION_PENDING, Status.RECEPTION_ACCEPTED);
 
     public static final String IMAGE_FRONT = "front";
     public static final String IMAGE_RIGHT = "right";

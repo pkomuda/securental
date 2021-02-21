@@ -12,6 +12,7 @@
   "navigation.success": "Sukces",
   "navigation.more": "Więcej",
   "navigation.select": "Wybierz",
+  "navigation.accept": "Akceptuj",
 
   "navbar.login": "Zaloguj się",
   "navbar.register": "Zarejestruj",
@@ -147,12 +148,13 @@
   "reservation.image.right": "Prawa strona samochodu",
   "reservation.image.back": "Tył samochodu",
   "reservation.image.left": "Lewa strona samochodu",
-  "reservation.images.received": "Zdjęcia po odebraniu",
+  "reservation.images.received": "Zdjęcia przy odbiorze",
   "reservation.images.finished": "Zdjęcia po zakończeniu",
 
   "NEW": "Nowy",
   "CANCELLED": "Anulowany",
-  "RECEIVED": "Odebrany",
+  "RECEPTION_PENDING": "Oczekujący na odbiór",
+  "RECEPTION_ACCEPTED": "Odebrany",
   "FINISHED": "Zakończony",
 
   "reservation.add.success": "Rezerwacja dodana pomyślnie",

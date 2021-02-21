@@ -2,14 +2,14 @@ import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
-import { Breadcrumb, Button, ButtonToolbar, Col, Container, Dropdown, DropdownButton, Form, FormControl, FormGroup, FormLabel, Row } from "react-bootstrap";
+import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormControl, FormGroup, FormLabel, Row } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { handleError, handleSuccess } from "../../utils/Alerts";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
-import { CURRENCY, RESERVATION_STATUS_CANCELLED, RESERVATION_STATUS_FINISHED, RESERVATION_STATUS_NEW, RESERVATION_STATUS_RECEIVED } from "../../utils/Constants";
+import { CURRENCY, IMAGE_BACK, IMAGE_FRONT, IMAGE_LEFT, IMAGE_RIGHT, RESERVATION_STATUS_CANCELLED, RESERVATION_STATUS_NEW, RESERVATION_STATUS_RECEPTION_ACCEPTED, RESERVATION_STATUS_RECEPTION_PENDING } from "../../utils/Constants";
 import { formatDate } from "../../utils/DateTime";
 import { FlatFormGroup } from "../common/FlatFormGroup";
 import { Spinner } from "../common/Spinner";
@@ -18,7 +18,7 @@ export const ReservationDetails = props => {
 
     const {t} = useTranslation();
     const popup = withReactContent(Swal);
-    const [userInfo, setUserInfo] = useContext(AuthenticationContext);
+    const [userInfo] = useContext(AuthenticationContext);
     const [reservation, setReservation] = useState({
         number: "",
         startDate: "",
@@ -73,35 +73,51 @@ export const ReservationDetails = props => {
         }
     };
 
+    const renderAcceptButton = () => {
+        if (reservation.status === RESERVATION_STATUS_RECEPTION_PENDING && reservation.clientDto.username !== userInfo.username) {
+            return (
+                <Button id="accept"
+                        onClick={() => handleChangeStatus(RESERVATION_STATUS_RECEPTION_ACCEPTED)}>{t("navigation.accept")}</Button>
+            );
+        }
+    };
+
     const renderActionButton = () => {
         const now = new Date().getTime();
         const end = new Date(reservation.endDate).getTime();
-        if (reservation.status === RESERVATION_STATUS_RECEIVED && end <= now && reservation.clientDto.username !== userInfo.username) {
+        if (reservation.status === RESERVATION_STATUS_RECEPTION_ACCEPTED && end <= now && reservation.clientDto.username !== userInfo.username) {
             return <Button id="finish"
                            onClick={() => props.history.push(`/finishReservation/${reservation.number}`)}>{t("reservation.finish")}</Button>;
         }
     };
 
-    const handleReceivedImages = () => {
-        popup.fire({
-            html:
-                <div>
-                    <img id="frontImage" src={reservation.receivedImageUrls[0]} alt="frontAlt" style={{margin: "0 auto", maxWidth: "400px", maxHeight: "200px"}}/>
-                    <img id="backImage" src={reservation.receivedImageUrls[1]} alt="backAlt" style={{margin: "0 auto", maxWidth: "400px", maxHeight: "200px"}}/>
-                    <img id="rightImage" src={reservation.receivedImageUrls[2]} alt="rightAlt" style={{margin: "0 auto", maxWidth: "400px", maxHeight: "200px"}}/>
-                    <img id="leftImage" src={reservation.receivedImageUrls[3]} alt="leftAlt" style={{margin: "0 auto", maxWidth: "400px", maxHeight: "200px"}}/>
-                </div>
-        }).then(() => {});
+    const findImage = (images, side) => {
+        return images.filter(image => image.includes(side));
     };
 
-    const handleFinishedImages = () => {
+    const handleImages = images => {
         popup.fire({
             html:
                 <div>
-                    <img id="frontImage" src={reservation.finishedImageUrls[0]} alt="frontAlt" style={{margin: "0 auto", maxWidth: "400px", maxHeight: "200px"}}/>
-                    <img id="backImage" src={reservation.finishedImageUrls[1]} alt="backAlt" style={{margin: "0 auto", maxWidth: "400px", maxHeight: "200px"}}/>
-                    <img id="rightImage" src={reservation.finishedImageUrls[2]} alt="rightAlt" style={{margin: "0 auto", maxWidth: "400px", maxHeight: "200px"}}/>
-                    <img id="leftImage" src={reservation.finishedImageUrls[3]} alt="leftAlt" style={{margin: "0 auto", maxWidth: "400px", maxHeight: "200px"}}/>
+                    <FormGroup>
+                        <FormLabel className="font-weight-bold">{t("reservation.image.front")}</FormLabel>
+                        <img id="frontImage" src={findImage(images, IMAGE_FRONT)} alt="frontAlt" style={{margin: "0 auto", maxWidth: "400px", maxHeight: "200px"}}/>
+                        <hr/>
+                    </FormGroup>
+                    <FormGroup>
+                        <FormLabel className="font-weight-bold">{t("reservation.image.back")}</FormLabel>
+                        <img id="backImage" src={findImage(images, IMAGE_BACK)} alt="backAlt" style={{margin: "0 auto", maxWidth: "400px", maxHeight: "200px"}}/>
+                        <hr/>
+                    </FormGroup>
+                    <FormGroup>
+                        <FormLabel className="font-weight-bold">{t("reservation.image.right")}</FormLabel>
+                        <img id="rightImage" src={findImage(images, IMAGE_RIGHT)} alt="rightAlt" style={{margin: "0 auto", maxWidth: "400px", maxHeight: "200px"}}/>
+                        <hr/>
+                    </FormGroup>
+                    <FormGroup>
+                        <FormLabel className="font-weight-bold">{t("reservation.image.left")}</FormLabel>
+                        <img id="leftImage" src={findImage(images, IMAGE_LEFT)} alt="leftAlt" style={{margin: "0 auto", maxWidth: "400px", maxHeight: "200px"}}/>
+                    </FormGroup>
                 </div>
         }).then(() => {});
     };
@@ -111,13 +127,13 @@ export const ReservationDetails = props => {
         if (reservation.receivedImageUrls.length !== 0) {
             buttons.push(
                 <Button id="received"
-                        onClick={handleReceivedImages}>{t("reservation.images.received")}</Button>
+                        onClick={() => handleImages(reservation.receivedImageUrls)}>{t("reservation.images.received")}</Button>
             );
         }
         if (reservation.finishedImageUrls.length !== 0) {
             buttons.push(
                 <Button id="received"
-                        onClick={handleFinishedImages}>{t("reservation.images.finished")}</Button>
+                        onClick={() => handleImages(reservation.finishedImageUrls)}>{t("reservation.images.finished")}</Button>
             );
         }
         return buttons;
@@ -196,6 +212,7 @@ export const ReservationDetails = props => {
                                 <Button id="back"
                                         onClick={() => props.history.push("/listReservations")}>{t("navigation.back")}</Button>
                                 {renderCancelButton()}
+                                {renderAcceptButton()}
                                 {renderActionButton()}
                                 {renderImagesButtons()}
                             </ButtonToolbar>
