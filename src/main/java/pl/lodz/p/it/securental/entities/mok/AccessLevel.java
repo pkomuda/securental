@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
+@Table(name = "access_level")
 @EqualsAndHashCode(callSuper = true)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NoArgsConstructor
@@ -20,11 +21,11 @@ public @Data class AccessLevel extends BaseAuditEntity {
 
     @NotNull
     @Size(min = 1, max = 32)
-    @Column(nullable = false, length = 32, updatable = false, insertable = false) //TODO insertable?
+    @Column(name = "name", nullable = false, length = 32, updatable = false, insertable = false)
     private String name;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "active", nullable = false)
     private Boolean active;
 
     @ManyToOne

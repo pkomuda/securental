@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "reservation")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,17 +20,22 @@ import java.util.List;
 public @Data class Reservation extends BaseAuditEntity {
 
     @EqualsAndHashCode.Include
+    @Column(name = "number")
     private String number;
 
 //    @Future
+    @Column(name = "start_date")
     private LocalDateTime startDate;
 
 //    @Future
+    @Column(name = "end_date")
     private LocalDateTime endDate;
 
+    @Column(name = "price")
     private BigDecimal price;
 
     @Enumerated(EnumType.ORDINAL)
+    @Column(name = "status")
     private Status status;
 
     @ManyToOne
@@ -38,10 +44,12 @@ public @Data class Reservation extends BaseAuditEntity {
     @ManyToOne
     private Car car;
 
-    @ElementCollection/*(fetch = FetchType.EAGER)*/
+    @ElementCollection
+    @CollectionTable(name = "reservation_received_image_urls")
     private List<String> receivedImageUrls = new ArrayList<>();
 
     @ElementCollection
+    @CollectionTable(name = "reservation_finished_image_urls")
     private List<String> finishedImageUrls = new ArrayList<>();
 
     public String toSignString() {

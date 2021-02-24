@@ -6,10 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import pl.lodz.p.it.securental.entities.BaseAuditEntity;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,5 +22,6 @@ public @Data class AuthenticationToken extends BaseAuditEntity {
     @CollectionTable(name = "authentication_token_combination")
     private List<Integer> combination = new ArrayList<>();
 
+    @Column(name = "expiration")
     private LocalDateTime expiration;
 }

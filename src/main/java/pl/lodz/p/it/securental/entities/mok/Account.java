@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
+@Table(name = "account")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,39 +23,46 @@ public @Data class Account extends BaseAuditEntity {
     @Pattern(regexp = ApplicationProperties.EMAIL_REGEX)
     @NotNull
     @Size(min = 1, max = 32)
-    @Column(nullable = false, length = 32, unique = true, updatable = false)
+    @Column(name = "email", nullable = false, length = 32, unique = true, updatable = false)
     private String email;
 
     @NotNull
     @Size(min = 1, max = 32)
-    @Column(nullable = false, length = 32)
+    @Column(name = "first_name", nullable = false, length = 32)
     private String firstName;
 
     @NotNull
     @Size(min = 1, max = 32)
-    @Column(nullable = false, length = 32)
+    @Column(name = "last_name", nullable = false, length = 32)
     private String lastName;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "active", nullable = false)
     private Boolean active;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "confirmed", nullable = false)
     private Boolean confirmed;
 
+    @Column(name = "login_initialization_counter")
     private Integer loginInitializationCounter;
 
+    @Column(name = "failed_authentication_counter")
     private Integer failedAuthenticationCounter;
 
+    @Column(name = "confirmation_token")
     private String confirmationToken;
 
+    @Column(name = "last_successful_authentication")
     private LocalDateTime lastSuccessfulAuthentication;
 
+    @Column(name = "last_failed_authentication")
     private LocalDateTime lastFailedAuthentication;
 
+    @Column(name = "last_authentication_ip_address")
     private String lastAuthenticationIpAddress;
 
+    @Column(name = "preferred_language", length = 32)
     private String preferredLanguage;
 
     @ToString.Exclude

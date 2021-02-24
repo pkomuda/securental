@@ -28,7 +28,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     Page<Reservation> findAllByClientAccountOtpCredentialsUsernameAndNumberContainsIgnoreCaseOrCarMakeContainsIgnoreCaseOrCarModelContainsIgnoreCaseAndStatusIn(String username, String number, String make, String model, List<Status> statuses, Pageable pageable);
 
-    List<Reservation> findAllByStartDateAfterAndStatusIn(LocalDateTime startDate, List<Status> statuses);
+    List<Reservation> findAllByCarNumberAndStatusIn(String number, List<Status> statuses);
 
     List<Reservation> findAllByStartDateBeforeAndStatusIn(LocalDateTime startDate, List<Status> statuses);
 }

@@ -43,7 +43,7 @@ public class OtpCredentialsAdapter implements ICredentialRepository {
     @SneakyThrows
     public void saveUserCredentials(String username, String secret, int validationCode, List<Integer> scratchCodes) {
         try {
-            otpCredentialsRepository.saveAndFlush(new OtpCredentials(username, secret, validationCode, scratchCodes));
+            otpCredentialsRepository.saveAndFlush(new OtpCredentials(username, secret, validationCode));
         } catch (PersistenceException | DataAccessException e) {
             throw new DatabaseConnectionException(e);
         }

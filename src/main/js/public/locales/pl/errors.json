@@ -5,8 +5,10 @@
   "error.car.optimistic.lock" : "Ten samochód został przez kogoś zedytowany w międzyczasie. Odśwież stronę i spróbuj ponownie.",
   "error.reservation.optimistic.lock" : "Ta rezerwacja została przez kogoś zedytowana w międzyczasie. Odśwież stronę i spróbuj ponownie.",
   "error.date.overlap": "Wybrana data koliduje z inną rezerwacją",
+  "error.account.notfound": "Nie znaleziono konta",
   "error.account.not.confirmed": "Konto musi być potwierdzone, aby zresetować hasło",
   "error.account.not.active": "Konto musi być aktywne, aby zresetować hasło",
   "error.credentials.incorrect": "Nie udało się uwierzytelnić. Spróbuj ponownie lub skontaktuj się z administratorem",
-  "error.employee.own.reservation": "Nie można zmienić statusu własnej rezerwacji jako pracownik"
+  "error.employee.own.reservation": "Nie można zmienić statusu własnej rezerwacji jako pracownik",
+  "error.otp.code.invalid": "Wprowadzony jednorazowy kod jest nieprawidłowy"
 }

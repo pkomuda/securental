@@ -51,7 +51,7 @@ public class ReservationService {
         Reservation reservation = ReservationMapper.toReservation(reservationDto);
 
         validateDates(reservation);
-        validateDateOverlap(reservation, reservationAdapter.getAllFutureActiveReservations());
+        validateDateOverlap(reservation, reservationAdapter.getAllActiveReservations(reservationDto.getCarDto().getNumber()));
 
         if (username.equals(reservationDto.getClientDto().getUsername())) {
             reservation.setClient(

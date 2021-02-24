@@ -108,10 +108,9 @@ public class ReservationAdapter {
         }
     }
 
-    public List<Reservation> getAllFutureActiveReservations() throws ApplicationBaseException {
+    public List<Reservation> getAllActiveReservations(String carNumber) throws ApplicationBaseException {
         try {
-            return reservationRepository.findAllByStartDateAfterAndStatusIn(LocalDateTime.now(),
-                    ApplicationProperties.ACTIVE_STATUSES);
+            return reservationRepository.findAllByCarNumberAndStatusIn(carNumber, ApplicationProperties.ACTIVE_STATUSES);
         } catch (PersistenceException | DataAccessException e) {
             throw new DatabaseConnectionException(e);
         }

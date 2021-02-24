@@ -171,6 +171,7 @@ export const EditOwnAccount = props => {
                                 <EditFormGroup id="firstName"
                                                label="account.firstName"
                                                required/>
+                                <hr/>
                                 <EditFormGroup id="lastName"
                                                label="account.lastName"
                                                required/>
