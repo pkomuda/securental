@@ -6,10 +6,11 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import pl.lodz.p.it.securental.adapters.mok.AccessLevelAdapter;
-import pl.lodz.p.it.securental.adapters.mop.CarAdapter;
+import pl.lodz.p.it.securental.adapters.mor.AccessLevelAdapterMor;
+import pl.lodz.p.it.securental.adapters.mor.CarAdapterMor;
 import pl.lodz.p.it.securental.adapters.mor.ReservationAdapter;
 import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
+import pl.lodz.p.it.securental.configuration.persistence.MorConfiguration;
 import pl.lodz.p.it.securental.dto.mappers.mor.ReservationMapper;
 import pl.lodz.p.it.securental.dto.model.mor.ReservationDto;
 import pl.lodz.p.it.securental.entities.mok.Client;
@@ -35,13 +36,13 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-@RequiresNewTransaction
+@RequiresNewTransaction(transactionManager = MorConfiguration.MOR_TRANSACTION_MANAGER)
 @Retryable(DatabaseConnectionException.class)
 public class ReservationService {
 
     private final ReservationAdapter reservationAdapter;
-    private final AccessLevelAdapter accessLevelAdapter;
-    private final CarAdapter carAdapter;
+    private final AccessLevelAdapterMor accessLevelAdapter;
+    private final CarAdapterMor carAdapter;
     private final ReservationMapper reservationMapper;
     private final SignatureUtils signatureUtils;
     private final AmazonClient amazonClient;

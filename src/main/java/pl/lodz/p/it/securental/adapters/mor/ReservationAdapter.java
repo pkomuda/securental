@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.aop.annotations.MandatoryTransaction;
+import pl.lodz.p.it.securental.configuration.persistence.MorConfiguration;
 import pl.lodz.p.it.securental.entities.mor.Reservation;
 import pl.lodz.p.it.securental.entities.mor.Status;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
@@ -16,13 +17,12 @@ import pl.lodz.p.it.securental.repositories.mor.ReservationRepository;
 import pl.lodz.p.it.securental.utils.ApplicationProperties;
 
 import javax.persistence.PersistenceException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-@MandatoryTransaction
+@MandatoryTransaction(transactionManager = MorConfiguration.MOR_TRANSACTION_MANAGER)
 public class ReservationAdapter {
 
     private final ReservationRepository reservationRepository;

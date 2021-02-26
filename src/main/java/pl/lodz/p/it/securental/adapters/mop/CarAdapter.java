@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.aop.annotations.MandatoryTransaction;
+import pl.lodz.p.it.securental.configuration.persistence.MopConfiguration;
 import pl.lodz.p.it.securental.entities.mop.Car;
 import pl.lodz.p.it.securental.entities.mop.Category;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
@@ -20,7 +21,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-@MandatoryTransaction
+@MandatoryTransaction(transactionManager = MopConfiguration.MOP_TRANSACTION_MANAGER)
 public class CarAdapter {
 
     private final CarRepository carRepository;

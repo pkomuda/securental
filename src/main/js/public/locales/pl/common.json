@@ -133,6 +133,7 @@
   "reservation.date": "Data",
   "reservation.startDate": "Data rozpoczęcia",
   "reservation.endDate": "Data zakończenia",
+  "reservation.cancelDate": "Data automatycznego odwołania (w przypadku nieodebrania)",
   "reservation.price": "Cena",
   "reservation.status": "Status",
   "reservation.time": "Czas",

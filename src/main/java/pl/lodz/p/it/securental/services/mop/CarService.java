@@ -6,6 +6,7 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.adapters.mop.CarAdapter;
 import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
+import pl.lodz.p.it.securental.configuration.persistence.MopConfiguration;
 import pl.lodz.p.it.securental.dto.mappers.mop.CarMapper;
 import pl.lodz.p.it.securental.dto.model.mop.CarDto;
 import pl.lodz.p.it.securental.entities.mop.Car;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-@RequiresNewTransaction
+@RequiresNewTransaction(transactionManager = MopConfiguration.MOP_TRANSACTION_MANAGER)
 @Retryable(DatabaseConnectionException.class)
 public class CarService {
 

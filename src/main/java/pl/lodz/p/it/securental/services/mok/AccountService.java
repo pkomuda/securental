@@ -15,10 +15,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.lodz.p.it.securental.adapters.LogAdapter;
+import pl.lodz.p.it.securental.adapters.log.LogAdapter;
 import pl.lodz.p.it.securental.adapters.mok.AccountAdapter;
 import pl.lodz.p.it.securental.adapters.mok.OtpCredentialsAdapter;
 import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
+import pl.lodz.p.it.securental.configuration.persistence.LogConfiguration;
+import pl.lodz.p.it.securental.configuration.persistence.MokConfiguration;
 import pl.lodz.p.it.securental.dto.mappers.mok.AccountMapper;
 import pl.lodz.p.it.securental.dto.model.log.LogDto;
 import pl.lodz.p.it.securental.dto.model.mok.AccountDto;
@@ -40,7 +42,7 @@ import java.util.stream.IntStream;
 
 @Service
 @AllArgsConstructor
-@RequiresNewTransaction
+@RequiresNewTransaction(transactionManager = MokConfiguration.MOK_TRANSACTION_MANAGER)
 @Retryable(DatabaseConnectionException.class)
 public class AccountService {
 
@@ -67,37 +69,6 @@ public class AccountService {
                 MaskedPassword maskedPassword = new MaskedPassword();
                 maskedPassword.setCombination(passwordEncoder.encode(StringUtils.integerArrayToString(combination)));
                 maskedPassword.setHash(passwordEncoder.encode(StringUtils.selectCharacters(fullPassword, combination)));
-                maskedPasswords.add(maskedPassword);
-            }
-        }
-        return maskedPasswords;
-    }
-
-    private List<MaskedPassword> generateNewMaskedPasswords(String fullPassword, List<MaskedPassword> previous) throws ApplicationBaseException {
-        List<MaskedPassword> maskedPasswords = new ArrayList<>();
-        int[] maskedPasswordLengthRange = IntStream.rangeClosed(
-                ApplicationProperties.MASKED_PASSWORD_MIN_LENGTH,
-                ApplicationProperties.MASKED_PASSWORD_MAX_LENGTH)
-                .toArray();
-
-        for (int maskedPasswordLength : maskedPasswordLengthRange) {
-            Iterator<int[]> iterator = CombinatoricsUtils.combinationsIterator(ApplicationProperties.FULL_PASSWORD_LENGTH, maskedPasswordLength);
-            while (iterator.hasNext()) {
-                int[] combination = iterator.next();
-                MaskedPassword maskedPassword = new MaskedPassword();
-                String combinationString = StringUtils.integerArrayToString(combination);
-                String selectedCharacters = StringUtils.selectCharacters(fullPassword, combination);
-                for (MaskedPassword previousMaskedPassword : previous) {
-                    if (passwordEncoder.matches(combinationString, previousMaskedPassword.getCombination())) {
-                        if (passwordEncoder.matches(selectedCharacters, previousMaskedPassword.getHash())) {
-                            throw new PasswordAlreadyUsedException();
-                        } else {
-                            break;
-                        }
-                    }
-                }
-                maskedPassword.setCombination(passwordEncoder.encode(combinationString));
-                maskedPassword.setHash(passwordEncoder.encode(selectedCharacters));
                 maskedPasswords.add(maskedPassword);
             }
         }
@@ -248,7 +219,7 @@ public class AccountService {
             if (accountOptional.isPresent()) {
                 Account account = accountOptional.get();
                 String lastPasswordCharacters = generateLastPasswordCharacters();
-                account.setCredentials(new Credentials(generateNewMaskedPasswords(changePasswordRequest.getPassword() + lastPasswordCharacters, account.getCredentials().getMaskedPasswords())));
+                account.setCredentials(new Credentials(generateMaskedPasswords(changePasswordRequest.getPassword() + lastPasswordCharacters)));
                 return RegistrationResponse.builder()
                         .lastPasswordCharacters(lastPasswordCharacters)
                         .build();
@@ -269,7 +240,7 @@ public class AccountService {
                 ResetPasswordToken resetPasswordToken = account.getResetPasswordToken();
                 if (!resetPasswordToken.getUsed() && resetPasswordToken.getExpiration().isAfter(LocalDateTime.now())) {
                     String lastPasswordCharacters = generateLastPasswordCharacters();
-                    account.setCredentials(new Credentials(generateNewMaskedPasswords(changePasswordRequest.getPassword() + lastPasswordCharacters, account.getCredentials().getMaskedPasswords())));
+                    account.setCredentials(new Credentials(generateMaskedPasswords(changePasswordRequest.getPassword() + lastPasswordCharacters)));
                     resetPasswordToken.setUsed(true);
                     return RegistrationResponse.builder()
                             .lastPasswordCharacters(lastPasswordCharacters)
@@ -405,12 +376,14 @@ public class AccountService {
         }
     }
 
+    @RequiresNewTransaction(transactionManager = LogConfiguration.LOG_TRANSACTION_MANAGER)
     public Page<LogDto> getAllLogs(PagingHelper pagingHelper) throws ApplicationBaseException {
         return logAdapter
                 .getAllLogs(pagingHelper.withoutSorting())
                 .map(log -> LogDto.of(log.getMessage()));
     }
 
+    @RequiresNewTransaction(transactionManager = LogConfiguration.LOG_TRANSACTION_MANAGER)
     public Page<LogDto> filterLogs(String filter, PagingHelper pagingHelper) throws ApplicationBaseException {
         return logAdapter
                 .filterLogs(filter, pagingHelper.withoutSorting())

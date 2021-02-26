@@ -29,8 +29,7 @@ public class LoggingAspect {
 
     @Around("execution(public * pl.lodz.p.it.securental.controllers.mo*..*.*(..)) " +
             "|| execution(public * pl.lodz.p.it.securental.services.mo*..*.*(..)) " +
-            "|| execution(public * pl.lodz.p.it.securental.adapters.mo*..*.*(..)) " +
-            "|| execution(public * pl.lodz.p.it.securental.repositories.mo*..*.*(..))")
+            "|| execution(public * pl.lodz.p.it.securental.adapters.mo*..*.*(..))")
     public Object logInvocation(ProceedingJoinPoint jp) throws Throwable {
         LocalDateTime interceptionTime = LocalDateTime.now();
         StringBuilder message = new StringBuilder("Intercepted business method invocation: ");

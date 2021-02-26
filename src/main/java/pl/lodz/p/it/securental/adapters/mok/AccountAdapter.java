@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.aop.annotations.MandatoryTransaction;
+import pl.lodz.p.it.securental.configuration.persistence.MokConfiguration;
 import pl.lodz.p.it.securental.entities.mok.Account;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.db.DatabaseConnectionException;
@@ -18,7 +19,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-@MandatoryTransaction
+@MandatoryTransaction(transactionManager = MokConfiguration.MOK_TRANSACTION_MANAGER)
 public class AccountAdapter {
 
     private final AccountRepository accountRepository;

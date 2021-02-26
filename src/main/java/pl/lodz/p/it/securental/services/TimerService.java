@@ -7,6 +7,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
+import pl.lodz.p.it.securental.configuration.persistence.LogConfiguration;
+import pl.lodz.p.it.securental.configuration.persistence.MokConfiguration;
+import pl.lodz.p.it.securental.configuration.persistence.MorConfiguration;
 import pl.lodz.p.it.securental.entities.log.Log;
 import pl.lodz.p.it.securental.entities.mor.Reservation;
 import pl.lodz.p.it.securental.entities.mor.Status;
@@ -24,7 +27,6 @@ import java.util.stream.Collectors;
 @Service
 @EnableScheduling
 @AllArgsConstructor
-@RequiresNewTransaction
 public class TimerService {
 
     private final Cache<String, String> logCache;
@@ -33,6 +35,7 @@ public class TimerService {
     private final ReservationRepository reservationRepository;
 
     @Scheduled(fixedDelayString = "#{60000 * ${log.schedule}}")
+    @RequiresNewTransaction(transactionManager = LogConfiguration.LOG_TRANSACTION_MANAGER)
     public void persistLogs() {
         long start = System.currentTimeMillis();
         logRepository.saveAll(
@@ -45,6 +48,7 @@ public class TimerService {
     }
 
     @Scheduled(fixedDelayString = "#{60000 * ${jwt.schedule}}")
+    @RequiresNewTransaction(transactionManager = MokConfiguration.MOK_TRANSACTION_MANAGER)
     public void clearExpiredBlacklistedJwts() {
         long start = System.currentTimeMillis();
         blacklistedJwtRepository.deleteAllByExpirationBefore(LocalDateTime.now());
@@ -52,6 +56,7 @@ public class TimerService {
     }
 
     @Scheduled(fixedDelayString = "#{60000 * ${reservation.schedule}}")
+    @RequiresNewTransaction(transactionManager = MorConfiguration.MOR_TRANSACTION_MANAGER)
     public void cancelStartedReservations() {
         long start = System.currentTimeMillis();
         List<Reservation> reservations = reservationRepository.findAllByStartDateBeforeAndStatusIn(LocalDateTime.now(), Collections.singletonList(Status.NEW));
@@ -64,6 +69,4 @@ public class TimerService {
         }
         log.info("Completed scheduled task TimerService::cancelStartedReservations | Execution time: " + (System.currentTimeMillis() - start)/1000.0 + "s");
     }
-
-
 }

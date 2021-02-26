@@ -3,9 +3,10 @@ package pl.lodz.p.it.securental.services.mok;
 import lombok.AllArgsConstructor;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
-import pl.lodz.p.it.securental.adapters.BlacklistedJwtAdapter;
 import pl.lodz.p.it.securental.adapters.mok.AccountAdapter;
+import pl.lodz.p.it.securental.adapters.mok.BlacklistedJwtAdapter;
 import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
+import pl.lodz.p.it.securental.configuration.persistence.MokConfiguration;
 import pl.lodz.p.it.securental.dto.model.mok.AuthenticationResponse;
 import pl.lodz.p.it.securental.entities.mok.AccessLevel;
 import pl.lodz.p.it.securental.entities.mok.Account;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-@RequiresNewTransaction
+@RequiresNewTransaction(transactionManager = MokConfiguration.MOK_TRANSACTION_MANAGER)
 @Retryable(DatabaseConnectionException.class)
 public class AuthenticationService {
 

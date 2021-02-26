@@ -21,12 +21,14 @@ import java.util.Objects;
 
 @Configuration
 @EnableJpaAuditing
-@EnableJpaRepositories(basePackages = "pl.lodz.p.it.securental.repositories",
+@EnableJpaRepositories(basePackages = "pl.lodz.p.it.securental.repositories.mok",
         entityManagerFactoryRef = "mokEntityManagerFactory",
         transactionManagerRef= "mokTransactionManager")
 @EnableRetry
 @EnableTransactionManagement
 public class MokConfiguration {
+
+    public static final String MOK_TRANSACTION_MANAGER = "mokTransactionManager";
 
     @Bean
     @Primary
@@ -37,20 +39,20 @@ public class MokConfiguration {
 
     @Primary
     @Bean(name = "mokEntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean userEntityManagerFactory(EntityManagerFactoryBuilder builder) {
+    public LocalContainerEntityManagerFactoryBean mokEntityManagerFactory(EntityManagerFactoryBuilder builder) {
         Map<String, String> properties = Map.of(
             "hibernate.hbm2ddl.auto", "update"
         );
         return builder
                 .dataSource(mokDataSource())
                 .properties(properties)
-                .packages("pl.lodz.p.it.securental.entities")
+                .packages("pl.lodz.p.it.securental.entities.mok")
                 .build();
     }
 
     @Primary
     @Bean(name = "mokTransactionManager")
-    public PlatformTransactionManager usersTransactionManager(@Qualifier("mokEntityManagerFactory") LocalContainerEntityManagerFactoryBean factory) {
+    public PlatformTransactionManager mokTransactionManager(@Qualifier("mokEntityManagerFactory") LocalContainerEntityManagerFactoryBean factory) {
         return new JpaTransactionManager(Objects.requireNonNull(factory.getObject()));
     }
 }

@@ -10,7 +10,7 @@ import withReactContent from "sweetalert2-react-content";
 import { handleError, handleSuccess } from "../../utils/Alerts";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
 import { CURRENCY, IMAGE_BACK, IMAGE_FRONT, IMAGE_LEFT, IMAGE_RIGHT, RESERVATION_STATUS_CANCELLED, RESERVATION_STATUS_NEW } from "../../utils/Constants";
-import { formatDate } from "../../utils/DateTime";
+import { formatDate, isoDate } from "../../utils/DateTime";
 import { FlatFormGroup } from "../common/FlatFormGroup";
 import { Spinner } from "../common/Spinner";
 
@@ -142,7 +142,22 @@ export const OwnReservationDetails = props => {
                         onClick={() => props.history.push(`/editOwnReservation/${reservation.number}`)}>{t("navigation.edit")}</Button>
             );
         }
-    }
+    };
+
+    const renderCancelTime = () => {
+        if (reservation.status === RESERVATION_STATUS_NEW) {
+            return (
+                <FormGroup>
+                    <FormLabel className="flat-form-label">{t("reservation.cancelDate")}</FormLabel>
+                    <FormControl id="endDate"
+                                 value={formatDate(isoDate(new Date(new Date(reservation.startDate).getTime() + (new Date(reservation.endDate).getTime() - new Date(reservation.startDate).getTime())/6)))}
+                                 disabled
+                                 plaintext/>
+                    <hr/>
+                </FormGroup>
+            );
+        }
+    };
 
     if (loaded) {
         return (
@@ -190,6 +205,7 @@ export const OwnReservationDetails = props => {
                                                  plaintext/>
                                     <hr/>
                                 </FormGroup>
+                                {renderCancelTime()}
                                 <FormGroup>
                                     <FormLabel className="flat-form-label">{t("reservation.status")}</FormLabel>
                                     <FormControl id="status"

@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import pl.lodz.p.it.securental.aop.annotations.MandatoryTransaction;
+import pl.lodz.p.it.securental.configuration.persistence.MopConfiguration;
 import pl.lodz.p.it.securental.entities.mop.Car;
 import pl.lodz.p.it.securental.entities.mop.Category;
 
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-@MandatoryTransaction
+@MandatoryTransaction(transactionManager = MopConfiguration.MOP_TRANSACTION_MANAGER)
 public interface CarRepository extends JpaRepository<Car, Long> {
 
     Optional<Car> findByNumber(String number);
