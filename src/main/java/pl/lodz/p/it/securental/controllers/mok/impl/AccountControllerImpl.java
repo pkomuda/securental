@@ -148,7 +148,7 @@ public class AccountControllerImpl implements AccountController {
     @PreAuthorize("hasAuthority('changeOwnPassword') and #username == authentication.principal.username")
     public RegistrationResponse changeOwnPassword(@PathVariable String username,
                                                   @RequestBody ChangePasswordRequest changePasswordRequest) throws ApplicationBaseException {
-        return accountService.changeOwnPassword(username, changePasswordRequest);
+        return accountService.changePassword(username, changePasswordRequest);
     }
 
     @Override

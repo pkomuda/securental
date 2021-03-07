@@ -21,10 +21,6 @@ public final class StringUtils {
         return ThreadLocalRandom.current().nextInt(min, max + 1);
     }
 
-    public static boolean containsIgnoreCase(String str, String searchStr) {
-        return str.toLowerCase().contains(searchStr.toLowerCase());
-    }
-
     public static String getTranslatedText(String key, String language) {
         Locale locale;
         if (language.equals("pl")) {

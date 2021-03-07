@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-@MandatoryTransaction(transactionManager = MorConfiguration.MOR_TRANSACTION_MANAGER)
+@MandatoryTransaction(MorConfiguration.MOR_TRANSACTION_MANAGER)
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
     Optional<Reservation> findByNumber(String number);

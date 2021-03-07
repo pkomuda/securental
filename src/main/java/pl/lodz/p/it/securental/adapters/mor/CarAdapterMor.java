@@ -15,12 +15,11 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-@MandatoryTransaction(transactionManager = MorConfiguration.MOR_TRANSACTION_MANAGER)
+@MandatoryTransaction(MorConfiguration.MOR_TRANSACTION_MANAGER)
 public class CarAdapterMor {
 
     private final CarRepositoryMor carRepository;
 
-    //@PreAuthorize("permitAll()")
     public Optional<Car> getCar(String number) throws ApplicationBaseException {
         try {
             return carRepository.findByNumber(number);

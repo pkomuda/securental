@@ -5,6 +5,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mapping.PropertyReferenceException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.aop.annotations.MandatoryTransaction;
 import pl.lodz.p.it.securental.configuration.persistence.MokConfiguration;
@@ -19,12 +20,12 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-@MandatoryTransaction(transactionManager = MokConfiguration.MOK_TRANSACTION_MANAGER)
+@MandatoryTransaction(MokConfiguration.MOK_TRANSACTION_MANAGER)
 public class AccountAdapter {
 
     private final AccountRepository accountRepository;
 
-    //@PreAuthorize("permitAll()")
+    @PreAuthorize("permitAll()")
     public void addAccount(Account account) throws ApplicationBaseException {
         try {
             accountRepository.saveAndFlush(account);
@@ -33,7 +34,7 @@ public class AccountAdapter {
         }
     }
 
-    //@PreAuthorize("permitAll()")
+    @PreAuthorize("permitAll()")
     public Optional<Account> getAccount(String username) throws ApplicationBaseException {
         try {
             return accountRepository.findByOtpCredentialsUsername(username);
@@ -42,7 +43,7 @@ public class AccountAdapter {
         }
     }
 
-    //@PreAuthorize("permitAll()")
+    @PreAuthorize("permitAll()")
     public Optional<Account> getAccountByConfirmationToken(String token) throws ApplicationBaseException {
         try {
             return accountRepository.findByConfirmationToken(token);
@@ -51,7 +52,7 @@ public class AccountAdapter {
         }
     }
 
-    //@PreAuthorize("permitAll()")
+    @PreAuthorize("permitAll()")
     public Optional<Account> getAccountByResetPasswordTokenHash(String hash) throws ApplicationBaseException {
         try {
             return accountRepository.findByResetPasswordTokenHash(hash);
@@ -60,7 +61,7 @@ public class AccountAdapter {
         }
     }
 
-    //@PreAuthorize("hasAnyAuthority('filterAccounts', 'filterSortedAccounts')")
+    @PreAuthorize("hasAnyAuthority('filterAccounts', 'filterSortedAccounts')")
     public Page<Account> filterAccounts(String filter, Pageable pageable) throws ApplicationBaseException {
         try {
             return accountRepository.findAllByOtpCredentialsUsernameContainsIgnoreCaseOrEmailContainsIgnoreCaseOrFirstNameContainsIgnoreCaseOrLastNameContainsIgnoreCase(filter,
@@ -75,7 +76,7 @@ public class AccountAdapter {
         }
     }
 
-    //@PreAuthorize("hasAnyAuthority('getAllAccounts', 'getSortedAccounts')")
+    @PreAuthorize("hasAnyAuthority('getAllAccounts', 'getSortedAccounts')")
     public Page<Account> getAllAccounts(Pageable pageable) throws ApplicationBaseException {
         try {
             return accountRepository.findAll(pageable);

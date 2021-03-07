@@ -35,7 +35,7 @@ public class TimerService {
     private final ReservationRepository reservationRepository;
 
     @Scheduled(fixedDelayString = "#{60000 * ${log.schedule}}")
-    @RequiresNewTransaction(transactionManager = LogConfiguration.LOG_TRANSACTION_MANAGER)
+    @RequiresNewTransaction(LogConfiguration.LOG_TRANSACTION_MANAGER)
     public void persistLogs() {
         long start = System.currentTimeMillis();
         logRepository.saveAll(
@@ -48,7 +48,7 @@ public class TimerService {
     }
 
     @Scheduled(fixedDelayString = "#{60000 * ${jwt.schedule}}")
-    @RequiresNewTransaction(transactionManager = MokConfiguration.MOK_TRANSACTION_MANAGER)
+    @RequiresNewTransaction(MokConfiguration.MOK_TRANSACTION_MANAGER)
     public void clearExpiredBlacklistedJwts() {
         long start = System.currentTimeMillis();
         blacklistedJwtRepository.deleteAllByExpirationBefore(LocalDateTime.now());
@@ -56,7 +56,7 @@ public class TimerService {
     }
 
     @Scheduled(fixedDelayString = "#{60000 * ${reservation.schedule}}")
-    @RequiresNewTransaction(transactionManager = MorConfiguration.MOR_TRANSACTION_MANAGER)
+    @RequiresNewTransaction(MorConfiguration.MOR_TRANSACTION_MANAGER)
     public void cancelStartedReservations() {
         long start = System.currentTimeMillis();
         List<Reservation> reservations = reservationRepository.findAllByStartDateBeforeAndStatusIn(LocalDateTime.now(), Collections.singletonList(Status.NEW));

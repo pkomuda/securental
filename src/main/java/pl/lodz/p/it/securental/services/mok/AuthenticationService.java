@@ -2,6 +2,7 @@ package pl.lodz.p.it.securental.services.mok;
 
 import lombok.AllArgsConstructor;
 import org.springframework.retry.annotation.Retryable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.adapters.mok.AccountAdapter;
 import pl.lodz.p.it.securental.adapters.mok.BlacklistedJwtAdapter;
@@ -30,15 +31,15 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-@RequiresNewTransaction(transactionManager = MokConfiguration.MOK_TRANSACTION_MANAGER)
 @Retryable(DatabaseConnectionException.class)
+@RequiresNewTransaction(MokConfiguration.MOK_TRANSACTION_MANAGER)
 public class AuthenticationService {
 
     private final AccountAdapter accountAdapter;
     private final BlacklistedJwtAdapter blacklistedJwtAdapter;
     private final EmailSender emailSender;
 
-    //@PreAuthorize("permitAll()")
+    @PreAuthorize("permitAll()")
     public List<Integer> initializeLogin(String username) throws ApplicationBaseException {
         List<Integer> randomCombination = StringUtils.randomCombination(
                 ApplicationProperties.FULL_PASSWORD_LENGTH,
@@ -57,7 +58,7 @@ public class AuthenticationService {
         return randomCombination;
     }
 
-    //@PreAuthorize("permitAll()")
+    @PreAuthorize("permitAll()")
     public AuthenticationResponse.AuthenticationResponseBuilder finalizeLogin(String username, String ipAddress, boolean successful) throws ApplicationBaseException {
         Optional<Account> accountOptional = accountAdapter.getAccount(username);
         if (accountOptional.isPresent()) {
@@ -96,7 +97,7 @@ public class AuthenticationService {
         }
     }
 
-    //@PreAuthorize("hasAuthority('currentUser')")
+    @PreAuthorize("hasAuthority('currentUser')")
     public AuthenticationResponse.AuthenticationResponseBuilder currentUser(String username) throws ApplicationBaseException {
         Optional<Account> accountOptional = accountAdapter.getAccount(username);
         if (accountOptional.isPresent()) {
@@ -112,7 +113,7 @@ public class AuthenticationService {
         }
     }
 
-    //@PreAuthorize("hasAuthority('logout')")
+    @PreAuthorize("hasAuthority('logout')")
     public void addJwtToBlacklist(String jwt, long expiration) throws ApplicationBaseException {
         blacklistedJwtAdapter.addBlacklistedJwt(
                 BlacklistedJwt.builder()

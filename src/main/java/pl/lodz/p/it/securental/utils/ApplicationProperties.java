@@ -26,8 +26,6 @@ public class ApplicationProperties {
     public static final String DATETIME_REGEX = "^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d$";
     public static final String EMAIL_REGEX = "^[a-zA-Z0-9-_]+(\\.[a-zA-Z0-9-_]+)*@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9]+)*(\\.[a-zA-Z]{2,})$";
     public static final String MONEY_REGEX = "^(?=.*[1-9])[0-9]*[.,]?[0-9]{1,2}$";
-    public static final String NAME_REGEX = "^[A-ZĄĆĘŁŃÓŚŹŻ][a-ząćęłńóśźż]+$";
-//    public static final String STATUS_REGEX = "^(" + Status.NEW.name() + "|" + Status.CANCELLED.name() + "|" + Status.RECEIVED.name() + "|" + Status.FINISHED.name() + ")$";
     public static final String STRING_REGEX = "^[a-zA-Z0-9!@#$%ąćęłńóśźżĄĆĘŁŃÓŚŹŻ,. ]+$";
 
     public static final String LOG_CACHE_NAME = "log-cache";

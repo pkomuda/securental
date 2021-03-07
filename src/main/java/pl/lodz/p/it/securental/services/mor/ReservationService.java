@@ -3,6 +3,7 @@ package pl.lodz.p.it.securental.services.mor;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.retry.annotation.Retryable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,8 +37,8 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-@RequiresNewTransaction(transactionManager = MorConfiguration.MOR_TRANSACTION_MANAGER)
 @Retryable(DatabaseConnectionException.class)
+@RequiresNewTransaction(MorConfiguration.MOR_TRANSACTION_MANAGER)
 public class ReservationService {
 
     private final ReservationAdapter reservationAdapter;
@@ -47,7 +48,7 @@ public class ReservationService {
     private final SignatureUtils signatureUtils;
     private final AmazonClient amazonClient;
 
-    //@PreAuthorize("hasAuthority('addReservation')")
+    @PreAuthorize("hasAuthority('addReservation')")
     public void addReservation(String username, ReservationDto reservationDto) throws ApplicationBaseException {
         Reservation reservation = ReservationMapper.toReservation(reservationDto);
 
@@ -88,7 +89,7 @@ public class ReservationService {
         }
     }
 
-    //@PreAuthorize("hasAuthority('getReservation')")
+    @PreAuthorize("hasAuthority('getReservation')")
     public ReservationDto getReservation(String number) throws ApplicationBaseException {
         Optional<Reservation> reservationOptional = reservationAdapter.getReservation(number);
         if (reservationOptional.isPresent()) {
@@ -98,7 +99,7 @@ public class ReservationService {
         }
     }
 
-    //@PreAuthorize("hasAuthority('getOwnReservation')")
+    @PreAuthorize("hasAuthority('getOwnReservation')")
     public ReservationDto getOwnReservation(String username, String number) throws ApplicationBaseException {
         Optional<Reservation> reservationOptional = reservationAdapter.getOwnReservation(username, number);
         if (reservationOptional.isPresent()) {
@@ -108,7 +109,7 @@ public class ReservationService {
         }
     }
 
-    //@PreAuthorize("hasAuthority('editOwnReservation')")
+    @PreAuthorize("hasAuthority('editOwnReservation')")
     public void editOwnReservationDates(String username, String number, ReservationDto reservationDto) throws ApplicationBaseException {
         if (number.equals(reservationDto.getNumber())) {
             Optional<Reservation> reservationOptional = reservationAdapter.getOwnReservation(username, number);
@@ -197,8 +198,8 @@ public class ReservationService {
         reservation.setFinishedImageUrls(finishedImageUrls);
     }
 
-    //@PreAuthorize("hasAuthority('changeReservationStatus')")
-    public void changeReservationStatus(String number, ReservationDto reservationDto) throws ApplicationBaseException { // new -> cancelled LUB received -> finished
+    @PreAuthorize("hasAuthority('changeReservationStatus')")
+    public void changeReservationStatus(String number, ReservationDto reservationDto) throws ApplicationBaseException {
         if (number.equals(reservationDto.getNumber())) {
             Optional<Reservation> reservationOptional = reservationAdapter.getReservation(number);
             if (reservationOptional.isPresent()) {
@@ -221,7 +222,7 @@ public class ReservationService {
         }
     }
 
-    //@PreAuthorize("hasAuthority('changeOwnReservationStatus')")
+    @PreAuthorize("hasAuthority('changeOwnReservationStatus')")
     public void cancelOwnReservation(String username, String number, ReservationDto reservationDto) throws ApplicationBaseException {
         if (number.equals(reservationDto.getNumber())) {
             Optional<Reservation> reservationOptional = reservationAdapter.getOwnReservation(username, number);
@@ -245,7 +246,7 @@ public class ReservationService {
         }
     }
 
-    //@PreAuthorize("hasAnyAuthority('getAllReservations', 'getSortedReservations')")
+    @PreAuthorize("hasAnyAuthority('getAllReservations', 'getSortedReservations')")
     public Page<ReservationDto> getAllReservations(String[] statuses, PagingHelper pagingHelper) throws ApplicationBaseException {
         try {
             return ReservationMapper.toReservationDtos(reservationAdapter.getAllReservations(toStatuses(statuses), pagingHelper.withSorting()));
@@ -254,7 +255,7 @@ public class ReservationService {
         }
     }
 
-    //@PreAuthorize("hasAnyAuthority('filterReservations', 'filterSortedReservations')")
+    @PreAuthorize("hasAnyAuthority('filterReservations', 'filterSortedReservations')")
     public Page<ReservationDto> filterReservations(String filter, String[] statuses, PagingHelper pagingHelper) throws ApplicationBaseException {
         try {
             return ReservationMapper.toReservationDtos(reservationAdapter.filterReservations(filter, toStatuses(statuses), pagingHelper.withSorting()));
@@ -263,7 +264,7 @@ public class ReservationService {
         }
     }
 
-    //@PreAuthorize("hasAnyAuthority('getOwnReservations', 'getOwnSortedReservations')")
+    @PreAuthorize("hasAnyAuthority('getOwnReservations', 'getOwnSortedReservations')")
     public Page<ReservationDto> getOwnReservations(String username, String[] statuses, PagingHelper pagingHelper) throws ApplicationBaseException {
         try {
             return ReservationMapper.toReservationDtos(reservationAdapter.getOwnReservations(username, toStatuses(statuses), pagingHelper.withSorting()));
@@ -272,7 +273,7 @@ public class ReservationService {
         }
     }
 
-    //@PreAuthorize("hasAnyAuthority('filterOwnReservations', 'filterOwnSortedReservations')")
+    @PreAuthorize("hasAnyAuthority('filterOwnReservations', 'filterOwnSortedReservations')")
     public Page<ReservationDto> filterOwnReservations(String username, String filter, String[] statuses, PagingHelper pagingHelper) throws ApplicationBaseException {
         try {
             return ReservationMapper.toReservationDtos(reservationAdapter.filterOwnReservations(username, filter, toStatuses(statuses), pagingHelper.withSorting()));

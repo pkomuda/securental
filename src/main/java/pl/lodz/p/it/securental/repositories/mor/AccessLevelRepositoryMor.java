@@ -9,7 +9,7 @@ import pl.lodz.p.it.securental.entities.mok.AccessLevel;
 import java.util.Optional;
 
 @Repository
-@MandatoryTransaction(transactionManager = MorConfiguration.MOR_TRANSACTION_MANAGER)
+@MandatoryTransaction(MorConfiguration.MOR_TRANSACTION_MANAGER)
 public interface AccessLevelRepositoryMor extends JpaRepository<AccessLevel, Long> {
 
     Optional<AccessLevel> findByAccountOtpCredentialsUsernameAndName(String username, String name);

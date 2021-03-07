@@ -12,7 +12,7 @@ import pl.lodz.p.it.securental.entities.mok.Account;
 import java.util.Optional;
 
 @Repository
-@MandatoryTransaction(transactionManager = MokConfiguration.MOK_TRANSACTION_MANAGER)
+@MandatoryTransaction(MokConfiguration.MOK_TRANSACTION_MANAGER)
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Optional<Account> findByOtpCredentialsUsername(String username);

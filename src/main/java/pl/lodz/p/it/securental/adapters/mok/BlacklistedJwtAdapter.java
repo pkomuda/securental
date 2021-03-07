@@ -2,6 +2,7 @@ package pl.lodz.p.it.securental.adapters.mok;
 
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataAccessException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.aop.annotations.MandatoryTransaction;
 import pl.lodz.p.it.securental.configuration.persistence.MokConfiguration;
@@ -15,12 +16,12 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-@MandatoryTransaction(transactionManager = MokConfiguration.MOK_TRANSACTION_MANAGER)
+@MandatoryTransaction(MokConfiguration.MOK_TRANSACTION_MANAGER)
 public class BlacklistedJwtAdapter {
 
     private final BlacklistedJwtRepository blacklistedJwtRepository;
 
-    //@PreAuthorize("hasAuthority('logout')")
+    @PreAuthorize("hasAuthority('logout')")
     public void addBlacklistedJwt(BlacklistedJwt blacklistedJwt) throws ApplicationBaseException {
         try {
             blacklistedJwtRepository.saveAndFlush(blacklistedJwt);

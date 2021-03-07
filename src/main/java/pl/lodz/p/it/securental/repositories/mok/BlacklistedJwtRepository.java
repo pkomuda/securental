@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Repository
-@MandatoryTransaction(transactionManager = MokConfiguration.MOK_TRANSACTION_MANAGER)
+@MandatoryTransaction(MokConfiguration.MOK_TRANSACTION_MANAGER)
 public interface BlacklistedJwtRepository extends JpaRepository<BlacklistedJwt, Long> {
 
     Optional<BlacklistedJwt> findByToken(String token);

@@ -3,7 +3,7 @@ import React, { Suspense, useEffect, useState } from "react";
 import { Button, DropdownButton } from "react-bootstrap";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Error } from "./components/common/Error";
-// import ErrorBoundary from "./components/common/ErrorBoundary"; //todo
+import ErrorBoundary from "./components/common/ErrorBoundary";
 import { Home } from "./components/common/Home";
 import { NavigationBar } from "./components/common/NavigationBar";
 import { NoAccess } from "./components/common/NoAccess";
@@ -90,6 +90,7 @@ export const App = () => {
     };
 
     return (
+        <ErrorBoundary>
             <AuthenticationContext.Provider value={value}>
                 <Router>
                     <Suspense fallback={<Spinner/>}>
@@ -128,5 +129,6 @@ export const App = () => {
                     </Suspense>
                 </Router>
             </AuthenticationContext.Provider>
+        </ErrorBoundary>
     );
 };

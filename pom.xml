@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.4.2</version>
+		<version>2.4.3</version>
 		<relativePath/>
 	</parent>
 	<groupId>pl.lodz.p.it</groupId>
@@ -16,13 +16,13 @@
 
 	<properties>
 		<java.version>11</java.version>
-		<aws.version>1.11.950</aws.version>
+		<aws.version>1.11.963</aws.version>
 		<commons-math3.version>3.6.1</commons-math3.version>
 		<jjwt.version>0.9.1</jjwt.version>
 		<googleauth.version>1.5.0</googleauth.version>
 		<zxing.version>3.4.1</zxing.version>
-		<frontend-maven-plugin.version>1.11.0</frontend-maven-plugin.version>
-		<node.version>v12.20.1</node.version>
+		<frontend-maven-plugin.version>1.11.2</frontend-maven-plugin.version>
+		<node.version>v12.21.0</node.version>
 		<react.app.api>${react.app.api}</react.app.api>
 		<react.app.captcha.site.key>${react.app.captcha.site.key}</react.app.captcha.site.key>
 	</properties>

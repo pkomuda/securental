@@ -23,11 +23,9 @@ public @Data class Reservation extends BaseAuditEntity {
     @Column(name = "number")
     private String number;
 
-//    @Future
     @Column(name = "start_date")
     private LocalDateTime startDate;
 
-//    @Future
     @Column(name = "end_date")
     private LocalDateTime endDate;
 

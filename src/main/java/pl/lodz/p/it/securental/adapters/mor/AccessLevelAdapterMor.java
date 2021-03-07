@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-@MandatoryTransaction(transactionManager = MorConfiguration.MOR_TRANSACTION_MANAGER)
+@MandatoryTransaction(MorConfiguration.MOR_TRANSACTION_MANAGER)
 public class AccessLevelAdapterMor {
 
     private final AccessLevelRepositoryMor accessLevelRepository;

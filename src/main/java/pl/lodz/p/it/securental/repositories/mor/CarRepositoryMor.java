@@ -9,7 +9,7 @@ import pl.lodz.p.it.securental.entities.mop.Car;
 import java.util.Optional;
 
 @Repository
-@MandatoryTransaction(transactionManager = MorConfiguration.MOR_TRANSACTION_MANAGER)
+@MandatoryTransaction(MorConfiguration.MOR_TRANSACTION_MANAGER)
 public interface CarRepositoryMor extends JpaRepository<Car, Long> {
 
     Optional<Car> findByNumber(String number);

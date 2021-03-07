@@ -16,7 +16,6 @@ import pl.lodz.p.it.securental.repositories.mok.AccountRepository;
 import pl.lodz.p.it.securental.utils.ApplicationProperties;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -38,9 +37,6 @@ public class UserDetailsServiceImpl {
             Account account = accountOptional.get();
             for (MaskedPassword maskedPassword : account.getCredentials().getMaskedPasswords()) {
                 if (passwordEncoder.matches(combination, maskedPassword.getCombination())) {
-                    List<Integer> combinationList = account.getAuthenticationToken().getCombination();
-                    String combinationString = combination;
-//                    if (integerArrayToString(account.getAuthenticationToken().getCombination().stream().mapToInt(i -> i).toArray()).equals(combination)) {
                         return new UserDetailsImpl(
                                 username,
                                 combination,
@@ -50,7 +46,6 @@ public class UserDetailsServiceImpl {
                                 true,
                                 account.getActive(),
                                 getUserFrontendRoles(account));
-//                }
                 }
             }
             return null;
@@ -110,28 +105,4 @@ public class UserDetailsServiceImpl {
         }
         return authorities;
     }
-
-//    private Set<SimpleGrantedAuthority> getUserRoles(Account account) {
-//        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
-//        List<String> groups = account.getAccessLevels().stream()
-//                .filter(AccessLevel::isActive)
-//                .map(AccessLevel::getName)
-//                .collect(Collectors.toList());
-//        for (String group : groups) {
-//            for (String role : getRolesForGroup(group)) {
-//                authorities.add(new SimpleGrantedAuthority(role));
-//            }
-//        }
-//        return authorities;
-//    }
-//
-//    public static Set<SimpleGrantedAuthority> getUserRoles(List<String> groups) {
-//        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
-//        for (String group : groups) {
-//            for (String role : getRolesForGroup(group)) {
-//                authorities.add(new SimpleGrantedAuthority(role));
-//            }
-//        }
-//        return authorities;
-//    }
 }

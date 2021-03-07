@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-@MandatoryTransaction(transactionManager = MopConfiguration.MOP_TRANSACTION_MANAGER)
+@MandatoryTransaction(MopConfiguration.MOP_TRANSACTION_MANAGER)
 public interface CarRepository extends JpaRepository<Car, Long> {
 
     Optional<Car> findByNumber(String number);

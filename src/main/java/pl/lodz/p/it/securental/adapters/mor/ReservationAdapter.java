@@ -5,6 +5,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mapping.PropertyReferenceException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.aop.annotations.MandatoryTransaction;
 import pl.lodz.p.it.securental.configuration.persistence.MorConfiguration;
@@ -22,12 +23,12 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-@MandatoryTransaction(transactionManager = MorConfiguration.MOR_TRANSACTION_MANAGER)
+@MandatoryTransaction(MorConfiguration.MOR_TRANSACTION_MANAGER)
 public class ReservationAdapter {
 
     private final ReservationRepository reservationRepository;
 
-    //@PreAuthorize("hasAuthority('addReservation')")
+    @PreAuthorize("hasAuthority('addReservation')")
     public void addReservation(Reservation reservation) throws ApplicationBaseException {
         try {
             reservationRepository.saveAndFlush(reservation);
@@ -36,7 +37,7 @@ public class ReservationAdapter {
         }
     }
 
-    //@PreAuthorize("hasAnyAuthority('getReservation', 'changeReservationStatus')")
+    @PreAuthorize("hasAnyAuthority('getReservation', 'changeReservationStatus')")
     public Optional<Reservation> getReservation(String number) throws ApplicationBaseException {
         try {
             return reservationRepository.findByNumber(number);
@@ -45,7 +46,7 @@ public class ReservationAdapter {
         }
     }
 
-    //@PreAuthorize("hasAnyAuthority('getOwnReservation', 'editOwnReservation', 'changeOwnReservationStatus')")
+    @PreAuthorize("hasAnyAuthority('getOwnReservation', 'editOwnReservation', 'changeOwnReservationStatus')")
     public Optional<Reservation> getOwnReservation(String username, String number) throws ApplicationBaseException {
         try {
             return reservationRepository.findByNumberAndClientAccountOtpCredentialsUsername(number, username);
@@ -54,7 +55,7 @@ public class ReservationAdapter {
         }
     }
 
-    //@PreAuthorize("hasAnyAuthority('getAllReservations', 'getSortedReservations')")
+    @PreAuthorize("hasAnyAuthority('getAllReservations', 'getSortedReservations')")
     public Page<Reservation> getAllReservations(List<Status> statuses, Pageable pageable) throws ApplicationBaseException {
         try {
             return reservationRepository.findAllByStatusIn(statuses, pageable);
@@ -65,7 +66,7 @@ public class ReservationAdapter {
         }
     }
 
-    //@PreAuthorize("hasAnyAuthority('filterReservations', 'filterSortedReservations')")
+    @PreAuthorize("hasAnyAuthority('filterReservations', 'filterSortedReservations')")
     public Page<Reservation> filterReservations(String filter, List<Status> statuses, Pageable pageable) throws ApplicationBaseException {
         try {
             return reservationRepository.findAllByNumberContainsIgnoreCaseOrClientAccountOtpCredentialsUsernameContainsIgnoreCaseOrCarMakeContainsIgnoreCaseOrCarModelContainsIgnoreCaseAndStatusIn(filter,
@@ -81,7 +82,7 @@ public class ReservationAdapter {
         }
     }
 
-    //@PreAuthorize("hasAnyAuthority('getOwnReservations', 'getOwnSortedReservations')")
+    @PreAuthorize("hasAnyAuthority('getOwnReservations', 'getOwnSortedReservations')")
     public Page<Reservation> getOwnReservations(String username, List<Status> statuses, Pageable pageable) throws ApplicationBaseException {
         try {
             return reservationRepository.findAllByClientAccountOtpCredentialsUsernameAndStatusIn(username, statuses, pageable);
@@ -92,7 +93,7 @@ public class ReservationAdapter {
         }
     }
 
-    //@PreAuthorize("hasAnyAuthority('filterOwnReservations', 'filterOwnSortedReservations')")
+    @PreAuthorize("hasAnyAuthority('filterOwnReservations', 'filterOwnSortedReservations')")
     public Page<Reservation> filterOwnReservations(String username, String filter, List<Status> statuses, Pageable pageable) throws ApplicationBaseException {
         try {
             return reservationRepository.findAllByClientAccountOtpCredentialsUsernameAndNumberContainsIgnoreCaseOrCarMakeContainsIgnoreCaseOrCarModelContainsIgnoreCaseAndStatusIn(username,
@@ -108,6 +109,7 @@ public class ReservationAdapter {
         }
     }
 
+    @PreAuthorize("hasAuthority('addReservation')")
     public List<Reservation> getAllActiveReservations(String carNumber) throws ApplicationBaseException {
         try {
             return reservationRepository.findAllByCarNumberAndStatusIn(carNumber, ApplicationProperties.ACTIVE_STATUSES);
