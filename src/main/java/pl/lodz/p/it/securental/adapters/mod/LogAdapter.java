@@ -1,4 +1,4 @@
-package pl.lodz.p.it.securental.adapters.log;
+package pl.lodz.p.it.securental.adapters.mod;
 
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataAccessException;
@@ -7,17 +7,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.aop.annotations.MandatoryTransaction;
-import pl.lodz.p.it.securental.configuration.persistence.LogConfiguration;
-import pl.lodz.p.it.securental.entities.log.Log;
+import pl.lodz.p.it.securental.configuration.persistence.ModConfiguration;
+import pl.lodz.p.it.securental.entities.mod.Log;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.db.DatabaseConnectionException;
-import pl.lodz.p.it.securental.repositories.log.LogRepository;
+import pl.lodz.p.it.securental.repositories.mod.LogRepository;
 
 import javax.persistence.PersistenceException;
 
 @Service
 @AllArgsConstructor
-@MandatoryTransaction(LogConfiguration.LOG_TRANSACTION_MANAGER)
+@MandatoryTransaction(ModConfiguration.MOD_TRANSACTION_MANAGER)
 public class LogAdapter {
 
     private final LogRepository logRepository;

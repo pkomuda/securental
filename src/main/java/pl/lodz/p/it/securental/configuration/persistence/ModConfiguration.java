@@ -12,42 +12,42 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import pl.lodz.p.it.securental.entities.log.Log;
+import pl.lodz.p.it.securental.entities.mod.Log;
 
 import javax.sql.DataSource;
 import java.util.Map;
 import java.util.Objects;
 
 @Configuration
-@EnableJpaRepositories(basePackages = "pl.lodz.p.it.securental.repositories.log",
-        entityManagerFactoryRef = "logEntityManagerFactory",
-        transactionManagerRef= "logTransactionManager")
+@EnableJpaRepositories(basePackages = "pl.lodz.p.it.securental.repositories.mod",
+        entityManagerFactoryRef = "modEntityManagerFactory",
+        transactionManagerRef= "modTransactionManager")
 @EnableRetry
 @EnableTransactionManagement
-public class LogConfiguration {
+public class ModConfiguration {
 
-    public static final String LOG_TRANSACTION_MANAGER = "logTransactionManager";
+    public static final String MOD_TRANSACTION_MANAGER = "modTransactionManager";
 
     @Bean
-    @ConfigurationProperties(prefix = "log")
-    public DataSource logDataSource() {
+    @ConfigurationProperties(prefix = "mod")
+    public DataSource modDataSource() {
         return DataSourceBuilder.create().build();
     }
 
-    @Bean(name = "logEntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean logEntityManagerFactory(EntityManagerFactoryBuilder builder) {
+    @Bean(name = "modEntityManagerFactory")
+    public LocalContainerEntityManagerFactoryBean modEntityManagerFactory(EntityManagerFactoryBuilder builder) {
         Map<String, String> properties = Map.of(
                 "hibernate.hbm2ddl.auto", "update"
         );
         return builder
-                .dataSource(logDataSource())
+                .dataSource(modDataSource())
                 .properties(properties)
                 .packages(Log.class)
                 .build();
     }
 
-    @Bean(name = "logTransactionManager")
-    public PlatformTransactionManager logTransactionManager(@Qualifier("logEntityManagerFactory") LocalContainerEntityManagerFactoryBean factory) {
+    @Bean(name = "modTransactionManager")
+    public PlatformTransactionManager modTransactionManager(@Qualifier("modEntityManagerFactory") LocalContainerEntityManagerFactoryBean factory) {
         return new JpaTransactionManager(Objects.requireNonNull(factory.getObject()));
     }
 }

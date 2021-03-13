@@ -22,7 +22,7 @@ export const ListLogs = () => {
     const [loaded, setLoaded] = useState(false);
     const columns = [{
         dataField: "message",
-        text: t("log.message"),
+        text: t("mod.message"),
         style: {wordBreak: "break-all"}
     }];
 

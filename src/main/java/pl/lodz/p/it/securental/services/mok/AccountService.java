@@ -16,14 +16,11 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.lodz.p.it.securental.adapters.log.LogAdapter;
 import pl.lodz.p.it.securental.adapters.mok.AccountAdapter;
 import pl.lodz.p.it.securental.adapters.mok.OtpCredentialsAdapter;
 import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
-import pl.lodz.p.it.securental.configuration.persistence.LogConfiguration;
 import pl.lodz.p.it.securental.configuration.persistence.MokConfiguration;
 import pl.lodz.p.it.securental.dto.mappers.mok.AccountMapper;
-import pl.lodz.p.it.securental.dto.model.log.LogDto;
 import pl.lodz.p.it.securental.dto.model.mok.AccountDto;
 import pl.lodz.p.it.securental.dto.model.mok.ChangePasswordRequest;
 import pl.lodz.p.it.securental.dto.model.mok.RegistrationResponse;
@@ -51,7 +48,6 @@ public class AccountService {
     private final PasswordEncoder passwordEncoder;
     private final GoogleAuthenticator googleAuthenticator;
     private final OtpCredentialsAdapter otpCredentialsAdapter;
-    private final LogAdapter logAdapter;
     private final EmailSender emailSender;
     private final SignatureUtils signatureUtils;
     private final AccountMapper accountMapper;
@@ -357,22 +353,6 @@ public class AccountService {
         } else {
             throw new AccountNotFoundException();
         }
-    }
-
-    @PreAuthorize("hasAuthority('getAllLogs')")
-    @RequiresNewTransaction(LogConfiguration.LOG_TRANSACTION_MANAGER)
-    public Page<LogDto> getAllLogs(PagingHelper pagingHelper) throws ApplicationBaseException {
-        return logAdapter
-                .getAllLogs(pagingHelper.withoutSorting())
-                .map(log -> LogDto.of(log.getMessage()));
-    }
-
-    @PreAuthorize("hasAuthority('filterLogs')")
-    @RequiresNewTransaction(LogConfiguration.LOG_TRANSACTION_MANAGER)
-    public Page<LogDto> filterLogs(String filter, PagingHelper pagingHelper) throws ApplicationBaseException {
-        return logAdapter
-                .filterLogs(filter, pagingHelper.withoutSorting())
-                .map(log -> LogDto.of(log.getMessage()));
     }
 
     private String generateQrCode(String username, GoogleAuthenticatorKey key) throws ApplicationBaseException {

@@ -19,7 +19,7 @@ import { ConfirmAccount } from "./components/mok/ConfirmAccount";
 import { EditAccount } from "./components/mok/EditAccount";
 import { EditOwnAccount } from "./components/mok/EditOwnAccount";
 import { ListAccounts } from "./components/mok/ListAccounts";
-import { ListLogs } from "./components/mok/ListLogs";
+import { ListLogs } from "./components/mod/ListLogs";
 import { Login } from "./components/mok/Login";
 import { OwnAccountDetails } from "./components/mok/OwnAccountDetails";
 import { Register } from "./components/mok/Register";

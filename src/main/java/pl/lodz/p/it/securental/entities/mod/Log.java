@@ -1,4 +1,4 @@
-package pl.lodz.p.it.securental.entities.log;
+package pl.lodz.p.it.securental.entities.mod;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

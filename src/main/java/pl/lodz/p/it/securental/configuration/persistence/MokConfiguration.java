@@ -23,7 +23,7 @@ import java.util.Objects;
 @EnableJpaAuditing
 @EnableJpaRepositories(basePackages = "pl.lodz.p.it.securental.repositories.mok",
         entityManagerFactoryRef = "mokEntityManagerFactory",
-        transactionManagerRef= "mokTransactionManager")
+        transactionManagerRef = MokConfiguration.MOK_TRANSACTION_MANAGER)
 @EnableRetry
 @EnableTransactionManagement
 public class MokConfiguration {
@@ -40,18 +40,14 @@ public class MokConfiguration {
     @Primary
     @Bean(name = "mokEntityManagerFactory")
     public LocalContainerEntityManagerFactoryBean mokEntityManagerFactory(EntityManagerFactoryBuilder builder) {
-        Map<String, String> properties = Map.of(
-            "hibernate.hbm2ddl.auto", "update"
-        );
         return builder
                 .dataSource(mokDataSource())
-                .properties(properties)
                 .packages("pl.lodz.p.it.securental.entities.mok")
                 .build();
     }
 
     @Primary
-    @Bean(name = "mokTransactionManager")
+    @Bean(name = MOK_TRANSACTION_MANAGER)
     public PlatformTransactionManager mokTransactionManager(@Qualifier("mokEntityManagerFactory") LocalContainerEntityManagerFactoryBean factory) {
         return new JpaTransactionManager(Objects.requireNonNull(factory.getObject()));
     }

@@ -1,7 +1,6 @@
 package pl.lodz.p.it.securental.controllers.mok;
 
 import org.springframework.data.domain.Page;
-import pl.lodz.p.it.securental.dto.model.log.LogDto;
 import pl.lodz.p.it.securental.dto.model.mok.AccountDto;
 import pl.lodz.p.it.securental.dto.model.mok.ChangePasswordRequest;
 import pl.lodz.p.it.securental.dto.model.mok.ConfirmAccountRequest;
@@ -29,6 +28,4 @@ public interface AccountController {
     void resendConfirmationEmail(String username) throws ApplicationBaseException;
     void resendQrCodeEmail(String username) throws ApplicationBaseException;
     void changePreferredLanguage(String username, String language) throws ApplicationBaseException;
-    Page<LogDto> getAllLogs(int page, int size) throws ApplicationBaseException;
-    Page<LogDto> filterLogs(String filter, int page, int size) throws ApplicationBaseException;
 }
