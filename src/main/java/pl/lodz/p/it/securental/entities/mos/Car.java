@@ -1,4 +1,4 @@
-package pl.lodz.p.it.securental.entities.mop;
+package pl.lodz.p.it.securental.entities.mos;
 
 import lombok.*;
 import pl.lodz.p.it.securental.entities.BaseAuditEntity;

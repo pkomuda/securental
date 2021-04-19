@@ -3,7 +3,7 @@ package pl.lodz.p.it.securental.entities.mor;
 import lombok.*;
 import pl.lodz.p.it.securental.entities.BaseAuditEntity;
 import pl.lodz.p.it.securental.entities.mok.Client;
-import pl.lodz.p.it.securental.entities.mop.Car;
+import pl.lodz.p.it.securental.entities.mos.Car;
 
 import javax.persistence.*;
 import java.math.BigDecimal;

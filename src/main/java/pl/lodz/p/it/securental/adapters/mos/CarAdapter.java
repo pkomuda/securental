@@ -1,4 +1,4 @@
-package pl.lodz.p.it.securental.adapters.mop;
+package pl.lodz.p.it.securental.adapters.mos;
 
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataAccessException;
@@ -8,13 +8,13 @@ import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.aop.annotations.MandatoryTransaction;
-import pl.lodz.p.it.securental.configuration.persistence.MopConfiguration;
-import pl.lodz.p.it.securental.entities.mop.Car;
-import pl.lodz.p.it.securental.entities.mop.Category;
+import pl.lodz.p.it.securental.configuration.persistence.MosConfiguration;
+import pl.lodz.p.it.securental.entities.mos.Car;
+import pl.lodz.p.it.securental.entities.mos.Category;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.db.DatabaseConnectionException;
 import pl.lodz.p.it.securental.exceptions.db.PropertyNotFoundException;
-import pl.lodz.p.it.securental.repositories.mop.CarRepository;
+import pl.lodz.p.it.securental.repositories.mos.CarRepository;
 
 import javax.persistence.PersistenceException;
 import java.util.List;
@@ -22,7 +22,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-@MandatoryTransaction(MopConfiguration.MOP_TRANSACTION_MANAGER)
+@MandatoryTransaction(MosConfiguration.MOS_TRANSACTION_MANAGER)
 public class CarAdapter {
 
     private final CarRepository carRepository;

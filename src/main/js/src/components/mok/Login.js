@@ -18,7 +18,7 @@ export const Login = props => {
     const popup = withReactContent(Swal);
     const schema = object().shape({
         username: string().required("account.username.required").min(1, "account.username.min").max(32, "account.username.max"),
-        otpCode: string().required("account.username.required").min(1, "account.username.min").max(32, "account.username.max")
+        otpCode: string().required("account.otpCode.required")
     });
     const [, setUserInfo] = useContext(AuthenticationContext);
     const [authRequest, setAuthRequest] = useState({
@@ -120,15 +120,11 @@ export const Login = props => {
         const tempAuthRequest = {...authRequest};
         tempAuthRequest.otpCode = parseInt(tempAuthRequest.otpCode);
         tempAuthRequest.characters = tempAuthRequest.characters.join("");
+        delete tempAuthRequest.combination;
         axios.post("/login", tempAuthRequest)
             .then(response => {
                 setUserInfo(response.data);
                 i18n.changeLanguage(response.data.preferredLanguage).then(() => {});
-                if (response.data.preferredColorTheme === "light") {
-                    document.body.style.backgroundColor = "#ffffff";
-                } else if (response.data.preferredColorTheme === "dark") {
-                    document.body.style.backgroundColor = "#1a2128";
-                }
                 popup.fire({
                     titleText: t("navigation.success"),
                     html:

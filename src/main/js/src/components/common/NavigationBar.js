@@ -54,7 +54,6 @@ export const NavigationBar = () => {
             accessLevels: [],
             currentAccessLevel: "",
             preferredLanguage: "",
-            preferredColorTheme: "light",
             tokenPresent: false,
             tokenExpiration: 0
         });

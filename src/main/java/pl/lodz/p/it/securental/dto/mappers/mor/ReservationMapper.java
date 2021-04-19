@@ -3,7 +3,7 @@ package pl.lodz.p.it.securental.dto.mappers.mor;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
-import pl.lodz.p.it.securental.dto.mappers.mop.CarMapper;
+import pl.lodz.p.it.securental.dto.mappers.mos.CarMapper;
 import pl.lodz.p.it.securental.dto.model.mor.ReservationDto;
 import pl.lodz.p.it.securental.entities.mor.Reservation;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;

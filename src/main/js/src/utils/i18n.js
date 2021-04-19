@@ -36,7 +36,6 @@ i18n.use(initReactI18next)
     .use(Backend)
     .use(LanguageDetector)
     .init({
-        // debug: true,
         backend: {
             loadPath: "/locales/{{lng}}/{{ns}}.json"
         },

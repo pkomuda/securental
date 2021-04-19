@@ -1,14 +1,14 @@
-package pl.lodz.p.it.securental.dto.mappers.mop;
+package pl.lodz.p.it.securental.dto.mappers.mos;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import pl.lodz.p.it.securental.dto.mappers.mor.ReservationMapper;
-import pl.lodz.p.it.securental.dto.model.mop.CarDto;
 import pl.lodz.p.it.securental.dto.model.mor.ReservationDto;
-import pl.lodz.p.it.securental.entities.mop.Car;
-import pl.lodz.p.it.securental.entities.mop.Category;
+import pl.lodz.p.it.securental.dto.model.mos.CarDto;
 import pl.lodz.p.it.securental.entities.mor.Reservation;
+import pl.lodz.p.it.securental.entities.mos.Car;
+import pl.lodz.p.it.securental.entities.mos.Category;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.utils.ApplicationProperties;
 import pl.lodz.p.it.securental.utils.SignatureUtils;

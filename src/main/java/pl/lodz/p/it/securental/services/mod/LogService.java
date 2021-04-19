@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.adapters.mod.LogAdapter;
 import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
 import pl.lodz.p.it.securental.configuration.persistence.ModConfiguration;
-import pl.lodz.p.it.securental.dto.model.log.LogDto;
+import pl.lodz.p.it.securental.dto.model.mod.LogDto;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.db.DatabaseConnectionException;
 import pl.lodz.p.it.securental.utils.PagingHelper;

@@ -24,6 +24,8 @@
 
   "account.accessLevels.required": "At least one access level is required",
 
+  "account.otpCode.required": "One time code is required",
+
   "car.make.required": "Make is required",
   "car.make.min": "Make is too short",
   "car.make.max": "Make is too long",

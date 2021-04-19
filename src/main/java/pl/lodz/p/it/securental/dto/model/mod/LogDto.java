@@ -1,4 +1,4 @@
-package pl.lodz.p.it.securental.dto.model.log;
+package pl.lodz.p.it.securental.dto.model.mod;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

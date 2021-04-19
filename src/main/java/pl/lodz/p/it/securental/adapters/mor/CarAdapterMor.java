@@ -5,7 +5,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import pl.lodz.p.it.securental.aop.annotations.MandatoryTransaction;
 import pl.lodz.p.it.securental.configuration.persistence.MorConfiguration;
-import pl.lodz.p.it.securental.entities.mop.Car;
+import pl.lodz.p.it.securental.entities.mos.Car;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.db.DatabaseConnectionException;
 import pl.lodz.p.it.securental.repositories.mor.CarRepositoryMor;

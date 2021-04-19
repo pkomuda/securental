@@ -1,4 +1,4 @@
-package pl.lodz.p.it.securental.dto.model.mop;
+package pl.lodz.p.it.securental.dto.model.mos;
 
 import lombok.Builder;
 import lombok.Data;
@@ -38,10 +38,12 @@ public @Data class CarDto {
     @Max(value = 2099, message = "car.productionYear.max")
     private Integer productionYear;
 
+    @NotEmpty(message = "car.category.required")
+    @Pattern(regexp = ApplicationProperties.STRING_REGEX, message = "car.category.invalid")
+    private String category;
+
     @NotNull(message = "car.active.required")
     private Boolean active;
-
-    private String category;
 
     @ToString.Exclude
     private List<ReservationDto> reservations;

@@ -37,7 +37,7 @@ public class ReservationAdapter {
         }
     }
 
-    @PreAuthorize("hasAnyAuthority('getReservation', 'changeReservationStatus')")
+    @PreAuthorize("hasAnyAuthority('getReservation', 'changeReservationStatus', 'finishReservation')")
     public Optional<Reservation> getReservation(String number) throws ApplicationBaseException {
         try {
             return reservationRepository.findByNumber(number);
@@ -46,7 +46,7 @@ public class ReservationAdapter {
         }
     }
 
-    @PreAuthorize("hasAnyAuthority('getOwnReservation', 'editOwnReservation', 'changeOwnReservationStatus')")
+    @PreAuthorize("hasAnyAuthority('getOwnReservation', 'editOwnReservation', 'changeOwnReservationStatus', 'receiveOwnReservation')")
     public Optional<Reservation> getOwnReservation(String username, String number) throws ApplicationBaseException {
         try {
             return reservationRepository.findByNumberAndClientAccountOtpCredentialsUsername(number, username);
@@ -109,7 +109,7 @@ public class ReservationAdapter {
         }
     }
 
-    @PreAuthorize("hasAuthority('addReservation')")
+    @PreAuthorize("hasAnyAuthority('addReservation', 'editOwnReservation')")
     public List<Reservation> getAllActiveReservations(String carNumber) throws ApplicationBaseException {
         try {
             return reservationRepository.findAllByCarNumberAndStatusIn(carNumber, ApplicationProperties.ACTIVE_STATUSES);

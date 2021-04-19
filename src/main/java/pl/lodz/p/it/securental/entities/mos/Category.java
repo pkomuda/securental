@@ -1,4 +1,4 @@
-package pl.lodz.p.it.securental.entities.mop;
+package pl.lodz.p.it.securental.entities.mos;
 
 public enum Category {
 

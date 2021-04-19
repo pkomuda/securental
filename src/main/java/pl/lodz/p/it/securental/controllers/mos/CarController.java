@@ -1,7 +1,7 @@
-package pl.lodz.p.it.securental.controllers.mop;
+package pl.lodz.p.it.securental.controllers.mos;
 
 import org.springframework.data.domain.Page;
-import pl.lodz.p.it.securental.dto.model.mop.CarDto;
+import pl.lodz.p.it.securental.dto.model.mos.CarDto;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 
 public interface CarController {

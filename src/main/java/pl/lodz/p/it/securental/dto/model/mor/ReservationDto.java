@@ -3,7 +3,7 @@ package pl.lodz.p.it.securental.dto.model.mor;
 import lombok.Builder;
 import lombok.Data;
 import pl.lodz.p.it.securental.dto.model.mok.ClientDto;
-import pl.lodz.p.it.securental.dto.model.mop.CarDto;
+import pl.lodz.p.it.securental.dto.model.mos.CarDto;
 import pl.lodz.p.it.securental.utils.ApplicationProperties;
 
 import javax.validation.constraints.NotEmpty;

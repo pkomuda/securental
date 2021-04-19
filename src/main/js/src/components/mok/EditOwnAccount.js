@@ -75,11 +75,15 @@ export const EditOwnAccount = props => {
     }, [t, userInfo.username]);
 
     const validateAccessLevels = (object) => {
-        if (!Object.values(object).includes(true)) {
-            document.getElementById("accessLevelsFeedback").style.display = "block";
-            return false;
+        if (userInfo.currentAccessLevel === ACCESS_LEVEL_ADMIN) {
+            if (!Object.values(object).includes(true)) {
+                document.getElementById("accessLevelsFeedback").style.display = "block";
+                return false;
+            } else {
+                document.getElementById("accessLevelsFeedback").style.display = "none";
+                return true;
+            }
         } else {
-            document.getElementById("accessLevelsFeedback").style.display = "none";
             return true;
         }
     };

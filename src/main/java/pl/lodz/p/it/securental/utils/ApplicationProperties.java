@@ -47,7 +47,7 @@ public class ApplicationProperties {
     public static String LAST_PASSWORD_CHARACTERS;
     public static Integer LAST_PASSWORD_CHARACTERS_LENGTH;
     public static Boolean LOG_CACHE_ENABLE;
-    public static Integer LOGIN_INITIALIZATION_MAX_COUNTER;
+    public static Integer LOGIN_INIT_MAX_COUNT;
     public static Integer MASKED_PASSWORD_MAX_LENGTH;
     public static Integer MASKED_PASSWORD_MIN_LENGTH;
     public static String PASSWORD_HASHING_ALGORITHM;
@@ -69,7 +69,7 @@ public class ApplicationProperties {
                                  @Value("${keystore.password}") String keystorePassword,
                                  @Value("${last.password.characters}") String lastPasswordCharacters,
                                  @Value("${log.cache.enable}") Boolean logCacheEnable,
-                                 @Value("${login.initialization.max.counter}") Integer loginInitializationMaxCounter,
+                                 @Value("${login.init.max.count}") Integer loginInitMaxCount,
                                  @Value("${masked.password.max.length}") Integer maskedPasswordMaxLength,
                                  @Value("${masked.password.min.length}") Integer maskedPasswordMinLength,
                                  @Value("${password.hashing.algorithm}") String passwordHashingAlgorithm,
@@ -91,7 +91,7 @@ public class ApplicationProperties {
         LAST_PASSWORD_CHARACTERS = lastPasswordCharacters;
         LAST_PASSWORD_CHARACTERS_LENGTH = fullPasswordLength - 8;
         LOG_CACHE_ENABLE = logCacheEnable;
-        LOGIN_INITIALIZATION_MAX_COUNTER = loginInitializationMaxCounter;
+        LOGIN_INIT_MAX_COUNT = loginInitMaxCount;
         MASKED_PASSWORD_MAX_LENGTH = maskedPasswordMaxLength;
         MASKED_PASSWORD_MIN_LENGTH = maskedPasswordMinLength;
         PASSWORD_HASHING_ALGORITHM = passwordHashingAlgorithm;

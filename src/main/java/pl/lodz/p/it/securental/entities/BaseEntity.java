@@ -11,9 +11,9 @@ import java.io.Serializable;
 public abstract @Data class BaseEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @NotNull
-    @Setter(lombok.AccessLevel.NONE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id")
+    @Setter(lombok.AccessLevel.NONE)
     private Long id;
 }

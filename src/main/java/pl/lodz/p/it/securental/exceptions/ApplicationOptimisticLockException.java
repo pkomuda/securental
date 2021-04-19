@@ -1,8 +1,8 @@
 package pl.lodz.p.it.securental.exceptions;
 
 import pl.lodz.p.it.securental.entities.mok.Account;
-import pl.lodz.p.it.securental.entities.mop.Car;
 import pl.lodz.p.it.securental.entities.mor.Reservation;
+import pl.lodz.p.it.securental.entities.mos.Car;
 
 public class ApplicationOptimisticLockException extends ApplicationBaseException {
 

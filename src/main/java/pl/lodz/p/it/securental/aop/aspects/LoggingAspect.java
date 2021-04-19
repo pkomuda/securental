@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
+import pl.lodz.p.it.securental.configuration.persistence.ModConfiguration;
 import pl.lodz.p.it.securental.entities.mod.Log;
 import pl.lodz.p.it.securental.repositories.mod.LogRepository;
 import pl.lodz.p.it.securental.utils.ApplicationProperties;
@@ -21,7 +22,7 @@ import java.time.LocalDateTime;
 @Aspect
 @Component
 @AllArgsConstructor
-@RequiresNewTransaction
+@RequiresNewTransaction(ModConfiguration.MOD_TRANSACTION_MANAGER)
 public class LoggingAspect {
 
     private final Cache<String, String> logCache;

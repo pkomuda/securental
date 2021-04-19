@@ -24,6 +24,8 @@
 
   "account.accessLevels.required": "Przynajmniej jeden poziom dostępu jest wymagany",
 
+  "account.otpCode.required": "Jednorazowy kod jest wymagany",
+
   "car.make.required": "Marka jest wymagana",
   "car.make.min": "Marka jest zbyt krótka",
   "car.make.max": "Marka jest zbyt długa",

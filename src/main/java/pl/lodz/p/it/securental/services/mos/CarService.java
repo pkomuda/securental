@@ -1,23 +1,23 @@
-package pl.lodz.p.it.securental.services.mop;
+package pl.lodz.p.it.securental.services.mos;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
-import pl.lodz.p.it.securental.adapters.mop.CarAdapter;
+import pl.lodz.p.it.securental.adapters.mos.CarAdapter;
 import pl.lodz.p.it.securental.aop.annotations.RequiresNewTransaction;
-import pl.lodz.p.it.securental.configuration.persistence.MopConfiguration;
-import pl.lodz.p.it.securental.dto.mappers.mop.CarMapper;
-import pl.lodz.p.it.securental.dto.model.mop.CarDto;
-import pl.lodz.p.it.securental.entities.mop.Car;
-import pl.lodz.p.it.securental.entities.mop.Category;
+import pl.lodz.p.it.securental.configuration.persistence.MosConfiguration;
+import pl.lodz.p.it.securental.dto.mappers.mos.CarMapper;
+import pl.lodz.p.it.securental.dto.model.mos.CarDto;
+import pl.lodz.p.it.securental.entities.mos.Car;
+import pl.lodz.p.it.securental.entities.mos.Category;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.ApplicationOptimisticLockException;
 import pl.lodz.p.it.securental.exceptions.db.DatabaseConnectionException;
 import pl.lodz.p.it.securental.exceptions.db.PropertyNotFoundException;
-import pl.lodz.p.it.securental.exceptions.mop.CarNotFoundException;
-import pl.lodz.p.it.securental.exceptions.mop.CarNumberNotMatchingException;
+import pl.lodz.p.it.securental.exceptions.mos.CarNotFoundException;
+import pl.lodz.p.it.securental.exceptions.mos.CarNumberNotMatchingException;
 import pl.lodz.p.it.securental.utils.PagingHelper;
 import pl.lodz.p.it.securental.utils.SignatureUtils;
 import pl.lodz.p.it.securental.utils.StringUtils;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 @Retryable(DatabaseConnectionException.class)
-@RequiresNewTransaction(MopConfiguration.MOP_TRANSACTION_MANAGER)
+@RequiresNewTransaction(MosConfiguration.MOS_TRANSACTION_MANAGER)
 public class CarService {
 
     private final CarAdapter carAdapter;

@@ -11,6 +11,7 @@ import { NotFound } from "./components/common/NotFound";
 import { PrivateRoute } from "./components/common/PrivateRoute";
 import { RestrictedRoute } from "./components/common/RestrictedRoute";
 import { Spinner } from "./components/common/Spinner";
+import { ListLogs } from "./components/mod/ListLogs";
 import { AccountDetails } from "./components/mok/AccountDetails";
 import { AddAccount } from "./components/mok/AddAccount";
 import { ChangeOwnPassword } from "./components/mok/ChangeOwnPassword";
@@ -19,15 +20,10 @@ import { ConfirmAccount } from "./components/mok/ConfirmAccount";
 import { EditAccount } from "./components/mok/EditAccount";
 import { EditOwnAccount } from "./components/mok/EditOwnAccount";
 import { ListAccounts } from "./components/mok/ListAccounts";
-import { ListLogs } from "./components/mod/ListLogs";
 import { Login } from "./components/mok/Login";
 import { OwnAccountDetails } from "./components/mok/OwnAccountDetails";
 import { Register } from "./components/mok/Register";
 import { ResetPassword } from "./components/mok/ResetPassword";
-import { AddCar } from "./components/mop/AddCar";
-import { CarDetails } from "./components/mop/CarDetails";
-import { EditCar } from "./components/mop/EditCar";
-import { ListCars } from "./components/mop/ListCars";
 import { AddReservation } from "./components/mor/AddReservation";
 import { EditOwnReservation } from "./components/mor/EditOwnReservation";
 import { FinishReservation } from "./components/mor/FinishReservation";
@@ -36,6 +32,10 @@ import { ListReservations } from "./components/mor/ListReservations";
 import { OwnReservationDetails } from "./components/mor/OwnReservationDetails";
 import { ReceiveOwnReservation } from "./components/mor/ReceiveOwnReservation";
 import { ReservationDetails } from "./components/mor/ReservationDetails";
+import { AddCar } from "./components/mos/AddCar";
+import { CarDetails } from "./components/mos/CarDetails";
+import { EditCar } from "./components/mos/EditCar";
+import { ListCars } from "./components/mos/ListCars";
 import { AuthenticationContext, isAuthenticated } from "./utils/AuthenticationContext";
 import { ACCESS_LEVEL_ADMIN, ACCESS_LEVEL_CLIENT, ACCESS_LEVEL_EMPLOYEE } from "./utils/Constants";
 import i18n from "./utils/i18n";
@@ -47,7 +47,6 @@ export const App = () => {
         accessLevels: [],
         currentAccessLevel: "",
         preferredLanguage: "",
-        preferredColorTheme: "light",
         tokenPresent: true,
         tokenExpiration: 0
     });
@@ -61,21 +60,11 @@ export const App = () => {
                     tempUserInfo.tokenPresent = true;
                     setUserInfo(tempUserInfo);
                     i18n.changeLanguage(tempUserInfo.preferredLanguage).then(() => {});
-                    if (tempUserInfo.preferredColorTheme === "light") {
-                        document.body.style.backgroundColor = "#ffffff";
-                    } else if (tempUserInfo.preferredColorTheme === "dark") {
-                        document.body.style.backgroundColor = "#1a2128";
-                    }
                 }).catch(() => {
                     const tempUserInfo = {...userInfo};
                     tempUserInfo.tokenPresent = false;
                     setUserInfo(tempUserInfo);
                     i18n.changeLanguage(tempUserInfo.preferredLanguage).then(() => {});
-                    if (tempUserInfo.preferredColorTheme === "light") {
-                        document.body.style.backgroundColor = "#ffffff";
-                    } else if (tempUserInfo.preferredColorTheme === "dark") {
-                        document.body.style.backgroundColor = "#1a2128";
-                    }
             });
         }
     }, [userInfo]);

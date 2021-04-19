@@ -31,10 +31,10 @@ public final class StringUtils {
         return ResourceBundle.getBundle("messages", locale).getString(key);
     }
 
-    public static String integerArrayToString(int[] integers) {
-        return Arrays.stream(integers)
-                .mapToObj(Integer::toString)
-                .collect(Collectors.joining(""));
+    public static String integerCollectionToString(Collection<Integer> integers) {
+        return integers.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
     }
 
     public static String selectCharacters(String text, int[] indices) {

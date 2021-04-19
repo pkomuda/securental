@@ -24,8 +24,8 @@ public class AmazonClient {
 
     private AmazonS3 s3Client;
 
-    @Value("${s3.endpoint.url}")
-    private String endpointUrl;
+    @Value("${s3.bucket.region}")
+    private String bucketRegion;
 
     @Value("${s3.bucket.name}")
     private String bucketName;
@@ -45,7 +45,7 @@ public class AmazonClient {
     public String uploadFile(String name, MultipartFile multipartFile) throws ApplicationBaseException {
         File file = multipartToFile(multipartFile);
         String fileName = Instant.now().toEpochMilli() + "-" + name + "-" + StringUtils.randomIdentifier();
-        String fileUrl = endpointUrl + "/" + bucketName + "/" + fileName;
+        String fileUrl = "https://s3." + bucketRegion + ".amazonaws.com/" + bucketName + "/" + fileName;
         uploadFileToS3(fileName, file);
         if (!file.delete()) {
             file.deleteOnExit();

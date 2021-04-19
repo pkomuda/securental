@@ -37,7 +37,7 @@ public abstract @Data class BaseAuditEntity extends BaseEntity {
     private String modifiedBy;
 
     @Version
-    @Setter(lombok.AccessLevel.NONE)
     @Column(name = "version")
+    @Setter(lombok.AccessLevel.NONE)
     private Long version;
 }

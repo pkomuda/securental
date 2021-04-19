@@ -8,14 +8,16 @@ export const YEAR_REGEX = /^(19|20)[0-9]{2}$/;
 export const validate = (values, errors, setErrors, schema) => {
     const newErrors = {};
     for (const key of Object.keys(values)) {
-        try {
-            schema.validateSyncAt(key, values);
-        }
-        catch (err) {
-            newErrors[key] = err.message;
-        }
+        validateInternal(key, values, newErrors, schema);
     }
     setErrors(newErrors);
-    console.log(newErrors);
     return Object.keys(newErrors).length === 0;
+};
+
+const validateInternal = (key, values, newErrors, schema) => {
+    try {
+        schema.validateSyncAt(key, values);
+    } catch (err) {
+        newErrors[key] = err.message;
+    }
 };

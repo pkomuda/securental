@@ -13,8 +13,8 @@ import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import pl.lodz.p.it.securental.entities.mok.Client;
-import pl.lodz.p.it.securental.entities.mop.Car;
 import pl.lodz.p.it.securental.entities.mor.Reservation;
+import pl.lodz.p.it.securental.entities.mos.Car;
 
 import javax.sql.DataSource;
 import java.util.Map;

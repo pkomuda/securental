@@ -16,6 +16,7 @@ import pl.lodz.p.it.securental.entities.mok.BlacklistedJwt;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.db.DatabaseConnectionException;
 import pl.lodz.p.it.securental.exceptions.mok.AccountNotFoundException;
+import pl.lodz.p.it.securental.exceptions.mok.AuthenticationFailedException;
 import pl.lodz.p.it.securental.utils.ApplicationProperties;
 import pl.lodz.p.it.securental.utils.EmailSender;
 import pl.lodz.p.it.securental.utils.StringUtils;
@@ -49,11 +50,12 @@ public class AuthenticationService {
         if (accountOptional.isPresent()) {
             Account account = accountOptional.get();
             account.setLoginInitializationCounter(account.getLoginInitializationCounter() + 1);
+            if (account.getLoginInitializationCounter() >= ApplicationProperties.LOGIN_INIT_MAX_COUNT) {
+                account.setActive(false);
+            }
             AuthenticationToken authenticationToken = account.getAuthenticationToken();
             authenticationToken.setCombination(randomCombination);
             authenticationToken.setExpiration(LocalDateTime.now().plusMinutes(ApplicationProperties.AUTHENTICATION_TOKEN_EXPIRATION));
-        } else {
-            accountAdapter.getAccount(ApplicationProperties.ADMIN_PRINCIPAL);
         }
         return randomCombination;
     }
@@ -87,7 +89,17 @@ public class AuthenticationService {
                     account.setActive(false);
                 }
             }
+
+            if (account.getLoginInitializationCounter() >= ApplicationProperties.LOGIN_INIT_MAX_COUNT
+                    || account.getFailedAuthenticationCounter() >= ApplicationProperties.FAILED_AUTHENTICATION_MAX_COUNTER) {
+                throw new AuthenticationFailedException();
+            }
+
+            List<String> accessLevels = getUserFrontendRoles(account);
             return AuthenticationResponse.builder()
+                    .username(username)
+                    .accessLevels(accessLevels)
+                    .currentAccessLevel(getHighestFrontendRole(accessLevels))
                     .preferredLanguage(account.getPreferredLanguage())
                     .lastSuccessfulAuthentication(previousSuccessfulAuthentication)
                     .lastFailedAuthentication(previousFailedAuthentication)
@@ -127,7 +139,7 @@ public class AuthenticationService {
         return account.getAccessLevels().stream()
                 .filter(AccessLevel::getActive)
                 .map(AccessLevel::getName)
-                .sorted(Comparator.comparing(ApplicationProperties.ACCESS_LEVEL_ORDER::indexOf))
+                .sorted(Comparator.comparing(o -> ApplicationProperties.ACCESS_LEVEL_ORDER.indexOf(o)))
                 .collect(Collectors.toList());
     }
 

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import pl.lodz.p.it.securental.aop.annotations.NeverTransaction;
 import pl.lodz.p.it.securental.controllers.mod.LogController;
-import pl.lodz.p.it.securental.dto.model.log.LogDto;
+import pl.lodz.p.it.securental.dto.model.mod.LogDto;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.services.mod.LogService;
 import pl.lodz.p.it.securental.utils.PagingHelper;

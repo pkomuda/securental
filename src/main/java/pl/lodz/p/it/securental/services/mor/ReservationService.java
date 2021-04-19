@@ -15,17 +15,17 @@ import pl.lodz.p.it.securental.configuration.persistence.MorConfiguration;
 import pl.lodz.p.it.securental.dto.mappers.mor.ReservationMapper;
 import pl.lodz.p.it.securental.dto.model.mor.ReservationDto;
 import pl.lodz.p.it.securental.entities.mok.Client;
-import pl.lodz.p.it.securental.entities.mop.Car;
 import pl.lodz.p.it.securental.entities.mor.Reservation;
 import pl.lodz.p.it.securental.entities.mor.Status;
+import pl.lodz.p.it.securental.entities.mos.Car;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 import pl.lodz.p.it.securental.exceptions.ApplicationOptimisticLockException;
 import pl.lodz.p.it.securental.exceptions.db.DatabaseConnectionException;
 import pl.lodz.p.it.securental.exceptions.db.PropertyNotFoundException;
 import pl.lodz.p.it.securental.exceptions.mok.AccountNotFoundException;
 import pl.lodz.p.it.securental.exceptions.mok.UsernameNotMatchingException;
-import pl.lodz.p.it.securental.exceptions.mop.CarNotFoundException;
 import pl.lodz.p.it.securental.exceptions.mor.*;
+import pl.lodz.p.it.securental.exceptions.mos.CarNotFoundException;
 import pl.lodz.p.it.securental.utils.AmazonClient;
 import pl.lodz.p.it.securental.utils.PagingHelper;
 import pl.lodz.p.it.securental.utils.SignatureUtils;
@@ -122,6 +122,8 @@ public class ReservationService {
                         reservation.setStartDate(temp.getStartDate());
                         reservation.setEndDate(temp.getEndDate());
                         reservation.setPrice(StringUtils.stringToBigDecimal(reservationDto.getPrice()));
+                        validateDates(reservation);
+                        validateDateOverlap(reservation, reservationAdapter.getAllActiveReservations(reservationDto.getCarDto().getNumber()));
                     } else {
                         throw new ApplicationOptimisticLockException(car);
                     }
@@ -136,6 +138,7 @@ public class ReservationService {
         }
     }
 
+    @PreAuthorize("hasAuthority('receiveOwnReservation')")
     public void receiveOwnReservation(String username, String number, String signature, Map<String, MultipartFile> images) throws ApplicationBaseException {
         if (images.size() != 4) {
             throw new ReservationImagesAmountIncorrectException();
@@ -154,11 +157,6 @@ public class ReservationService {
             throw new IncorrectStatusException();
         }
 
-        //todo
-//        if (reservation.getStartDate().isAfter(LocalDateTime.now())) {
-//            throw new ReservationStartAfterNowException();
-//        }
-
         List<String> receivedImageUrls = new ArrayList<>();
         for (Map.Entry<String, MultipartFile> entry : images.entrySet()) {
             receivedImageUrls.add(amazonClient.uploadFile(entry.getKey(), entry.getValue()));
@@ -167,6 +165,7 @@ public class ReservationService {
         reservation.setReceivedImageUrls(receivedImageUrls);
     }
 
+    @PreAuthorize("hasAuthority('finishReservation')")
     public void finishReservation(String number, String signature, Map<String, MultipartFile> images) throws ApplicationBaseException {
         if (images.size() != 4) {
             throw new ReservationImagesAmountIncorrectException();
@@ -184,11 +183,6 @@ public class ReservationService {
         if (!reservation.getStatus().equals(Status.RECEPTION_ACCEPTED)) {
             throw new IncorrectStatusException();
         }
-
-        //todo
-//        if (reservation.getEndDate().isBefore(LocalDateTime.now())) {
-//            throw new ReservationEndBeforeNowException();
-//        }
 
         List<String> finishedImageUrls = new ArrayList<>();
         for (Map.Entry<String, MultipartFile> entry : images.entrySet()) {

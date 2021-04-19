@@ -36,6 +36,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
@@ -64,7 +65,9 @@ public class AccountService {
             while (iterator.hasNext()) {
                 int[] combination = iterator.next();
                 MaskedPassword maskedPassword = new MaskedPassword();
-                maskedPassword.setCombination(passwordEncoder.encode(StringUtils.integerArrayToString(combination)));
+                maskedPassword.setCombination(passwordEncoder.encode(StringUtils.integerCollectionToString(Arrays.stream(combination)
+                        .boxed()
+                        .collect(Collectors.toList()))));
                 maskedPassword.setHash(passwordEncoder.encode(StringUtils.selectCharacters(fullPassword, combination)));
                 maskedPasswords.add(maskedPassword);
             }
@@ -87,7 +90,6 @@ public class AccountService {
         }
     }
 
-    //TODO
     @PreAuthorize("hasAuthority('resendQrCodeEmail')")
     public void sendQrCodeEmail(String username) throws ApplicationBaseException {
         Optional<Account> accountOptional = accountAdapter.getAccount(username);
@@ -115,8 +117,9 @@ public class AccountService {
         account.setCredentials(new Credentials(generateMaskedPasswords(accountDto.getPassword() + lastPasswordCharacters)));
         account.setAuthenticationToken(new AuthenticationToken(new ArrayList<>(), LocalDateTime.now()));
         account.setResetPasswordToken(new ResetPasswordToken(LocalDateTime.now(), StringUtils.randomIdentifier(), true));
-        if (otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).isPresent()) {
-            account.setOtpCredentials(otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).get());
+        Optional<OtpCredentials> otpCredentialsOptional = otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername());
+        if (otpCredentialsOptional.isPresent()) {
+            account.setOtpCredentials(otpCredentialsOptional.get());
             String subject = StringUtils.getTranslatedText("created.subject", language);
             String text = StringUtils.getTranslatedText("created.text", language) + "<img src='data:image/png;base64," + generateQrCode(accountDto.getUsername(), key) + "'/>";
             emailSender.sendMessage(account.getEmail(), subject, text);
@@ -145,8 +148,9 @@ public class AccountService {
         account.setAuthenticationToken(new AuthenticationToken(new ArrayList<>(), LocalDateTime.now()));
         account.setResetPasswordToken(new ResetPasswordToken(LocalDateTime.now(), StringUtils.randomIdentifier(), true));
         account.setAccessLevels(generateClientAccessLevels(account));
-        if (otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).isPresent()) {
-            account.setOtpCredentials(otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername()).get());
+        Optional<OtpCredentials> otpCredentialsOptional = otpCredentialsAdapter.getOtpCredentials(accountDto.getUsername());
+        if (otpCredentialsOptional.isPresent()) {
+            account.setOtpCredentials(otpCredentialsOptional.get());
             String subject = StringUtils.getTranslatedText("confirm.subject", language);
             String text = "<a href=\"" + ApplicationProperties.FRONTEND_ORIGIN + "/confirmAccount/" + account.getConfirmationToken() + "\">"
                     + StringUtils.getTranslatedText("common.link", language) + "</a>" + StringUtils.getTranslatedText("confirm.text", language);
@@ -234,7 +238,6 @@ public class AccountService {
         }
     }
 
-    //TODO
     @PreAuthorize("hasAuthority('regenerateOwnQrCode')")
     public RegistrationResponse regenerateQrCode(String username) throws ApplicationBaseException {
         GoogleAuthenticatorKey key = new GoogleAuthenticatorKey.Builder(otpCredentialsAdapter.getSecretKey(username))
@@ -312,6 +315,10 @@ public class AccountService {
                     account.setFirstName(accountDto.getFirstName());
                     account.setLastName(accountDto.getLastName());
                     account.setActive(accountDto.getActive());
+                    if (accountDto.getActive()) {
+                        account.setFailedAuthenticationCounter(0);
+                        account.setLoginInitializationCounter(0);
+                    }
                     AccountMapper.updateAccessLevels(account.getAccessLevels(), accountDto.getAccessLevels());
                 } else {
                     throw new ApplicationOptimisticLockException(account);

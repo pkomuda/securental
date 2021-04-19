@@ -6,12 +6,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 @Getter
 public class AuthenticationTokenImpl extends UsernamePasswordAuthenticationToken {
 
-    private final String combination;
     private final Integer otpCode;
 
-    public AuthenticationTokenImpl(Object principal, String combination, Integer otpCode, Object credentials) {
+    public AuthenticationTokenImpl(Object principal, Integer otpCode, Object credentials) {
         super(principal, credentials);
-        this.combination = combination;
         this.otpCode = otpCode;
         super.setAuthenticated(false);
     }

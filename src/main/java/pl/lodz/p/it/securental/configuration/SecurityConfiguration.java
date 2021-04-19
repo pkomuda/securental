@@ -21,7 +21,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import pl.lodz.p.it.securental.adapters.mok.AccountAdapter;
 import pl.lodz.p.it.securental.security.AuthenticationProviderImpl;
 import pl.lodz.p.it.securental.security.JwtRequestFilter;
-import pl.lodz.p.it.securental.security.UserDetailsServiceImpl;
+import pl.lodz.p.it.securental.security.UserDetailsService;
 import pl.lodz.p.it.securental.utils.ApplicationProperties;
 
 import java.util.Collections;
@@ -32,16 +32,22 @@ import java.util.Collections;
 @AllArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final UserDetailsServiceImpl userDetailsService;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtRequestFilter jwtRequestFilter;
-    private final GoogleAuthenticator googleAuthenticator;
     private final AccountAdapter accountAdapter;
+    private final GoogleAuthenticator googleAuthenticator;
+    private final JwtRequestFilter jwtRequestFilter;
+    private final PasswordEncoder passwordEncoder;
     private final PlatformTransactionManager transactionManager;
+    private final UserDetailsService userDetailsService;
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(new AuthenticationProviderImpl(passwordEncoder, userDetailsService, googleAuthenticator, accountAdapter, transactionManager));
+        auth.authenticationProvider(new AuthenticationProviderImpl(accountAdapter, googleAuthenticator, passwordEncoder, transactionManager, userDetailsService));
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManager();
     }
 
     @Override
@@ -52,17 +58,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-
         http.requiresChannel()
                 .requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null)
                 .requiresSecure();
-    }
 
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManager();
+        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean

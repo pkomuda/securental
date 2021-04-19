@@ -1,7 +1,7 @@
 package pl.lodz.p.it.securental.controllers.mod;
 
 import org.springframework.data.domain.Page;
-import pl.lodz.p.it.securental.dto.model.log.LogDto;
+import pl.lodz.p.it.securental.dto.model.mod.LogDto;
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 
 public interface LogController {

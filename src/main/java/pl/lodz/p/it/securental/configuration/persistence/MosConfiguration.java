@@ -13,43 +13,43 @@ import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import pl.lodz.p.it.securental.entities.mok.Client;
-import pl.lodz.p.it.securental.entities.mop.Car;
 import pl.lodz.p.it.securental.entities.mor.Reservation;
+import pl.lodz.p.it.securental.entities.mos.Car;
 
 import javax.sql.DataSource;
 import java.util.Map;
 import java.util.Objects;
 
 @Configuration
-@EnableJpaRepositories(basePackages = "pl.lodz.p.it.securental.repositories.mop",
-        entityManagerFactoryRef = "mopEntityManagerFactory",
-        transactionManagerRef= "mopTransactionManager")
+@EnableJpaRepositories(basePackages = "pl.lodz.p.it.securental.repositories.mos",
+        entityManagerFactoryRef = "mosEntityManagerFactory",
+        transactionManagerRef= "mosTransactionManager")
 @EnableRetry
 @EnableTransactionManagement
-public class MopConfiguration {
+public class MosConfiguration {
 
-    public static final String MOP_TRANSACTION_MANAGER = "mopTransactionManager";
+    public static final String MOS_TRANSACTION_MANAGER = "mosTransactionManager";
 
     @Bean
-    @ConfigurationProperties(prefix = "mop")
-    public DataSource mopDataSource() {
+    @ConfigurationProperties(prefix = "mos")
+    public DataSource mosDataSource() {
         return DataSourceBuilder.create().build();
     }
 
-    @Bean(name = "mopEntityManagerFactory")
-    public LocalContainerEntityManagerFactoryBean mopEntityManagerFactory(EntityManagerFactoryBuilder builder) {
+    @Bean(name = "mosEntityManagerFactory")
+    public LocalContainerEntityManagerFactoryBean mosEntityManagerFactory(EntityManagerFactoryBuilder builder) {
         Map<String, String> properties = Map.of(
                 "hibernate.hbm2ddl.auto", "update"
         );
         return builder
-                .dataSource(mopDataSource())
+                .dataSource(mosDataSource())
                 .properties(properties)
                 .packages(Car.class, Reservation.class, Client.class)
                 .build();
     }
 
-    @Bean(name = "mopTransactionManager")
-    public PlatformTransactionManager mopTransactionManager(@Qualifier("mopEntityManagerFactory") LocalContainerEntityManagerFactoryBean factory) {
+    @Bean(name = "mosTransactionManager")
+    public PlatformTransactionManager mosTransactionManager(@Qualifier("mosEntityManagerFactory") LocalContainerEntityManagerFactoryBean factory) {
         return new JpaTransactionManager(Objects.requireNonNull(factory.getObject()));
     }
 }

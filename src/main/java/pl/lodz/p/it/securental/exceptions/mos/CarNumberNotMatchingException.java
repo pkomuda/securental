@@ -1,4 +1,4 @@
-package pl.lodz.p.it.securental.exceptions.mop;
+package pl.lodz.p.it.securental.exceptions.mos;
 
 import pl.lodz.p.it.securental.exceptions.ApplicationBaseException;
 

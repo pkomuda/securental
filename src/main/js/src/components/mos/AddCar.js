@@ -20,7 +20,7 @@ export const AddCar = props => {
         description: string().required("car.description.required").min(1, "car.description.min").max(255, "car.description.max").matches(STRING_REGEX, "car.description.invalid"),
         productionYear: string().required("car.productionYear.required").matches(YEAR_REGEX, "car.productionYear.invalid"),
         price: string().required("car.price.required").matches(MONEY_REGEX, "car.price.invalid"),
-        category: string().required("car.category.required"),
+        category: string().required("car.category.required").matches(STRING_REGEX, "car.category.invalid"),
         active: bool()
     });
     const [car, setCar] = useState({
@@ -135,6 +135,7 @@ export const AddCar = props => {
                                            type="number"
                                            suffix={CURRENCY}
                                            required/>
+                            <p className="invalid">{t("validation:car.price.required")}</p>
                             {renderCategorySelect()}
                             <FormGroup>
                                 <FormLabel className="font-weight-bold">{t("car.activity")}</FormLabel>
