@@ -4,7 +4,7 @@ import axios from "axios";
 import en from 'date-fns/locale/en-GB';
 import pl from 'date-fns/locale/pl';
 import React, { useContext, useEffect, useState } from "react";
-import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormControl, FormGroup, FormLabel, OverlayTrigger, Row, Tooltip } from "react-bootstrap";
+import { Breadcrumb, Button, ButtonToolbar, Col, Container, Form, FormControl, FormGroup, FormLabel, Row } from "react-bootstrap";
 import DatePicker, { registerLocale } from "react-datepicker";
 import { useTranslation } from "react-i18next";
 import { LinkContainer } from "react-router-bootstrap";
@@ -14,7 +14,7 @@ import { date, mixed, object, string } from "yup";
 import { handleError, handleSuccess } from "../../utils/Alerts";
 import { AuthenticationContext } from "../../utils/AuthenticationContext";
 import { CURRENCY } from "../../utils/Constants";
-import { formatDate, hoursBetween, isAfter, isBefore, isEqual, isoDate, minuteOfDay, nearestFullHour, parseDate } from "../../utils/DateTime";
+import { hoursBetween, isoDate, nearestFullHour, parseDate, prependZero, schedule } from "../../utils/DateTime";
 import { addDecimalPlaces, isLanguagePolish } from "../../utils/i18n";
 import { validate } from "../../utils/Validation";
 import { EditFormGroup } from "../common/EditFormGroup";
@@ -145,14 +145,6 @@ export const AddReservation = props => {
         }
     };
 
-    const prependZero = number => {
-        if (number < 10) {
-            return `0${number}`;
-        } else {
-            return `${number}`;
-        }
-    };
-
     const handleContextMenu = event => {
         event.preventDefault();
         popup.fire({
@@ -172,94 +164,6 @@ export const AddReservation = props => {
                 element.style["user-select"] = "none";
             }
         }
-    };
-
-    const schedule = (dates, selectedDate) => {
-        const periods = [];
-        for (let date of dates) {
-            if (isBefore(date.startDate, selectedDate)
-                && isAfter(date.endDate, selectedDate)) {
-                periods.push({
-                    startDate: date.startDate,
-                    endDate: date.endDate,
-                    startMinute: 0,
-                    endMinute: 1440
-                });
-            } else if (isEqual(date.startDate, selectedDate)
-                && isEqual(date.endDate, selectedDate)) {
-                periods.push({
-                    startDate: date.startDate,
-                    endDate: date.endDate,
-                    startMinute: minuteOfDay(date.startDate),
-                    endMinute: minuteOfDay(date.endDate)
-                });
-            } else if (isEqual(date.startDate, selectedDate)
-                && isAfter(date.endDate, selectedDate)) {
-                periods.push({
-                    startDate: date.startDate,
-                    endDate: date.endDate,
-                    startMinute: minuteOfDay(date.startDate),
-                    endMinute: 1440
-                });
-            } else if (isBefore(date.startDate, selectedDate)
-                && isEqual(date.endDate, selectedDate)) {
-                periods.push({
-                    startDate: date.startDate,
-                    endDate: date.endDate,
-                    startMinute: 0,
-                    endMinute: minuteOfDay(date.endDate)
-                });
-            }
-        }
-
-        const blocks = [];
-        for (let period of periods) {
-            blocks.push(
-                <OverlayTrigger placement="right"
-                                delay={{show: 250, hide: 400}}
-                                overlay={<Tooltip id={period.startMinute}>{`${formatDate(isoDate(period.startDate))} - ${formatDate(isoDate(period.endDate))}`}</Tooltip>}>
-                    <div style={{backgroundColor: "#216ba5", border: "1px solid #333a41", width: "198px", height: `${(period.endMinute - period.startMinute)/2}px`, marginTop: `${period.startMinute/2}px`, position: "absolute", borderRadius: "10px"}}/>
-                </OverlayTrigger>
-            );
-        }
-
-        return (
-            <table>
-                <td>
-                    <div style={{width: "50px", height: "720px", position: "relative"}}>
-                        <div style={{position: "absolute"}}>00:00</div>
-                        <div style={{marginTop: "30px", position: "absolute"}}>01:00</div>
-                        <div style={{marginTop: "60px", position: "absolute"}}>02:00</div>
-                        <div style={{marginTop: "90px", position: "absolute"}}>03:00</div>
-                        <div style={{marginTop: "120px", position: "absolute"}}>04:00</div>
-                        <div style={{marginTop: "150px", position: "absolute"}}>05:00</div>
-                        <div style={{marginTop: "180px", position: "absolute"}}>06:00</div>
-                        <div style={{marginTop: "210px", position: "absolute"}}>07:00</div>
-                        <div style={{marginTop: "240px", position: "absolute"}}>08:00</div>
-                        <div style={{marginTop: "270px", position: "absolute"}}>09:00</div>
-                        <div style={{marginTop: "300px", position: "absolute"}}>10:00</div>
-                        <div style={{marginTop: "330px", position: "absolute"}}>11:00</div>
-                        <div style={{marginTop: "360px", position: "absolute"}}>12:00</div>
-                        <div style={{marginTop: "390px", position: "absolute"}}>13:00</div>
-                        <div style={{marginTop: "420px", position: "absolute"}}>14:00</div>
-                        <div style={{marginTop: "450px", position: "absolute"}}>15:00</div>
-                        <div style={{marginTop: "480px", position: "absolute"}}>16:00</div>
-                        <div style={{marginTop: "510px", position: "absolute"}}>17:00</div>
-                        <div style={{marginTop: "540px", position: "absolute"}}>18:00</div>
-                        <div style={{marginTop: "570px", position: "absolute"}}>19:00</div>
-                        <div style={{marginTop: "600px", position: "absolute"}}>20:00</div>
-                        <div style={{marginTop: "630px", position: "absolute"}}>21:00</div>
-                        <div style={{marginTop: "660px", position: "absolute"}}>22:00</div>
-                        <div style={{marginTop: "690px", position: "absolute"}}>23:00</div>
-                    </div>
-                </td>
-                <td>
-                    <div style={{backgroundColor: "lightgrey", border: "1px solid #333a41", width: "200px", height: "720px", position: "relative", borderRadius: "10px"}}>
-                        {blocks}
-                    </div>
-                </td>
-            </table>
-        );
     };
 
     if (loaded) {
